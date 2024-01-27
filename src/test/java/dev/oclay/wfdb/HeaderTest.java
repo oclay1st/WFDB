@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ public class HeaderTest {
                 #Electric axis of the heart: normal.
                 #Left atrial hypertrophy.
                 #Left ventricular hypertrophy.""";
-        var headerInput = new ByteArrayInputStream(headerText.getBytes());
+        ByteArrayInputStream headerInput = new ByteArrayInputStream(headerText.getBytes());
         Header header = Header.parse(headerInput);
         assertNotNull(header);
         System.out.println(header);
@@ -50,7 +51,7 @@ public class HeaderTest {
         String headerText = """
                 16 12 500 5000
                 16.dat 16 1244(0)/mV 0 0 -17 3038 0 i""";
-        var headerInput = new ByteArrayInputStream(headerText.getBytes());
+        ByteArrayInputStream headerInput = new ByteArrayInputStream(headerText.getBytes());
         Header header = Header.parse(headerInput);
         assertNotNull(header);
         assertNotNull(header.signals());
@@ -69,7 +70,7 @@ public class HeaderTest {
     @Test
     @DisplayName("Should parse the header from a file")
     void shouldParseHeaderFromFile() throws IOException, ParseException {
-        var headerInput = WFDBTest.class.getClassLoader().getResourceAsStream("00001_lr.hea");
+        InputStream headerInput = WFDBTest.class.getClassLoader().getResourceAsStream("00001_lr.hea");
         Header header = Header.parse(headerInput);
         assertNotNull(header);
         assertNotNull(header.signals());
