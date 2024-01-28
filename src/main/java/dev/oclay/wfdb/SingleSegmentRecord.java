@@ -8,34 +8,38 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-public record WFDB(Header header, int[][] samplesPerSingal) {
+public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPerSingal) {
 
-    public static WFDB parse(InputStream headerInput, InputStream samplingInput) throws IOException, ParseException {
+    public static SingleSegmentRecord parse(InputStream headerInput, InputStream samplingInput) throws IOException, ParseException {
         Objects.requireNonNull(headerInput);
         Objects.requireNonNull(samplingInput);
-        Header header = Header.parse(headerInput);
+        SingleSegmentHeader header = SingleSegmentHeader.parse(headerInput);
         int[][] samples = parseSamplesPerSignal(samplingInput.readAllBytes(), header);
-        return new WFDB(header, samples);
+        return new SingleSegmentRecord(header, samples);
     }
 
-    public static WFDB parse(Path headerFilePath, Path samplingFilePath) throws IOException, ParseException {
+    public static SingleSegmentRecord parse(Path headerFilePath, Path samplingFilePath) throws IOException, ParseException {
         try (InputStream headerInput = Files.newInputStream(headerFilePath);
                 InputStream samplingInput = Files.newInputStream(samplingFilePath)) {
             return parse(headerInput, samplingInput);
         }
     }
 
-    private static int[][] parseSamplesPerSignal(byte[] data, Header header) throws ParseException {
+    // public static WFDB parse(Path wfdbPath) {
+    //     wfdbPath.getFileName()
+    // }
+
+    private static int[][] parseSamplesPerSignal(byte[] data, SingleSegmentHeader header) throws ParseException {
         if (!header.isSingleFileFormat()) {
             throw new ParseException("Unsupported header with different signal format and files");
         }
-        int format = header.signals()[0].format();
+        int format = header.headerSignals()[0].format();
         int[] formattedSamples = toFormat(format, data);
-        int[][] samplesPerSignal = new int[header.record().numberOfSignals()][header.record().numberOfSamples()];
+        int[][] samplesPerSignal = new int[header.headerRecord().numberOfSignals()][header.headerRecord().numberOfSamples()];
         int signalIndex = 0;
-        for (int i = 0; i < header.record().numberOfSignals(); i++) {
+        for (int i = 0; i < header.headerRecord().numberOfSignals(); i++) {
             signalIndex = 0;
-            for (int j = i; j < formattedSamples.length; j += header.record().numberOfSignals()) {
+            for (int j = i; j < formattedSamples.length; j += header.headerRecord().numberOfSignals()) {
                 samplesPerSignal[i][signalIndex] = formattedSamples[j];
                 signalIndex++;
             }
@@ -204,7 +208,7 @@ public record WFDB(Header header, int[][] samplesPerSingal) {
     }
 
     public int time() {
-        return (int) (header.record().numberOfSamples() / header.record().samplingFrequency());
+        return (int) (header.headerRecord().numberOfSamples() / header.headerRecord().samplingFrequency());
     }
 
 }
