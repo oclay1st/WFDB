@@ -1,6 +1,6 @@
 package dev.oclay.wfdb;
 
-public class Util {
+class Util {
 
     private Util() {
         throw new IllegalAccessError("Util class");
