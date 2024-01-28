@@ -3,7 +3,7 @@ package dev.oclay.wfdb;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public record Signal(String filename, int format, int samplesPerFrame, int skew, int bytesOffset, float adcGain,
+public record HeaderSignal(String filename, int format, int samplesPerFrame, int skew, int bytesOffset, float adcGain,
         int baseline, String units, int adcResolution, int adcZero, int initialValue, int checksum, int blockSize,
         String description) {
 
@@ -25,7 +25,7 @@ public record Signal(String filename, int format, int samplesPerFrame, int skew,
             \\s*(?<description>[\\S]?[^\\t\\n\\r\\f\\v]*)
             """.replaceAll("[\n\r]", ""));
 
-    public static Signal parse(String text) throws ParseException {
+    public static HeaderSignal parse(String text) throws ParseException {
         Matcher matcher = PATTERN.matcher(text);
         if (!matcher.matches()) {
             throw new ParseException("Unable to parse the header signal");
@@ -45,7 +45,7 @@ public record Signal(String filename, int format, int samplesPerFrame, int skew,
         int checksum = Util.parseOrDefault(matcher.group("checksum"), 0);
         int blockSize = Util.parseOrDefault(matcher.group("blockSize"), 0);
         String description = matcher.group("description");
-        return new Signal(filename, format, samplesPerFrame, skew, bytesOffset, adcGain, baseline, units, adcResolution,
+        return new HeaderSignal(filename, format, samplesPerFrame, skew, bytesOffset, adcGain, baseline, units, adcResolution,
                 adcZero, initialValue, checksum, blockSize, description);
     }
 
