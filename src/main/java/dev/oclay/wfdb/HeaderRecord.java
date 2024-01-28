@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public record Record(String name, int numberOfSegments, int numberOfSignals, float samplingFrequency,
+public record HeaderRecord(String name, int numberOfSegments, int numberOfSignals, float samplingFrequency,
         float counterFrequency, float baseCounter, int numberOfSamples, LocalTime baseTime, LocalDate baseDate) {
 
     // Pattern to match the Record info intentionally split in multiple lines
@@ -26,7 +26,7 @@ public record Record(String name, int numberOfSegments, int numberOfSignals, flo
 
     private static final DateTimeFormatter BASE_DATE_FORMATTER = DateTimeFormatter.ofPattern("d/M/y");
 
-    public static Record parse(String text) throws ParseException {
+    public static HeaderRecord parse(String text) throws ParseException {
         Matcher matcher = PATTERN.matcher(text);
         if (!matcher.matches()) {
             throw new ParseException("Unable to parse the header record");
@@ -42,8 +42,13 @@ public record Record(String name, int numberOfSegments, int numberOfSignals, flo
         LocalTime baseTime = !Util.isEmpty(baseTimeText) ? LocalTime.parse(baseTimeText, BASE_TIME_FORMATTER) : null;
         String baseDateText = matcher.group("baseDate");
         LocalDate baseDate = !Util.isEmpty(baseDateText) ? LocalDate.parse(baseDateText, BASE_DATE_FORMATTER) : null;
-        return new Record(name, numberOfSegments, numberOfSignals, samplingFrequency, counterFrequency, baseCounter,
+        return new HeaderRecord(name, numberOfSegments, numberOfSignals, samplingFrequency, counterFrequency,
+                baseCounter,
                 numberOfSamples, baseTime, baseDate);
+    }
+
+    public boolean isMultiSegment() {
+        return numberOfSegments > 0;
     }
 
 }
