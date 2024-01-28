@@ -7,3 +7,5 @@ This library is pure Java implementation of the Waveform Database(WFDB) specific
 - [ ] Support for signal format: 8, 24, 80, 160, 310, 311
 - [ ] Parse WFDB file from the same directory
 - [ ] Support for different signal formats and files
+- [ ] Parse ranges of time
+- [ ] Multi-segment support
