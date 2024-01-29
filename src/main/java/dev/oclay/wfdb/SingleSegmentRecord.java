@@ -100,8 +100,8 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
      * from the most significant bit.
      */
     public static int[] toFormat16(byte[] data) {
-        int[] values = new int[data.length / 2];
         int index = 0;
+        int[] values = new int[data.length / 2];
         ShortBuffer buffer = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
         while (buffer.hasRemaining()) {
             values[index] = buffer.get();
@@ -130,7 +130,11 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
      * amplitude).
      */
     public static int[] toFormat80(byte[] data) {
-        throw new IllegalStateException("Not implemeted yet");
+        int[] samples = new int[data.length];
+        for (int i = 0; i < data.length; i++) {
+           samples[i] = (data[i] & 0xFF) - 128; 
+        }
+        return samples;
     }
 
     /**
@@ -160,23 +164,29 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
      * 15 -> 1 1 1 1
      * 78 -> 1 0 0 1 1 1 0
      * Then :
-     * First sample: 0 0 0 0 [ 1 1 1 1 | 1 1 1 1 0 1 0 0 ] -> 4084
+     * First sample: 0 0 0 0 [ 1 1 1 1 | 1 1 1 1 0 1 0 0 ] -> 4084 or -12
      * Second sample: 0 0 0 0 | 1 0 0 1 1 1 0 -> 78
-     * *
+     *
+     * Two complement form where values greater than 2^11 - 1 = 2047 are negative
+     * 12 bits goes 0 to 4096 for unsigned and -2048 to 2047 for signed
      */
     public static int[] toFormat212(byte[] data) {
         int[] samples = new int[data.length - data.length / 3];
         int index = 0;
         for (int i = 0; i < data.length; i += 3) {
             // first sample
-            int firstByteUsigned = data[i] & 0xFF;
+            int firstByteUnsigned = data[i] & 0xFF;
             int secondByteUnsigned = data[i + 1] & 0xFF;
             int lastFourBitsOfSecondByte = secondByteUnsigned & 0x0F;
-            samples[index] = (lastFourBitsOfSecondByte << 8) + firstByteUsigned;
+            int firstSample = (lastFourBitsOfSecondByte << 8) + firstByteUnsigned;
+            // Convert to two complement amplitude 
+            samples[index] = firstSample > 2047 ? firstSample - 4096 : firstSample; 
             // second sample
             int thirdUnsigned = data[i + 2] & 0xFF;
             int firstFourBitsOfSecondByte = (secondByteUnsigned >> 4) & 0x0F;
-            samples[index + 1] = (firstFourBitsOfSecondByte << 8) + thirdUnsigned;
+            int secondSample = (firstFourBitsOfSecondByte << 8) + thirdUnsigned;
+            // Convert to two complement amplitude 
+            samples[index + 1] = secondSample > 2047 ? secondSample - 4096 : secondSample; 
             // increment array index
             index += 2;
         }
