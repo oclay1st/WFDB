@@ -43,8 +43,7 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
         String baseDateText = matcher.group("baseDate");
         LocalDate baseDate = !Util.isEmpty(baseDateText) ? LocalDate.parse(baseDateText, BASE_DATE_FORMATTER) : null;
         return new HeaderRecord(name, numberOfSegments, numberOfSignals, samplingFrequency, counterFrequency,
-                baseCounter,
-                numberOfSamples, baseTime, baseDate);
+                baseCounter, numberOfSamples, baseTime, baseDate);
     }
 
     public boolean isMultiSegment() {
