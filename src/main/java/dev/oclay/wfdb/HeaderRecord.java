@@ -18,7 +18,7 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
             /*(?<counterFrequency>\\d*\\.?\\d*)
             \\(?(?<baseCounter>\\d*\\.?\\d*)\\)?
             \\s*(?<numberOfSamples>\\d*)
-            \\s*(?<baseTime>\\d{1,2}:\\d{1,2}:\\d{1,2})?
+            \\s*(?<baseTime>\\d{1,2}:\\d{1,2}:\\d{1,2}\\.?\\d{1,6})?
             \\s*(?<baseDate>\\d{1,2}/\\d{1,2}/\\d{1,4})?
             """.replaceAll("[\n\r]", ""));
 
@@ -39,7 +39,7 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
         float baseCounter = Util.parseOrDefault(matcher.group("baseCounter"), 0f);
         int numberOfSamples = Util.parseOrDefault(matcher.group("numberOfSamples"), 0);
         String baseTimeText = matcher.group("baseTime");
-        LocalTime baseTime = !Util.isEmpty(baseTimeText) ? LocalTime.parse(baseTimeText, BASE_TIME_FORMATTER) : null;
+        LocalTime baseTime = !Util.isEmpty(baseTimeText) ? LocalTime.parse(baseTimeText.split("\\.")[0], BASE_TIME_FORMATTER) : null;
         String baseDateText = matcher.group("baseDate");
         LocalDate baseDate = !Util.isEmpty(baseDateText) ? LocalDate.parse(baseDateText, BASE_DATE_FORMATTER) : null;
         return new HeaderRecord(name, numberOfSegments, numberOfSignals, samplingFrequency, counterFrequency,
