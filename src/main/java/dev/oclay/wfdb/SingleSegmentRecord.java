@@ -1,50 +1,61 @@
 package dev.oclay.wfdb;
 
+import static java.util.stream.Collectors.groupingBy;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPerSingal) {
 
-    public static SingleSegmentRecord parse(InputStream headerInput, InputStream samplingInput) throws IOException, ParseException {
-        Objects.requireNonNull(headerInput);
-        Objects.requireNonNull(samplingInput);
-        SingleSegmentHeader header = SingleSegmentHeader.parse(headerInput);
-        int[][] samples = parseSamplesPerSignal(samplingInput.readAllBytes(), header);
-        return new SingleSegmentRecord(header, samples);
-    }
-
-    public static SingleSegmentRecord parse(Path headerFilePath, Path samplingFilePath) throws IOException, ParseException {
-        try (InputStream headerInput = Files.newInputStream(headerFilePath);
-                InputStream samplingInput = Files.newInputStream(samplingFilePath)) {
-            return parse(headerInput, samplingInput);
-        }
-    }
-
-    // public static WFDB parse(Path wfdbPath) {
-    //     wfdbPath.getFileName()
-    // }
-
-    private static int[][] parseSamplesPerSignal(byte[] data, SingleSegmentHeader header) throws ParseException {
-        if (!header.isSingleFileFormat()) {
-            throw new ParseException("Unsupported header with different signal format and files");
-        }
-        int format = header.headerSignals()[0].format();
-        int[] formattedSamples = toFormat(format, data);
-        int[][] samplesPerSignal = new int[header.headerRecord().numberOfSignals()][header.headerRecord().numberOfSamples()];
-        int signalIndex = 0;
-        for (int i = 0; i < header.headerRecord().numberOfSignals(); i++) {
-            signalIndex = 0;
-            for (int j = i; j < formattedSamples.length; j += header.headerRecord().numberOfSignals()) {
-                samplesPerSignal[i][signalIndex] = formattedSamples[j];
-                signalIndex++;
+    public static SingleSegmentRecord parse(Path recordPath) throws IOException, ParseException {
+        Path headerFilePath = recordPath.resolveSibling(recordPath.getFileName() + ".hea");
+        try (InputStream inputStream = Files.newInputStream(headerFilePath)) {
+            // Parse info from the header file
+            SingleSegmentHeader header = SingleSegmentHeader.parse(inputStream);
+            int numberOfSignals = header.headerRecord().numberOfSignals();
+            int numberOfSamplesPerSignal = header.headerRecord().numberOfSamples();
+            int[][] samplesPerSignal = new int[numberOfSignals][numberOfSamplesPerSignal];
+            int samplesPerSignalIndex = 0;
+            // Group the signals by filename
+            Map<String, List<HeaderSignal>> recordFileMap = Arrays.stream(header.headerSignals())
+                    .collect(groupingBy(HeaderSignal::filename));
+            // Parse the samples files given the signals
+            for (Map.Entry<String, List<HeaderSignal>> entry : recordFileMap.entrySet()) {
+                Path samplesFilePath = recordPath.resolveSibling(entry.getKey());
+                int[][] samples = parseSamples(samplesFilePath, entry.getValue(), numberOfSamplesPerSignal);
+                System.arraycopy(samples, 0, samplesPerSignal, samplesPerSignalIndex, samples.length);
+                samplesPerSignalIndex += samples.length - 1;
             }
+            return new SingleSegmentRecord(header, samplesPerSignal);
         }
-        return samplesPerSignal;
+    }
+
+    private static int[][] parseSamples(Path samplesFilePath, List<HeaderSignal> signals, int numberOfSamplesPerSignal)
+            throws IOException {
+        try (InputStream samplesInputStream = Files.newInputStream(samplesFilePath)) {
+            byte[] data = samplesInputStream.readAllBytes();
+            int format = signals.get(0).format(); // All signals have the same format
+            int signalSize = signals.size();
+            int[] formattedSamples = toFormat(format, data);
+            int[][] samplesPerSignal = new int[signalSize][numberOfSamplesPerSignal];
+            int signalIndex = 0;
+            for (int i = 0; i < signalSize; i++) {
+                signalIndex = 0;
+                for (int j = i; j < formattedSamples.length; j += signalSize) {
+                    samplesPerSignal[i][signalIndex] = formattedSamples[j];
+                    signalIndex++;
+                }
+            }
+            return samplesPerSignal;
+        }
     }
 
     private static int[] toFormat(int format, byte[] data) {
@@ -78,12 +89,7 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
      * be represented this way)
      */
     public static int[] toFormat8(byte[] data) {
-        int[] values = new int[data.length];
-        byte[] samples = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).array();
-        for (int i = 0; i < samples.length; i++) {
-            values[i] = samples[i];
-        }
-        return values;
+        throw new IllegalStateException("Not implemeted yet");
     }
 
     /**
@@ -95,10 +101,11 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
      */
     public static int[] toFormat16(byte[] data) {
         int[] values = new int[data.length / 2];
-        short[] samples = new short[data.length / 2];
-        ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(samples);
-        for (int i = 0; i < samples.length; i++) {
-            values[i] = samples[i];
+        int index = 0;
+        ShortBuffer buffer = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
+        while (buffer.hasRemaining()) {
+            values[index] = buffer.get();
+            index++;
         }
         return values;
     }
