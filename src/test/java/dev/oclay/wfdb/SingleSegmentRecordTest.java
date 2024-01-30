@@ -35,4 +35,27 @@ public class SingleSegmentRecordTest {
         assertEquals(record.header().headerSignals()[11].initialValue(), record.samplesPerSingal()[11][0]);
     }
 
+    @Test
+    @DisplayName("should")
+    void shouldParse() throws ParseException, IOException {
+        Path path = Path.of("/run/media/oclay/Development/Work/uSinus/Dataset/212 Different Files/als1");
+        SingleSegmentRecord record = SingleSegmentRecord.parse(path);
+        assertEquals(record.header().headerSignals()[0].initialValue(), record.samplesPerSingal()[0][0]);
+    }
+
+    @Test
+    @DisplayName("Should parse 32 bit record")
+    void shouldParse32BitsRecord() throws ParseException, IOException {
+        Path path = Path.of("/run/media/oclay/Development/Work/uSinus/Dataset/32 bits/00689D31-8491-4643-B3C8-45241FBBD47C");
+        SingleSegmentRecord record = SingleSegmentRecord.parse(path);
+        assertEquals(record.header().headerSignals()[0].initialValue(), record.samplesPerSingal()[0][0]);
+    }
+
+    @Test
+    @DisplayName("Should parse 80 bit record")
+    void shouldParse80BitsRecord() throws ParseException, IOException {
+        Path path = Path.of("/run/media/oclay/Development/Work/uSinus/Dataset/80 bits/3544749_0001");
+        SingleSegmentRecord record = SingleSegmentRecord.parse(path);
+        assertEquals(record.header().headerSignals()[0].initialValue(), record.samplesPerSingal()[0][0]);
+    }
 }
