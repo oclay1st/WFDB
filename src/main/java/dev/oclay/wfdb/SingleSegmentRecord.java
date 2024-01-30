@@ -59,7 +59,9 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
         return switch (format) {
             case 8 -> SignalFormatter.toFormat8(data);
             case 16 -> SignalFormatter.toFormat16(data);
+            case 24 -> SignalFormatter.toFormat24(data);
             case 32 -> SignalFormatter.toFormat32(data);
+            case 61 -> SignalFormatter.toFormat61(data);
             case 80 -> SignalFormatter.toFormat80(data);
             case 160 -> SignalFormatter.toFormat160(data);
             case 212 -> SignalFormatter.toFormat212(data);

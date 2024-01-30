@@ -27,7 +27,6 @@ final class SignalFormatter {
      * be represented this way)
      */
     public static int[] toFormat8(byte[] data) {
-
         throw new IllegalStateException("Not implemeted yet");
     }
 
@@ -40,13 +39,31 @@ final class SignalFormatter {
      */
     public static int[] toFormat16(byte[] data) {
         int index = 0;
-        int[] values = new int[data.length / 2];
+        int[] samples = new int[data.length / 2];
         ShortBuffer buffer = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
         while (buffer.hasRemaining()) {
-            values[index] = buffer.get();
+            samples[index] = buffer.get();
             index++;
         }
-        return values;
+        return samples;
+    }
+
+    /**
+     * Convert sampling data to format 24
+     * 
+     * Each sample is represented by a 24-bit two’s complement amplitude stored
+     * least significant byte first.
+     */
+    public static int[] toFormat24(byte[] data) {
+        int[] samples = new int[data.length / 3];
+        for (int i = 0; i < data.length; i++) {
+            int firstByteUnsigned = data[i] & 0xFF;
+            int secondByteUnsigned = data[i + 1] & 0xFF;
+            int thirdByteUnsigned = data[i + 2] & 0xFF;
+            int sample = (thirdByteUnsigned << 16) + (secondByteUnsigned << 8) + firstByteUnsigned;
+            samples[i] = sample > 8388607 ? sample - 16777216 : sample;
+        }
+        return samples;
     }
 
     /**
@@ -58,6 +75,22 @@ final class SignalFormatter {
     public static int[] toFormat32(byte[] data) {
         int[] samples = new int[data.length / 4];
         ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).asIntBuffer().get(samples);
+        return samples;
+    }
+
+    /**
+     * Convert sampling data to format 61
+     * 
+     * Each sample is represented by a 16-bit two’s complement amplitude stored most
+     * significant byte first.
+     */
+    public static int[] toFormat61(byte[] data) {
+        int index = 0;
+        int[] samples = new int[data.length / 2];
+        ShortBuffer buffer = ByteBuffer.wrap(data).order(ByteOrder.BIG_ENDIAN).asShortBuffer();
+        while (buffer.hasRemaining()) {
+            samples[index] = buffer.get();
+        }
         return samples;
     }
 
@@ -90,6 +123,7 @@ final class SignalFormatter {
         ShortBuffer buffer = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
         while (buffer.hasRemaining()) {
             samples[index] = buffer.get() - 32768;
+            index++;
         }
         return samples;
     }
@@ -127,9 +161,9 @@ final class SignalFormatter {
             // Convert to two complement amplitude
             samples[index] = firstSample > 2047 ? firstSample - 4096 : firstSample;
             // second sample
-            int thirdUnsigned = data[i + 2] & 0xFF;
+            int thirdByteUnsigned = data[i + 2] & 0xFF;
             int firstFourBitsOfSecondByte = secondByteUnsigned >> 4;
-            int secondSample = (firstFourBitsOfSecondByte << 8) + thirdUnsigned;
+            int secondSample = (firstFourBitsOfSecondByte << 8) + thirdByteUnsigned;
             // Convert to two complement amplitude
             samples[index + 1] = secondSample > 2047 ? secondSample - 4096 : secondSample;
             // increment array index
