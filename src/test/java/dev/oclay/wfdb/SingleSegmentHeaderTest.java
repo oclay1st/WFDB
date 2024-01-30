@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -68,18 +67,4 @@ public class SingleSegmentHeaderTest {
         headerInput.close();
     }
 
-    @Test
-    @DisplayName("Should parse the header from a file")
-    void shouldParseHeaderFromFile() throws IOException, ParseException {
-        InputStream headerInput = SingleSegmentRecordTest.class.getClassLoader().getResourceAsStream("00001_lr.hea");
-        SingleSegmentHeader header = SingleSegmentHeader.parse(headerInput);
-        assertNotNull(header);
-        assertNotNull(header.headerSignals());
-        assertNotNull(header.headerRecord());
-        assertEquals(12, header.headerSignals().length);
-        assertEquals("00001_lr", header.headerRecord().name());
-        assertEquals(100, header.headerRecord().samplingFrequency());
-        assertEquals(1000, header.headerRecord().numberOfSamples());
-        headerInput.close();
-    }
 }

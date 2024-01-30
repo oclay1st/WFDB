@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ public class SingleSegmentRecordTest {
     @Test
     @DisplayName("Should parse the waveform file and header")
     void shouldParseWaveformFile() throws IOException, ParseException {
-        Path recordPath = Path.of("src", "test", "resources", "00001_lr").toAbsolutePath();
+        Path recordPath = Path.of("src", "test", "resources", "single-segment", "00001", "00001_lr").toAbsolutePath();
         SingleSegmentRecord record = SingleSegmentRecord.parse(recordPath);
         assertNotNull(record);
         assertNotNull(record.header());
@@ -36,26 +37,11 @@ public class SingleSegmentRecordTest {
     }
 
     @Test
-    @DisplayName("should")
-    void shouldParse() throws ParseException, IOException {
-        Path path = Path.of("/run/media/oclay/Development/Work/uSinus/Dataset/212 Different Files/als1");
-        SingleSegmentRecord record = SingleSegmentRecord.parse(path);
-        assertEquals(record.header().headerSignals()[0].initialValue(), record.samplesPerSingal()[0][0]);
-    }
-
-    @Test
-    @DisplayName("Should parse 32 bit record")
-    void shouldParse32BitsRecord() throws ParseException, IOException {
-        Path path = Path.of("/run/media/oclay/Development/Work/uSinus/Dataset/32 bits/00689D31-8491-4643-B3C8-45241FBBD47C");
-        SingleSegmentRecord record = SingleSegmentRecord.parse(path);
-        assertEquals(record.header().headerSignals()[0].initialValue(), record.samplesPerSingal()[0][0]);
-    }
-
-    @Test
-    @DisplayName("Should parse 80 bit record")
-    void shouldParse80BitsRecord() throws ParseException, IOException {
-        Path path = Path.of("/run/media/oclay/Development/Work/uSinus/Dataset/80 bits/3544749_0001");
-        SingleSegmentRecord record = SingleSegmentRecord.parse(path);
-        assertEquals(record.header().headerSignals()[0].initialValue(), record.samplesPerSingal()[0][0]);
+    @DisplayName("Should parse multiformat record")
+    @Disabled("Needs support for all the formats")
+    void shouldParseMultiformatRecord() throws ParseException, IOException {
+        Path recordPath = Path.of("src", "test", "resources", "single-segment", "all-formats", "binformats").toAbsolutePath();
+        SingleSegmentRecord record = SingleSegmentRecord.parse(recordPath);
+        assertNotNull(record);
     }
 }
