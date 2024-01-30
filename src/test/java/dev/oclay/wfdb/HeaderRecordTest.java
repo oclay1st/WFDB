@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 public class HeaderRecordTest {
 
     @Test
-    @DisplayName("Shoul parse the header record")
+    @DisplayName("Should parse the header record")
     void shouldParseRecord() throws ParseException {
         String headerRecordText = "100 2 360 650000 0:0:0 10/01/2001";
         HeaderRecord headerRecord = HeaderRecord.parse(headerRecordText);
