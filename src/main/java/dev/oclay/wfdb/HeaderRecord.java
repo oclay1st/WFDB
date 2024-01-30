@@ -18,7 +18,7 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
             /*(?<counterFrequency>\\d*\\.?\\d*)
             \\(?(?<baseCounter>\\d*\\.?\\d*)\\)?
             \\s*(?<numberOfSamples>\\d*)
-            \\s*(?<baseTime>\\d{1,2}:\\d{1,2}:\\d{1,2}\\.?\\d{1,6})?
+            \\s*(?<baseTime>\\d{1,2}:\\d{1,2}:\\d{1,2}\\.?\\d{0,6})?
             \\s*(?<baseDate>\\d{1,2}/\\d{1,2}/\\d{1,4})?
             """.replaceAll("[\n\r]", ""));
 
