@@ -32,12 +32,6 @@ public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] head
         return new SingleSegmentHeader(headerRecord, headerSignals);
     }
 
-    public boolean isSingleFileFormat() {
-        return Arrays.stream(headerSignals)
-                .allMatch(headerSignal -> headerSignal.format() == headerSignals[0].format() &&
-                        headerSignal.filename().equals(headerSignals[0].filename()));
-    }
-
     @Override
     public String toString() {
         return "SingleSegmentHeader [headerRecord = " + headerRecord + ", headerSignals = " + Arrays.toString(headerSignals) + "]";
