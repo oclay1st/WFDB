@@ -19,9 +19,7 @@ public class HeaderRecordTest {
         assertEquals(headerRecord.numberOfSegments(), 0);
         assertEquals(headerRecord.numberOfSignals(), 2);
         assertEquals(headerRecord.samplingFrequency(), 360f);
-        assertEquals(headerRecord.counterFrequency(), 360f);
-        assertEquals(headerRecord.baseCounter(), 0);
-        assertEquals(headerRecord.numberOfSamples(), 650000);
+        assertEquals(headerRecord.numberOfSamplesPerSignal(), 650000);
         assertEquals(headerRecord.baseTime(), LocalTime.of(0, 0, 0));
         assertEquals(headerRecord.baseDate(), LocalDate.of(2001, 01, 10));
     }
@@ -34,8 +32,7 @@ public class HeaderRecordTest {
         assertEquals(headerRecord.name(), "00001_lr");
         assertEquals(headerRecord.numberOfSignals(), 12);
         assertEquals(headerRecord.samplingFrequency(), 100f);
-        assertEquals(headerRecord.counterFrequency(), 100f);
-        assertEquals(headerRecord.numberOfSamples(), 1000);
+        assertEquals(headerRecord.numberOfSamplesPerSignal(), 1000);
     }
 
 }

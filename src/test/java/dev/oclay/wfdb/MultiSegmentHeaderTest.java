@@ -26,7 +26,7 @@ public class MultiSegmentHeaderTest {
         assertEquals("multi", header.headerRecord().name());
         assertEquals(4, header.headerRecord().numberOfSignals());
         assertEquals(360, header.headerRecord().samplingFrequency());
-        assertEquals(45000, header.headerRecord().numberOfSamples());
+        assertEquals(45000, header.headerRecord().numberOfSamplesPerSignal());
         assertEquals(2, header.headerSegments().length);
         assertEquals("test", header.headerSegments()[0].name());
         assertEquals(22500, header.headerSegments()[0].numberOfSamples());

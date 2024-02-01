@@ -35,7 +35,7 @@ public class SingleSegmentHeaderTest {
         assertEquals(header.headerRecord().numberOfSignals(), header.headerSignals().length);
         assertEquals("000006", header.headerRecord().name());
         assertEquals(100, header.headerRecord().samplingFrequency());
-        assertEquals(1000, header.headerRecord().numberOfSamples());
+        assertEquals(1000, header.headerRecord().numberOfSamplesPerSignal());
         assertEquals("000006.dat", header.headerSignals()[0].filename());
         assertEquals(16, header.headerSignals()[0].format());
         assertEquals("mV", header.headerSignals()[0].units());
@@ -58,7 +58,7 @@ public class SingleSegmentHeaderTest {
         assertEquals(header.headerSignals().length, header.headerRecord().numberOfSignals());
         assertEquals("16", header.headerRecord().name());
         assertEquals(500, header.headerRecord().samplingFrequency());
-        assertEquals(5000, header.headerRecord().numberOfSamples());
+        assertEquals(5000, header.headerRecord().numberOfSamplesPerSignal());
         assertEquals("16.dat", header.headerSignals()[0].filename());
         assertEquals(16, header.headerSignals()[0].format());
         assertEquals("mV", header.headerSignals()[0].units());

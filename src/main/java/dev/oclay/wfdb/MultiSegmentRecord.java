@@ -13,7 +13,7 @@ public record MultiSegmentRecord(MultiSegmentHeader header, SingleSegmentRecord[
             // Parse the multi segment header file
             MultiSegmentHeader header = MultiSegmentHeader.parse(inputStream);
             int recordIndex = 0;
-            SingleSegmentRecord[] records = new SingleSegmentRecord[header.headerRecord().numberOfSamples()];
+            SingleSegmentRecord[] records = new SingleSegmentRecord[header.headerRecord().numberOfSamplesPerSignal()];
             for (HeaderSegment segment : header.headerSegments()) {
                 Path segmentRecordPath = recordPath.resolveSibling(segment.name());
                 SingleSegmentRecord record = SingleSegmentRecord.parse(segmentRecordPath);
