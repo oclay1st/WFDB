@@ -7,7 +7,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public record HeaderRecord(String name, int numberOfSegments, int numberOfSignals, float samplingFrequency,
-        float counterFrequency, float baseCounter, int numberOfSamples, LocalTime baseTime, LocalDate baseDate) {
+        @Deprecated float counterFrequency, @Deprecated float baseCounter, int numberOfSamplesPerSignal,
+        LocalTime baseTime,
+        LocalDate baseDate) {
 
     // Pattern to match the Record info intentionally split in multiple lines
     private static final Pattern PATTERN = Pattern.compile("""
@@ -17,7 +19,7 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
             \\s*(?<samplingFrequency>\\d*\\.?\\d*)
             /*(?<counterFrequency>\\d*\\.?\\d*)
             \\(?(?<baseCounter>\\d*\\.?\\d*)\\)?
-            \\s*(?<numberOfSamples>\\d*)
+            \\s*(?<numberOfSamplesPerSignal>\\d*)
             \\s*(?<baseTime>\\d{1,2}:\\d{1,2}:\\d{1,2}\\.?\\d{0,6})?
             \\s*(?<baseDate>\\d{1,2}/\\d{1,2}/\\d{1,4})?
             """.replaceAll("[\n\r]", ""));
@@ -37,17 +39,43 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
         float samplingFrequency = Util.parseOrDefault(matcher.group("samplingFrequency"), 250f);
         float counterFrequency = Util.parseOrDefault(matcher.group("counterFrequency"), samplingFrequency);
         float baseCounter = Util.parseOrDefault(matcher.group("baseCounter"), 0f);
-        int numberOfSamples = Util.parseOrDefault(matcher.group("numberOfSamples"), 0);
+        int numberOfSamplesPerSignal = Util.parseOrDefault(matcher.group("numberOfSamplesPerSignal"), 0);
         String baseTimeText = matcher.group("baseTime");
-        LocalTime baseTime = !Util.isEmpty(baseTimeText) ? LocalTime.parse(baseTimeText.split("\\.")[0], BASE_TIME_FORMATTER) : null;
+        LocalTime baseTime = !Util.isEmpty(baseTimeText)
+                ? LocalTime.parse(baseTimeText.split("\\.")[0], BASE_TIME_FORMATTER)
+                : null;
         String baseDateText = matcher.group("baseDate");
         LocalDate baseDate = !Util.isEmpty(baseDateText) ? LocalDate.parse(baseDateText, BASE_DATE_FORMATTER) : null;
         return new HeaderRecord(name, numberOfSegments, numberOfSignals, samplingFrequency, counterFrequency,
-                baseCounter, numberOfSamples, baseTime, baseDate);
+                baseCounter, numberOfSamplesPerSignal, baseTime, baseDate);
     }
 
     public boolean isMultiSegment() {
         return numberOfSegments > 0;
+    }
+
+    public int totalNumberOfSamples() {
+        return numberOfSamplesPerSignal() * numberOfSignals;
+    }
+
+    /**
+     * The counter frequency value
+     * 
+     * @deprecated recent versions of the spec ignore this field
+     */
+    @Deprecated
+    public float counterFrequency() {
+        return counterFrequency;
+    }
+
+    /**
+     * The counter value corresponding to sample 0
+     * 
+     * @deprecated recent versions of the spec ignore this field
+     */
+    @Deprecated
+    public float baseCounter() {
+        return baseCounter;
     }
 
 }
