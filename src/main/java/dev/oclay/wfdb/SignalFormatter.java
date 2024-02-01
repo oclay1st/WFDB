@@ -26,8 +26,17 @@ final class SignalFormatter {
      * (otherwise signals with baselines which differ by 128 units or more could not
      * be represented this way)
      */
-    public static int[] toFormat8(byte[] data) {
-        throw new IllegalStateException("Not implemeted yet");
+    public static int[] toFormat8(byte[] data, int numberOfSamples, HeaderSignal[] headerSignals) {
+        int[] samples = new int[numberOfSamples];
+        samples[0] = data[0];
+        for (int i = 1; i < data.length; i++) {
+            samples[i] = samples[i - 1] + data[i];
+        }
+        int signalIndex = 0;
+        for (int i = 0; i < samples.length; i++) {
+            samples[i] = samples[i] + headerSignals[signalIndex].initialValue();
+        }
+        return samples;
     }
 
     /**
@@ -37,9 +46,9 @@ final class SignalFormatter {
      * least significant byte first. Any unused high-order bits are sign-extended
      * from the most significant bit.
      */
-    public static int[] toFormat16(byte[] data) {
+    public static int[] toFormat16(byte[] data, int numberOfSamples) {
         int index = 0;
-        int[] samples = new int[data.length / 2];
+        int[] samples = new int[numberOfSamples];
         ShortBuffer buffer = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
         while (buffer.hasRemaining()) {
             samples[index] = buffer.get();
@@ -54,14 +63,16 @@ final class SignalFormatter {
      * Each sample is represented by a 24-bit two’s complement amplitude stored
      * least significant byte first.
      */
-    public static int[] toFormat24(byte[] data) {
-        int[] samples = new int[data.length / 3];
-        for (int i = 0; i < data.length; i++) {
+    public static int[] toFormat24(byte[] data, int numberOfSamples) {
+        int index = 0;
+        int[] samples = new int[numberOfSamples];
+        for (int i = 0; i < data.length; i += 3) {
             int firstByteUnsigned = data[i] & 0xFF;
             int secondByteUnsigned = data[i + 1] & 0xFF;
             int thirdByteUnsigned = data[i + 2] & 0xFF;
             int sample = (thirdByteUnsigned << 16) + (secondByteUnsigned << 8) + firstByteUnsigned;
-            samples[i] = sample > 8388607 ? sample - 16777216 : sample;
+            samples[index] = sample > 8388607 ? sample - 16777216 : sample;
+            index++;
         }
         return samples;
     }
@@ -72,8 +83,8 @@ final class SignalFormatter {
      * Each sample is represented by a 32-bit two’s complement amplitude stored
      * least significant byte first.
      */
-    public static int[] toFormat32(byte[] data) {
-        int[] samples = new int[data.length / 4];
+    public static int[] toFormat32(byte[] data, int numberOfSamples) {
+        int[] samples = new int[numberOfSamples];
         ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).asIntBuffer().get(samples);
         return samples;
     }
@@ -84,9 +95,9 @@ final class SignalFormatter {
      * Each sample is represented by a 16-bit two’s complement amplitude stored most
      * significant byte first.
      */
-    public static int[] toFormat61(byte[] data) {
+    public static int[] toFormat61(byte[] data, int numberOfSamples) {
         int index = 0;
-        int[] samples = new int[data.length / 2];
+        int[] samples = new int[numberOfSamples];
         ShortBuffer buffer = ByteBuffer.wrap(data).order(ByteOrder.BIG_ENDIAN).asShortBuffer();
         while (buffer.hasRemaining()) {
             samples[index] = buffer.get();
@@ -101,8 +112,8 @@ final class SignalFormatter {
      * 128 must be subtracted from each unsigned byte to obtain a signed 8-bit
      * amplitude).
      */
-    public static int[] toFormat80(byte[] data) {
-        int[] samples = new int[data.length];
+    public static int[] toFormat80(byte[] data, int numberOfSamples) {
+        int[] samples = new int[numberOfSamples];
         for (int i = 0; i < data.length; i++) {
             samples[i] = (data[i] & 0xFF) - 128;
         }
@@ -117,9 +128,9 @@ final class SignalFormatter {
      * 16-bit amplitude). As for format 16, the least significant byte of each pair
      * is first.
      */
-    public static int[] toFormat160(byte[] data) {
+    public static int[] toFormat160(byte[] data, int numberOfSamples) {
         int index = 0;
-        int[] samples = new int[data.length / 2];
+        int[] samples = new int[numberOfSamples];
         ShortBuffer buffer = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
         while (buffer.hasRemaining()) {
             samples[index] = buffer.get() - 32768;
@@ -149,10 +160,11 @@ final class SignalFormatter {
      * Two complement form where values greater than 2^11 - 1 = 2047 are negative
      * 12 bits goes 0 to 4096 for unsigned and -2048 to 2047 for signed
      */
-    public static int[] toFormat212(byte[] data) {
-        int[] samples = new int[data.length - data.length / 3];
+    public static int[] toFormat212(byte[] data, int numberOfSamples) {
+        int[] samples = new int[numberOfSamples];
         int index = 0;
-        for (int i = 0; i < data.length; i += 3) {
+        int searchSize =  data.length - data.length % 3;
+        for (int i = 0; i < searchSize; i += 3) {
             // first sample
             int firstByteUnsigned = data[i] & 0xFF;
             int secondByteUnsigned = data[i + 1] & 0xFF;
@@ -197,10 +209,11 @@ final class SignalFormatter {
      * Two complement form where values greater than 2^9 - 1 = 511 are negative
      * 10 bits goes from 0 to 1024 for unsigned -512 to 511 for signed
      */
-    public static int[] toFormat310(byte[] data) {
-        int[] samples = new int[data.length - data.length / 4];
+    public static int[] toFormat310(byte[] data, int numberOfSamples) {
         int index = 0;
-        for (int i = 0; i < data.length; i += 4) {
+        int[] samples = new int[numberOfSamples];
+        int searchSize = data.length - data.length % 4;
+        for (int i = 0; i < searchSize; i += 4) {
             // first sample
             int firstByteUnsigned = data[i] & 0xFF;
             int secondByteUnsigned = data[i + 1] & 0xFF;
@@ -242,10 +255,11 @@ final class SignalFormatter {
      *
      * 10 bits goes from 0 to 1024 for unsigned -512 to 511 for signed
      */
-    public static int[] toFormat311(byte[] data) {
+    public static int[] toFormat311(byte[] data, int numberOfSamples) {
         int index = 0;
-        int[] samples = new int[data.length - data.length / 4];
-        for (int i = 0; i < data.length; i += 4) {
+        int[] samples = new int[numberOfSamples];
+        int searchSize = data.length - data.length % 4;
+        for (int i = 0; i < searchSize; i += 4) {
             int firstByteUnsigned = data[i] & 0xFF;
             int secondByteUnsigned = data[i + 1] & 0xFF;
             int lastTwoBitsOfSecondByte = secondByteUnsigned & 0x03;
