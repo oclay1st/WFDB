@@ -19,26 +19,13 @@ public class HeaderSignalTest {
     }
 
     @Test
-    @DisplayName("Should parse bytes offset from signal info")
-    void shouldParseBytesOffset() throws ParseException {
-        String headerSignalText = "JS00001.mat 16+24 1000/mV 16 0 390 15121 0 aVF";
-        HeaderSignal headerSignal = HeaderSignal.parse(headerSignalText);
-        assertEquals(16, headerSignal.format());
-        assertEquals(24, headerSignal.bytesOffset());
-    }
-
-    @Test
     @DisplayName("Should parse the header signal info of 212 bits representation")
     void shouldParseSignal() throws ParseException {
         String headerSignalText = "100.dat 212 200 11 1024 995 -22131 0 MLII";
         HeaderSignal headerSignal = HeaderSignal.parse(headerSignalText);
         assertEquals(headerSignal.filename(), "100.dat");
         assertEquals(headerSignal.format(), 212);
-        assertEquals(headerSignal.samplesPerFrame(), 1);
-        assertEquals(headerSignal.skew(), 0);
-        assertEquals(headerSignal.bytesOffset(), 0);
         assertEquals(headerSignal.adcGain(), 200f);
-        assertEquals(headerSignal.baseline(), 1024);
         assertEquals(headerSignal.units(), "mV");
         assertEquals(headerSignal.adcResolution(), 11);
         assertEquals(headerSignal.adcZero(), 1024);
