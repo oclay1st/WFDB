@@ -38,22 +38,22 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
         float counterFrequency = Util.parseOrDefault(matcher.group("counterFrequency"), samplingFrequency);
         float baseCounter = Util.parseOrDefault(matcher.group("baseCounter"), 0f);
         int numberOfSamplesPerSignal = Util.parseOrDefault(matcher.group("numberOfSamplesPerSignal"), 0);
-        String baseTimeText = matcher.group("baseTime");
-        LocalTime baseTime = !Util.isEmpty(baseTimeText)
-                ? LocalTime.parse(baseTimeText.split("\\.")[0], BASE_TIME_FORMATTER)
-                : null;
-        String baseDateText = matcher.group("baseDate");
-        LocalDate baseDate = !Util.isEmpty(baseDateText) ? LocalDate.parse(baseDateText, BASE_DATE_FORMATTER) : null;
+        LocalTime baseTime = parseBaseTime(matcher.group("baseTime"));
+        LocalDate baseDate = parseBaseDate(matcher.group("baseDate"));
         return new HeaderRecord(name, numberOfSegments, numberOfSignals, samplingFrequency, counterFrequency,
                 baseCounter, numberOfSamplesPerSignal, baseTime, baseDate);
     }
 
-    public boolean isMultiSegment() {
-        return numberOfSegments > 0;
+    private static LocalTime parseBaseTime(String text) {
+        return !Util.isEmpty(text) ? LocalTime.parse(text.split("\\.")[0], BASE_TIME_FORMATTER) : null;
     }
 
-    public int totalNumberOfSamples() {
-        return numberOfSamplesPerSignal() * numberOfSignals;
+    private static LocalDate parseBaseDate(String text) {
+        return !Util.isEmpty(text) ? LocalDate.parse(text, BASE_DATE_FORMATTER) : null;
+    }
+
+    public boolean isMultiSegment() {
+        return numberOfSegments > 0;
     }
 
     /**
