@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +37,6 @@ public class SingleSegmentRecordTest {
 
     @Test
     @DisplayName("Should parse multiformat record")
-    @Disabled("Needs support for all the formats")
     void shouldParseMultiformatRecord() throws ParseException, IOException {
         Path recordPath = Path.of("src", "test", "resources", "single-segment", "all-formats", "binformats").toAbsolutePath();
         SingleSegmentRecord record = SingleSegmentRecord.parse(recordPath);
