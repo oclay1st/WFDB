@@ -3,9 +3,9 @@ package dev.oclay.wfdb;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public record HeaderSignal(String filename, int format, int samplesPerFrame, int skew, int bytesOffset, float adcGain,
-        int baseline, String units, int adcResolution, int adcZero, int initialValue, int checksum, int blockSize,
-        String description) {
+public record HeaderSignal(String filename, int format, @Deprecated int samplesPerFrame, @Deprecated int skew,
+        @Deprecated int bytesOffset, float adcGain, @Deprecated int baseline, String units, int adcResolution,
+        int adcZero, int initialValue, int checksum, int blockSize, String description) {
 
     // Pattern to match the Signal info intentionally split in multiple lines
     private final static Pattern PATTERN = Pattern.compile("""
@@ -45,8 +45,48 @@ public record HeaderSignal(String filename, int format, int samplesPerFrame, int
         int checksum = Util.parseOrDefault(matcher.group("checksum"), 0);
         int blockSize = Util.parseOrDefault(matcher.group("blockSize"), 0);
         String description = matcher.group("description");
-        return new HeaderSignal(filename, format, samplesPerFrame, skew, bytesOffset, adcGain, baseline, units, adcResolution,
-                adcZero, initialValue, checksum, blockSize, description);
+        return new HeaderSignal(filename, format, samplesPerFrame, skew, bytesOffset, adcGain, baseline, units,
+                adcResolution, adcZero, initialValue, checksum, blockSize, description);
+    }
+
+    /**
+     * The samples per frame value
+     * 
+     * @deprecated recent versions of the spec ignore this field
+     */
+    @Deprecated
+    public int samplesPerFrame() {
+        return samplesPerFrame;
+    }
+
+    /**
+     * The skew value
+     * 
+     * @deprecated recent versions of the spec ignore this field
+     */
+    @Deprecated
+    public int skew() {
+        return skew;
+    }
+
+    /**
+     * The byte offset
+     * 
+     * @deprecated recent versions of the spec ignore this field
+     */
+    @Deprecated
+    public int bytesOffset() {
+        return bytesOffset;
+    }
+
+    /**
+     * The baseline specifies the sample value corresponding to 0 physical units
+     * 
+     * @deprecated recent versions of the spec ignore this field
+     */
+    @Deprecated
+    public int baseline() {
+        return baseline;
     }
 
 }
