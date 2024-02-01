@@ -7,7 +7,6 @@ public record HeaderSignal(String filename, int format, @Deprecated int samplesP
         @Deprecated int bytesOffset, float adcGain, @Deprecated int baseline, String units, int adcResolution,
         int adcZero, int initialValue, int checksum, int blockSize, String description) {
 
-    // Pattern to match the Signal info intentionally split in multiple lines
     private final static Pattern PATTERN = Pattern.compile("""
             (?<filename>~?[-\\w]*\\.?[\\w]*)
             \\s+(?<format>\\d+)

@@ -8,10 +8,8 @@ import java.util.regex.Pattern;
 
 public record HeaderRecord(String name, int numberOfSegments, int numberOfSignals, float samplingFrequency,
         @Deprecated float counterFrequency, @Deprecated float baseCounter, int numberOfSamplesPerSignal,
-        LocalTime baseTime,
-        LocalDate baseDate) {
+        LocalTime baseTime, LocalDate baseDate) {
 
-    // Pattern to match the Record info intentionally split in multiple lines
     private static final Pattern PATTERN = Pattern.compile("""
             (?<name>[-\\w]+)
             /?(?<numberOfSegments>\\d*)

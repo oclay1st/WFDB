@@ -34,7 +34,8 @@ public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] head
 
     @Override
     public String toString() {
-        return "SingleSegmentHeader [headerRecord = " + headerRecord + ", headerSignals = " + Arrays.toString(headerSignals) + "]";
+        return "SingleSegmentHeader [headerRecord = " + headerRecord + ", headerSignals = "
+                + Arrays.toString(headerSignals) + "]";
     }
 
 }

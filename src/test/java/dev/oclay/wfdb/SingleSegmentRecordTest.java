@@ -38,7 +38,8 @@ public class SingleSegmentRecordTest {
     @Test
     @DisplayName("Should parse multiformat record")
     void shouldParseMultiformatRecord() throws ParseException, IOException {
-        Path recordPath = Path.of("src", "test", "resources", "single-segment", "all-formats", "binformats").toAbsolutePath();
+        Path recordPath = Path.of("src", "test", "resources", "single-segment", "all-formats", "binformats")
+                .toAbsolutePath();
         SingleSegmentRecord record = SingleSegmentRecord.parse(recordPath);
         assertNotNull(record);
     }

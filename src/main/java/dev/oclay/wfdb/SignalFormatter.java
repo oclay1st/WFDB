@@ -163,7 +163,7 @@ final class SignalFormatter {
     public static int[] toFormat212(byte[] data, int numberOfSamples) {
         int[] samples = new int[numberOfSamples];
         int index = 0;
-        int searchSize =  data.length - data.length % 3;
+        int searchSize = data.length - data.length % 3;
         for (int i = 0; i < searchSize; i += 3) {
             // first sample
             int firstByteUnsigned = data[i] & 0xFF;

@@ -24,7 +24,7 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
             // Group the signals by filename
             Map<String, List<HeaderSignal>> recordFileMap = Arrays.stream(header.headerSignals())
                     .collect(groupingBy(HeaderSignal::filename));
-            // Parse the signals samples in each file 
+            // Parse the signals samples in each file
             for (Map.Entry<String, List<HeaderSignal>> entry : recordFileMap.entrySet()) {
                 Path samplesFilePath = recordPath.resolveSibling(entry.getKey());
                 HeaderSignal[] headerSignals = entry.getValue().toArray(HeaderSignal[]::new);
