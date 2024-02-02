@@ -9,7 +9,7 @@ import java.nio.file.Path;
  * Represents a multi-segment record
  *
  * @param header the multi-segment header {@link MultiSegmentHeader}
- * @param record the array of single-segment records {@link SingleSegmentRecord}
+ * @param records the array of single-segment records {@link SingleSegmentRecord}
  */
 public record MultiSegmentRecord(MultiSegmentHeader header, SingleSegmentRecord[] records) {
 

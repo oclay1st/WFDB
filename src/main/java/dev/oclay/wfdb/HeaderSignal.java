@@ -88,6 +88,7 @@ public record HeaderSignal(String filename, int format, @Deprecated int samplesP
      * The samples per frame value
      * 
      * @deprecated recent versions of the spec ignore this field
+     * @return the sample per frame value  
      */
     @Deprecated
     public int samplesPerFrame() {
@@ -98,6 +99,7 @@ public record HeaderSignal(String filename, int format, @Deprecated int samplesP
      * The skew value
      * 
      * @deprecated recent versions of the spec ignore this field
+     * @return the skew value  
      */
     @Deprecated
     public int skew() {
@@ -108,6 +110,7 @@ public record HeaderSignal(String filename, int format, @Deprecated int samplesP
      * The byte offset
      * 
      * @deprecated recent versions of the spec ignore this field
+     * @return the bytes offset value  
      */
     @Deprecated
     public int bytesOffset() {
@@ -118,6 +121,7 @@ public record HeaderSignal(String filename, int format, @Deprecated int samplesP
      * The baseline specifies the sample value corresponding to 0 physical units
      * 
      * @deprecated recent versions of the spec ignore this field
+     * @return the baseline value
      */
     @Deprecated
     public int baseline() {

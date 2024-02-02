@@ -90,6 +90,7 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
      * The counter frequency value
      *
      * @deprecated recent versions of the spec ignore this field
+     * @return the counter frequency value
      */
     @Deprecated
     public float counterFrequency() {
@@ -100,6 +101,7 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
      * The counter value corresponding to sample 0
      *
      * @deprecated recent versions of the spec ignore this field
+     * @return the base counter value
      */
     @Deprecated
     public float baseCounter() {

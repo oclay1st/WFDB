@@ -263,7 +263,7 @@ final class SignalFormatter {
     }
 
     /**
-     * Convert sampling data to format 311 each sample is represented by a 10-bit
+     * Convert sampling data to format 311 in where each sample is represented by a 10-bit
      * two’s-complement amplitude. Three samples are bit-packed into a 32-bit
      * integer as for format 310, but the layout is different. Each set of four
      * bytes is stored in little-endian order (least significant byte first, most
