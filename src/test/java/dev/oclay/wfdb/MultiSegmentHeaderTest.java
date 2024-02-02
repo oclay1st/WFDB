@@ -2,6 +2,7 @@ package dev.oclay.wfdb;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -22,16 +23,16 @@ public class MultiSegmentHeaderTest {
         MultiSegmentHeader header = MultiSegmentHeader.parse(headerInput);
         assertNotNull(header);
         assertNotNull(header.headerRecord());
-        assertEquals(true, header.headerRecord().isMultiSegment());
+        assertTrue(header.headerRecord().isMultiSegment());
         assertEquals("multi", header.headerRecord().name());
         assertEquals(4, header.headerRecord().numberOfSignals());
         assertEquals(360, header.headerRecord().samplingFrequency());
         assertEquals(45000, header.headerRecord().numberOfSamplesPerSignal());
         assertEquals(2, header.headerSegments().length);
         assertEquals("test", header.headerSegments()[0].name());
-        assertEquals(22500, header.headerSegments()[0].numberOfSamples());
+        assertEquals(22500, header.headerSegments()[0].numberOfSamplesPerSignal());
         assertEquals("other", header.headerSegments()[1].name());
-        assertEquals(22500, header.headerSegments()[1].numberOfSamples());
+        assertEquals(22500, header.headerSegments()[1].numberOfSamplesPerSignal());
     }
 
     @Test

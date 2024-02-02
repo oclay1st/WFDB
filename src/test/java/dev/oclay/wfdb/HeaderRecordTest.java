@@ -15,13 +15,13 @@ public class HeaderRecordTest {
     void shouldParseRecord() throws ParseException {
         String headerRecordText = "100 2 360 650000 0:0:0 10/01/2001";
         HeaderRecord headerRecord = HeaderRecord.parse(headerRecordText);
-        assertEquals(headerRecord.name(), "100");
-        assertEquals(headerRecord.numberOfSegments(), 0);
-        assertEquals(headerRecord.numberOfSignals(), 2);
-        assertEquals(headerRecord.samplingFrequency(), 360f);
-        assertEquals(headerRecord.numberOfSamplesPerSignal(), 650000);
-        assertEquals(headerRecord.baseTime(), LocalTime.of(0, 0, 0));
-        assertEquals(headerRecord.baseDate(), LocalDate.of(2001, 01, 10));
+        assertEquals("100", headerRecord.name());
+        assertEquals(1, headerRecord.numberOfSegments());
+        assertEquals(2, headerRecord.numberOfSignals());
+        assertEquals(360f, headerRecord.samplingFrequency());
+        assertEquals(650000, headerRecord.numberOfSamplesPerSignal());
+        assertEquals(LocalTime.of(0, 0, 0), headerRecord.baseTime());
+        assertEquals(LocalDate.of(2001, 01, 10), headerRecord.baseDate());
     }
 
     @Test
@@ -29,10 +29,10 @@ public class HeaderRecordTest {
     void parseSmallRecordInfo() throws ParseException {
         String headerRecordText = "00001_lr 12 100 1000";
         HeaderRecord headerRecord = HeaderRecord.parse(headerRecordText);
-        assertEquals(headerRecord.name(), "00001_lr");
-        assertEquals(headerRecord.numberOfSignals(), 12);
-        assertEquals(headerRecord.samplingFrequency(), 100f);
-        assertEquals(headerRecord.numberOfSamplesPerSignal(), 1000);
+        assertEquals("00001_lr", headerRecord.name());
+        assertEquals(12, headerRecord.numberOfSignals());
+        assertEquals(100f, headerRecord.samplingFrequency());
+        assertEquals(1000, headerRecord.numberOfSamplesPerSignal());
     }
 
 }
