@@ -6,6 +6,22 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Represents the data info from the first line of a header file.
+ *
+ * @param name                     the record name that identify the record
+ * @param numberOfSegments         the number of segments
+ * @param numberOfSignals          the number of signal
+ * @param samplingFrequency        the samples per seconds in each signal
+ * @param counterFrequency         the counter frequency
+ * @param baseCounter              the counter value corresponding
+ *                                 to sample 0
+ * @param numberOfSamplesPerSignal the number of samples per signal
+ * @param baseTime                 the time of day that corresponds to the
+ *                                 beginning of the record, in HH:MM:SS format
+ * @param baseDate                 the date that corresponds to the beginning of
+ *                                 the record, in DD/MM/YYYY format
+ */
 public record HeaderRecord(String name, int numberOfSegments, int numberOfSignals, float samplingFrequency,
         @Deprecated float counterFrequency, @Deprecated float baseCounter, int numberOfSamplesPerSignal,
         LocalTime baseTime, LocalDate baseDate) {
@@ -26,13 +42,22 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
 
     private static final DateTimeFormatter BASE_DATE_FORMATTER = DateTimeFormatter.ofPattern("d/M/y");
 
+    /**
+     * Parse the header record from a text line
+     * As an example of the text line may look like:
+     * 100 2 360 650000 0:0:0 10/01/2001
+     * 
+     * @param text the text that represents the header record info
+     * @return a new {@link HeaderRecord} instance
+     * @throws ParseException if the text can't be parsed
+     */
     public static HeaderRecord parse(String text) throws ParseException {
         Matcher matcher = PATTERN.matcher(text);
         if (!matcher.matches()) {
             throw new ParseException("Unable to parse the header record");
         }
         String name = matcher.group("name");
-        int numberOfSegments = Util.parseOrDefault(matcher.group("numberOfSegments"), 0);
+        int numberOfSegments = Util.parseOrDefault(matcher.group("numberOfSegments"), 1);
         int numberOfSignals = Util.parseOrDefault(matcher.group("numberOfSignals"), 0);
         float samplingFrequency = Util.parseOrDefault(matcher.group("samplingFrequency"), 250f);
         float counterFrequency = Util.parseOrDefault(matcher.group("counterFrequency"), samplingFrequency);
@@ -52,13 +77,18 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
         return !Util.isEmpty(text) ? LocalDate.parse(text, BASE_DATE_FORMATTER) : null;
     }
 
+    /**
+     * Determine if the header belongs to a multi-segment record
+     * 
+     * @return true if the number of segments is greater than 1, otherwise false
+     */
     public boolean isMultiSegment() {
-        return numberOfSegments > 0;
+        return numberOfSegments > 1;
     }
 
     /**
      * The counter frequency value
-     * 
+     *
      * @deprecated recent versions of the spec ignore this field
      */
     @Deprecated
@@ -68,7 +98,7 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
 
     /**
      * The counter value corresponding to sample 0
-     * 
+     *
      * @deprecated recent versions of the spec ignore this field
      */
     @Deprecated

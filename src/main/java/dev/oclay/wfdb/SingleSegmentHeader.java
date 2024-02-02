@@ -6,8 +6,30 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
+/**
+ * Represents a single segment record header
+ *
+ * @param headerRecord  the header record
+ * @param headerSignals the array of header signals
+ */
 public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] headerSignals) {
 
+    /**
+     * Parse the single-segment header from an input form
+     * As an example of the header file text:
+     * 100 2 360 650000 0:0:0 0/0/0
+     * 100.dat 212 200 11 1024 995 -22131 0 MLII
+     * 100.dat 212 200 11 1024 1011 20052 0 V5
+     * 
+     * # 69 M 1085 1629 x1
+     * # Aldomet, Inderal
+     * 
+     * @param input an {@link InputStream} of the header info
+     * @return a new {@link SingleSegmentHeader} instance
+     * @throws IOException    if the input is invalid
+     * @throws ParseException if the text can't be parsed
+     * @see SingleSegmentRecord
+     */
     public static SingleSegmentHeader parse(InputStream input) throws IOException, ParseException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         HeaderRecord headerRecord = null;

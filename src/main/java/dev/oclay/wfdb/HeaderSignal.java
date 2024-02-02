@@ -3,6 +3,33 @@ package dev.oclay.wfdb;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Represents the data info of each signal from the header file.
+ *
+ * @param filename        the name of file in which samples of the signal are
+ *                        kept
+ * @param format          the storage format of the signal
+ * @param samplesPerFrame the samples per frame
+ * @param skew            indicate the number of samples of the signal that are
+ *                        considered to to precede the sample 0
+ * @param bytesOffset     the offset of bytes form the beginning of the signal
+ *                        file to sample 0
+ * @param adcGain         the difference in sample values that would be observed
+ *                        if a step of one physical unit occurred in the
+ *                        original analog signal
+ * @param baseline        the sample value corresponding to 0 physical units
+ * @param units           the unit of the signal samples
+ * @param adcResolution   the resolution for the analog to digital converter to
+ *                        digitize the signal
+ * @param adcZero         the sample value that would be observed if the analog
+ *                        signal present at the ADC inputs had a level that fell
+ *                        exactly in the middle of the input range of the ADC
+ * @param initialValue    the value of sample 0 in the signal
+ * @param checksum        the checksum of all samples in the signal
+ * @param blockSize       the size of the block in where the signal must be read
+ *                        in bytes
+ * @param description     the description of the signal
+ */
 public record HeaderSignal(String filename, int format, @Deprecated int samplesPerFrame, @Deprecated int skew,
         @Deprecated int bytesOffset, float adcGain, @Deprecated int baseline, String units, int adcResolution,
         int adcZero, int initialValue, int checksum, int blockSize, String description) {
@@ -24,6 +51,15 @@ public record HeaderSignal(String filename, int format, @Deprecated int samplesP
             \\s*(?<description>[\\S]?[^\\t\\n\\r\\f\\v]*)
             """.replaceAll("[\n\r]", ""));
 
+    /**
+     * Parse the header signal from a text line.
+     * As an example the text line may look like:
+     * 100.dat 212 200 11 1024 995 -22131 0 MLII
+     *
+     * @param text the text that represents the signals info
+     * @return a new {@link HeaderSignal} instance
+     * @throws ParseException if the text can't be parsed
+     */
     public static HeaderSignal parse(String text) throws ParseException {
         Matcher matcher = PATTERN.matcher(text);
         if (!matcher.matches()) {

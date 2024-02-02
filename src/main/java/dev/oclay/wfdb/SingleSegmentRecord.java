@@ -10,8 +10,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents a single-segment record
+ * 
+ * @param header           the single-segment header {@link SingleSegmentHeader}
+ * @param samplesPerSingal the array of samples per signal
+ */
 public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPerSingal) {
 
+    /**
+     * Parse a single-segment record given a path
+     *
+     * @param recordPath the path where the record will be parsed
+     * @return a new {@link SingleSegmentRecord} instance
+     * @throws IOException    if the input is invalid
+     * @throws ParseException if the text can't be parsed
+     */
     public static SingleSegmentRecord parse(Path recordPath) throws IOException, ParseException {
         Path headerFilePath = recordPath.resolveSibling(recordPath.getFileName() + ".hea");
         try (InputStream inputStream = Files.newInputStream(headerFilePath)) {
@@ -37,6 +51,16 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
         }
     }
 
+    /**
+     * Parse the samples of the signals given a file. It may contain one or many
+     * signals samples
+     *
+     * @param samplesFilePath the file path of the samples of the signals
+     * @param signals         the array of signals
+     * @param numberOfSamples the number of samples on the file
+     * @return an array of samples for each signal
+     * @throws IOException if the input is invalid
+     */
     private static int[][] parseSamples(Path samplesFilePath, HeaderSignal[] signals, int numberOfSamples)
             throws IOException {
         try (InputStream samplesInputStream = Files.newInputStream(samplesFilePath)) {
@@ -56,6 +80,15 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
         }
     }
 
+    /**
+     * Convert raw data to the corresponding format
+     * 
+     * @param format          the format of the signal
+     * @param data            the raw data
+     * @param headerSignals   the array of signals
+     * @param numberOfSamples the number of samples
+     * @return an array of all the samples on the given format
+     */
     private static int[] toFormat(int format, byte[] data, HeaderSignal[] headerSignals, int numberOfSamples) {
         return switch (format) {
             case 8 -> SignalFormatter.toFormat8(data, numberOfSamples, headerSignals);
@@ -72,6 +105,11 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
         };
     }
 
+    /**
+     * The whole time of the record that was recorded
+     *
+     * @return the value of the time in seconds
+     */
     public int time() {
         return (int) (header.headerRecord().numberOfSamplesPerSignal() / header.headerRecord().samplingFrequency());
     }
