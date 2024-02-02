@@ -11,20 +11,23 @@ final class SignalFormatter {
     }
 
     /**
-     * Convert sampling data to format 8
+     * Convert sampling data to format 8 in where each sample is represented as an
+     * 8-bit first difference; i.e., to get the value of sample n, sum the first n
+     * bytes of the sample data file together with the initial value from the header
+     * file. When format 8 files are created, first differences which cannot be
+     * represented in 8 bits are represented instead by the largest difference of
+     * the appropriate sign (-128 or +127), and subsequent differences are adjusted
+     * such that the correct amplitude is obtained as quickly as possible. Thus
+     * there may be loss of information if signals in another of the formats listed
+     * below are converted to format 8. Note that the first differences stored in
+     * multiplexed format 8 files are always determined by subtraction of successive
+     * samples from the same signal (otherwise signals with baselines which differ
+     * by 128 units or more could not be represented this way).
      *
-     * Each sample is represented as an 8-bit first difference; i.e., to get the
-     * value of sample n, sum the first n bytes of the sample data file together
-     * with the initial value from the header file. When format 8 files are created,
-     * first differences which cannot be represented in 8 bits are represented
-     * instead by the largest difference of the appropriate sign (-128 or +127), and
-     * subsequent differences are adjusted such that the correct amplitude is
-     * obtained as quickly as possible. Thus there may be loss of information if
-     * signals in another of the formats listed below are converted to format 8.
-     * Note that the first differences stored in multiplexed format 8 files are
-     * always determined by subtraction of successive samples from the same signal
-     * (otherwise signals with baselines which differ by 128 units or more could not
-     * be represented this way)
+     * @param data            the raw data of the signals samples
+     * @param numberOfSamples the number of samples
+     * @param headerSignals   the array of signals header
+     * @return a formatted array of samples
      */
     public static int[] toFormat8(byte[] data, int numberOfSamples, HeaderSignal[] headerSignals) {
         int[] samples = new int[numberOfSamples];
@@ -40,11 +43,13 @@ final class SignalFormatter {
     }
 
     /**
-     * Convert sampling data to format 16
-     * 
-     * Each sample is represented by a 16-bit two’s complement amplitude stored
-     * least significant byte first. Any unused high-order bits are sign-extended
-     * from the most significant bit.
+     * Convert sampling data to format 16 in where each sample is represented by a
+     * 16-bit two’s complement amplitude stored least significant byte first. Any
+     * unused high-order bits are sign-extended from the most significant bit.
+     *
+     * @param data            the raw data of the signals samples
+     * @param numberOfSamples the number of samples
+     * @return a formatted array of samples
      */
     public static int[] toFormat16(byte[] data, int numberOfSamples) {
         int index = 0;
@@ -58,10 +63,12 @@ final class SignalFormatter {
     }
 
     /**
-     * Convert sampling data to format 24
-     * 
-     * Each sample is represented by a 24-bit two’s complement amplitude stored
-     * least significant byte first.
+     * Convert sampling data to format 24 in where each sample is represented by a
+     * 24-bit two’s complement amplitude stored least significant byte first.
+     *
+     * @param data            the raw data of the signals samples
+     * @param numberOfSamples the number of samples
+     * @return a formatted array of samples
      */
     public static int[] toFormat24(byte[] data, int numberOfSamples) {
         int index = 0;
@@ -78,10 +85,12 @@ final class SignalFormatter {
     }
 
     /**
-     * Convert sampling data to format 32
+     * Convert sampling data to format 32 in where each sample is represented by a
+     * 32-bit two’s complement amplitude stored least significant byte first.
      *
-     * Each sample is represented by a 32-bit two’s complement amplitude stored
-     * least significant byte first.
+     * @param data            the raw data of the signals samples
+     * @param numberOfSamples the number of samples
+     * @return a formatted array of samples
      */
     public static int[] toFormat32(byte[] data, int numberOfSamples) {
         int[] samples = new int[numberOfSamples];
@@ -90,10 +99,12 @@ final class SignalFormatter {
     }
 
     /**
-     * Convert sampling data to format 61
-     * 
-     * Each sample is represented by a 16-bit two’s complement amplitude stored most
-     * significant byte first.
+     * Convert sampling data to format 61 in where each sample is represented by a
+     * 16-bit two’s complement amplitude stored most significant byte first.
+     *
+     * @param data            the raw data of the signals samples
+     * @param numberOfSamples the number of samples
+     * @return a formatted array of samples
      */
     public static int[] toFormat61(byte[] data, int numberOfSamples) {
         int index = 0;
@@ -106,11 +117,13 @@ final class SignalFormatter {
     }
 
     /**
-     * Convert sampling data to format 80
+     * Convert sampling data to format 80 in where each sample is represented by an
+     * 8-bit amplitude in offset binary form (i.e., 128 must be subtracted from each
+     * unsigned byte to obtain a signed 8-bit amplitude).
      *
-     * Each sample is represented by an 8-bit amplitude in offset binary form (i.e.,
-     * 128 must be subtracted from each unsigned byte to obtain a signed 8-bit
-     * amplitude).
+     * @param data            the raw data of the signals samples
+     * @param numberOfSamples the number of samples
+     * @return a formatted array of samples
      */
     public static int[] toFormat80(byte[] data, int numberOfSamples) {
         int[] samples = new int[numberOfSamples];
@@ -121,12 +134,14 @@ final class SignalFormatter {
     }
 
     /**
-     * Convert sampling data to format 160
+     * Convert sampling data to format 160 in where each sample is represented by a
+     * 16-bit amplitude in offset binary form (i.e., 32768 must be subtracted from
+     * each unsigned byte pair to obtain a signed 16-bit amplitude). As for format
+     * 16, the least significant byte of each pair is first.
      *
-     * Each sample is represented by a 16-bit amplitude in offset binary form (i.e.,
-     * 32768 must be subtracted from each unsigned byte pair to obtain a signed
-     * 16-bit amplitude). As for format 16, the least significant byte of each pair
-     * is first.
+     * @param data            the raw data of the signals samples
+     * @param numberOfSamples the number of samples
+     * @return a formatted array of samples
      */
     public static int[] toFormat160(byte[] data, int numberOfSamples) {
         int index = 0;
@@ -140,15 +155,14 @@ final class SignalFormatter {
     }
 
     /**
-     * Convert sampling data to format 212
+     * Convert sampling data to format 212 in where each sample is represented by a
+     * 12-bit two’s complement amplitude. The first sample is obtained from the 12
+     * least significant bits of the first byte pair (stored least significant byte
+     * first). The second sample is formed from the 4 remaining bits of the first
+     * byte pair (which are the 4 high bits of the 12-bit sample) and the next byte
+     * (which contains the remaining 8 bits of the second sample). The process is
+     * repeated for each successive pair of samples.
      *
-     * Each sample is represented by a 12-bit two’s complement amplitude. The first
-     * sample is obtained from the 12 least significant bits of the first byte pair
-     * (stored least significant byte first). The second sample is formed from the 4
-     * remaining bits of the first byte pair (which are the 4 high bits of the
-     * 12-bit sample) and the next byte (which contains the remaining 8 bits of the
-     * second sample). The process is repeated for each successive pair of samples.
-     * 
      * Given 3 unsigned bytes : represented as 244 15 78
      * 244 -> 1 1 1 1 0 1 0 0
      * 15 -> 0 0 0 0 1 1 1 1
@@ -159,6 +173,10 @@ final class SignalFormatter {
      *
      * Two complement form where values greater than 2^11 - 1 = 2047 are negative
      * 12 bits goes 0 to 4096 for unsigned and -2048 to 2047 for signed
+     *
+     * @param data            the raw data of the signals samples
+     * @param numberOfSamples the number of samples
+     * @return a formatted array of samples
      */
     public static int[] toFormat212(byte[] data, int numberOfSamples) {
         int[] samples = new int[numberOfSamples];
@@ -185,16 +203,15 @@ final class SignalFormatter {
     }
 
     /**
-     * Convert sampling data to format 310
+     * Convert sampling data to format 310 in where each sample is represented by a
+     * 10-bit two’s-complement amplitude. The first sample is obtained from the 11
+     * least significant bits of the first byte pair (stored least significant byte
+     * first), with the low bit discarded. The second sample comes from the 11 least
+     * significant bits of the second byte pair, in the same way as the first. The
+     * third sample is formed from the 5 most significant bits of each of the first
+     * two byte pairs (those from the first byte pair are the least significant bits
+     * of the third sample).
      *
-     * Each sample is represented by a 10-bit two’s-complement amplitude. The first
-     * sample is obtained from the 11 least significant bits of the first byte pair
-     * (stored least significant byte first), with the low bit discarded. The second
-     * sample comes from the 11 least significant bits of the second byte pair, in
-     * the same way as the first. The third sample is formed from the 5 most
-     * significant bits of each of the first two byte pairs (those from the first
-     * byte pair are the least significant bits of the third sample).
-     * 
      * Given 3 unsigned bytes: represented as 246 223 0
      * 246 -> 1 1 1 1 0 1 1 0
      * 223 -> 1 1 0 1 1 1 1 1
@@ -208,6 +225,10 @@ final class SignalFormatter {
      *
      * Two complement form where values greater than 2^9 - 1 = 511 are negative
      * 10 bits goes from 0 to 1024 for unsigned -512 to 511 for signed
+     *
+     * @param data            the raw data of the signals samples
+     * @param numberOfSamples the number of samples
+     * @return a formatted array of samples
      */
     public static int[] toFormat310(byte[] data, int numberOfSamples) {
         int index = 0;
@@ -242,18 +263,22 @@ final class SignalFormatter {
     }
 
     /**
-     * Convert sampling data to format 311
+     * Convert sampling data to format 311 each sample is represented by a 10-bit
+     * two’s-complement amplitude. Three samples are bit-packed into a 32-bit
+     * integer as for format 310, but the layout is different. Each set of four
+     * bytes is stored in little-endian order (least significant byte first, most
+     * significant byte last). The first sample is obtained from the 10 least
+     * significant bits of the 32-bit integer, the second is obtained from the next
+     * 10 bits, the third from the next 10 bits, and the two most significant bits
+     * are unused. This process is repeated for each successive set of three
+     * samples.
      *
-     * Each sample is represented by a 10-bit two’s-complement amplitude. Three
-     * samples are bit-packed into a 32-bit integer as for format 310, but the
-     * layout is different. Each set of four bytes is stored in little-endian order
-     * (least significant byte first, most significant byte last). The first sample
-     * is obtained from the 10 least significant bits of the 32-bit integer, the
-     * second is obtained from the next 10 bits, the third from the next 10 bits,
-     * and the two most significant bits are unused. This process is repeated for
-     * each successive set of three samples.
-     *
+     * Two complement form where values greater than 2^9 - 1 = 511 are negative
      * 10 bits goes from 0 to 1024 for unsigned -512 to 511 for signed
+     * 
+     * @param data            the raw data of the signals samples
+     * @param numberOfSamples the number of samples
+     * @return a formatted array of samples
      */
     public static int[] toFormat311(byte[] data, int numberOfSamples) {
         int index = 0;
