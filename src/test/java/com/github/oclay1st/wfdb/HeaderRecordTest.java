@@ -1,4 +1,4 @@
-package dev.oclay.wfdb;
+package com.github.oclay1st.wfdb;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

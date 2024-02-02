@@ -1,4 +1,4 @@
-package dev.oclay.wfdb;
+package com.github.oclay1st.wfdb;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
