@@ -112,6 +112,7 @@ final class SignalFormatter {
         ShortBuffer buffer = ByteBuffer.wrap(data).order(ByteOrder.BIG_ENDIAN).asShortBuffer();
         while (buffer.hasRemaining()) {
             samples[index] = buffer.get();
+            index++;
         }
         return samples;
     }
@@ -305,7 +306,6 @@ final class SignalFormatter {
             int thirdSample = (firstSixBitsOfFourthByte << 4) + firstFourBitsOfThirdByte;
             // Convert to two complement amplitude
             samples[index + 2] = thirdSample > 511 ? thirdSample - 1024 : thirdSample;
-            // Convert to two complement amplitude
             index += 3;
         }
         return samples;

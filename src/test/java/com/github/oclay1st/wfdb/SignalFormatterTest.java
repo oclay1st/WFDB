@@ -21,10 +21,10 @@ class SignalFormatterTest {
     @Test
     @DisplayName("Should parse signal samples with format 16")
     void shouldParseFormat16() {
-        byte[] data = { 2, -128, 14, -126 };
+        byte[] data = { 1, 2, 3, 4 };
         int[] formattedSamples = SignalFormatter.toFormat16(data, 2);
         assertNotNull(formattedSamples);
-        assertArrayEquals(new int[] { -32766, -32242 }, formattedSamples);
+        assertArrayEquals(new int[] {513, 1027}, formattedSamples);
     }
 
     @Test
@@ -51,7 +51,7 @@ class SignalFormatterTest {
         byte[] data = { 4, 3, 2, 1 };
         int[] formattedSamples = SignalFormatter.toFormat61(data, 2);
         assertNotNull(formattedSamples);
-        assertArrayEquals(new int[] { 513, 0 }, formattedSamples);
+        assertArrayEquals(new int[] { 1027, 513 }, formattedSamples);
     }
 
     @Test
