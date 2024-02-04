@@ -2,7 +2,7 @@
 This library is pure Java implementation of the Waveform Database(WFDB) specifications.
 
 ## What is WFDB?
-Waveform Database (WFDB) is a set of file standards designed for reading and storing physiologic signal data, and associated annotations backed by MIT-LCP members.
+[Waveform Database (WFDB)](https://wfdb.io) is a set of file standards designed for reading and storing physiologic signal data, and associated annotations backed by MIT-LCP members.
 
 ## Features:
 - [x] Parse WFDB records
@@ -14,8 +14,17 @@ Waveform Database (WFDB) is a set of file standards designed for reading and sto
 
 ## Installation using Maven
 
+```xml
+
+<dependency>
+  <groupId>com.github.oclay1st</groupId>
+  <artifactId>wfdb</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
 ## Usage
-To parse a single segement record:
+To parse a single segment record:
 
 Path path = Path.of(...);
 SingleSegementRecord record = SingleSegmentRecord.parse(path);
@@ -25,4 +34,5 @@ Path path = Path.of(...);
 MultiSegmentRecord record = MultiSegmentRecord.parse(path);
 
 ## Contributing
-Feel free to open a issue and create a PR if you find something wrong
+Checkout for the missing features and feel free to open a issue and create a PR if you find something wrong.
+
