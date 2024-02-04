@@ -25,13 +25,16 @@ This library is pure Java implementation of the Waveform Database(WFDB) specific
 
 ## Usage
 To parse a single segment record:
-
+```
 Path path = Path.of(...);
 SingleSegementRecord record = SingleSegmentRecord.parse(path);
+```
 
 To parse a multi-segment record:
+```
 Path path = Path.of(...);
 MultiSegmentRecord record = MultiSegmentRecord.parse(path);
+```
 
 ## Contributing
 Checkout for the missing features and feel free to open a issue and create a PR if you find something wrong.
