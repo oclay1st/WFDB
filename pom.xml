@@ -10,7 +10,7 @@
 
     <groupId>com.github.oclay1st</groupId>
     <artifactId>wfdb</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <developers>
         <developer>
