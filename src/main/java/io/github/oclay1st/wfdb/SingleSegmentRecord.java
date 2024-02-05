@@ -1,4 +1,4 @@
-package com.github.oclay1st.wfdb;
+package io.github.oclay1st.wfdb;
 
 import static java.util.stream.Collectors.groupingBy;
 
