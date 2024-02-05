@@ -8,7 +8,7 @@
     <description>A pure Java implementation of the Waveform Database(WFDB) specifications</description>
     <url>https://github.com/oclay1st/WFDB</url>
 
-    <groupId>com.github.oclay1st</groupId>
+    <groupId>io.github.oclay1st</groupId>
     <artifactId>wfdb</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
