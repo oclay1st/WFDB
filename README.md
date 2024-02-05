@@ -1,5 +1,5 @@
 # Java WFDB Library
-This library is a pure Java implementation of the Waveform Database(WFDB) specifications.
+This library is a pure Java implementation of the Waveform Database(WFDB) [specifications](https://github.com/wfdb/wfdb-spec).
 
 ## What is WFDB?
 [Waveform Database (WFDB)](https://wfdb.io) is a set of file standards designed for reading and storing physiologic signal data, and associated annotations backed by MIT-LCP members.
