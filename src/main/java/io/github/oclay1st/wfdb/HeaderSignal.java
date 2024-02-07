@@ -1,5 +1,6 @@
 package io.github.oclay1st.wfdb;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -88,7 +89,7 @@ public record HeaderSignal(String filename, int format, @Deprecated int samplesP
      * The samples per frame value
      * 
      * @deprecated recent versions of the spec ignore this field
-     * @return the sample per frame value  
+     * @return the sample per frame value
      */
     @Deprecated
     public int samplesPerFrame() {
@@ -99,7 +100,7 @@ public record HeaderSignal(String filename, int format, @Deprecated int samplesP
      * The skew value
      * 
      * @deprecated recent versions of the spec ignore this field
-     * @return the skew value  
+     * @return the skew value
      */
     @Deprecated
     public int skew() {
@@ -110,7 +111,7 @@ public record HeaderSignal(String filename, int format, @Deprecated int samplesP
      * The byte offset
      * 
      * @deprecated recent versions of the spec ignore this field
-     * @return the bytes offset value  
+     * @return the bytes offset value
      */
     @Deprecated
     public int bytesOffset() {
@@ -126,6 +127,19 @@ public record HeaderSignal(String filename, int format, @Deprecated int samplesP
     @Deprecated
     public int baseline() {
         return baseline;
+    }
+
+    /**
+     * Calculate the checksum of a given array of signal samples
+     * The cheksum is a 16bit signed value: 2^16 = 65536
+     * 
+     * @param samples the array of samples
+     * @return the checksum value
+     */
+    public static int calculateChecksum(int[] samples) {
+        int sum = Arrays.stream(samples).sum();
+        int unsignedChecksum = Math.floorMod(sum, 65536);
+        return unsignedChecksum > 32767 ? unsignedChecksum - 65536 : unsignedChecksum;
     }
 
 }

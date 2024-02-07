@@ -56,4 +56,12 @@ public class HeaderSignalTest {
         assertNotEquals(headerSignal.adcZero(), headerSignal.baseline());
     }
 
+    @Test
+    @DisplayName("Should calculate the checksum of a signal samples")
+    void shouldCalcaulateTheChecksum() {
+        int[] samples = { 2, 4, 6, 8 };
+        int checksum = HeaderSignal.calculateChecksum(samples);
+        assertEquals(20, checksum);
+    }
+
 }
