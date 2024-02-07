@@ -7,8 +7,10 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Represents a single-segment record
@@ -17,6 +19,20 @@ import java.util.Map;
  * @param samplesPerSingal the array of samples per signal
  */
 public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPerSingal) {
+
+    public SingleSegmentRecord {
+        for (int i = 0; i < header.headerSignals().length; i++) {
+            HeaderSignal headerSignal = header.headerSignals()[i];
+            int[] samplesOfSignal = samplesPerSingal[i];
+            if (headerSignal.initialValue() != samplesOfSignal[0]) {
+                throw new IllegalStateException("Missmatch initial value on sigal: " + headerSignal.description());
+            }
+            int calculatedChecksum = HeaderSignal.calculateChecksum(samplesOfSignal);
+            if (headerSignal.checksum() != calculatedChecksum) {
+                throw new IllegalStateException("Missmatch checksum on signal: " + headerSignal.description());
+            }
+        }
+    }
 
     /**
      * Parse a single-segment record given a path
@@ -37,7 +53,7 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
             int samplesPerSignalIndex = 0;
             // Group the signals by filename
             Map<String, List<HeaderSignal>> recordFileMap = Arrays.stream(header.headerSignals())
-                    .collect(groupingBy(HeaderSignal::filename));
+                    .collect(groupingBy(HeaderSignal::filename, LinkedHashMap::new, Collectors.toList()));
             // Parse the signals samples in each file
             for (Map.Entry<String, List<HeaderSignal>> entry : recordFileMap.entrySet()) {
                 Path samplesFilePath = recordPath.resolveSibling(entry.getKey());
@@ -45,7 +61,7 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
                 int numberOfSamples = headerSignals.length * numberOfSamplesPerSignal;
                 int[][] samples = parseSamples(samplesFilePath, headerSignals, numberOfSamples);
                 System.arraycopy(samples, 0, samplesPerSignal, samplesPerSignalIndex, samples.length);
-                samplesPerSignalIndex += samples.length - 1;
+                samplesPerSignalIndex += samples.length;
             }
             return new SingleSegmentRecord(header, samplesPerSignal);
         }
