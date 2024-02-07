@@ -25,7 +25,7 @@ final class SignalFormatter {
      * samples from the same signal (otherwise signals with baselines which differ
      * by 128 units or more could not be represented this way).
      *
-     * @param source            the raw data of the signals samples
+     * @param source          the raw data of the signals samples
      * @param numberOfSamples the number of samples
      * @param headerSignals   the array of signals header
      * @return a formatted array of samples
@@ -48,7 +48,7 @@ final class SignalFormatter {
      * 16-bit two’s complement amplitude stored least significant byte first. Any
      * unused high-order bits are sign-extended from the most significant bit.
      *
-     * @param source            the raw data of the signals samples
+     * @param source          the raw data of the signals samples
      * @param numberOfSamples the number of samples
      * @return a formatted array of samples
      */
@@ -67,7 +67,7 @@ final class SignalFormatter {
      * Convert sampling data to format 24 in where each sample is represented by a
      * 24-bit two’s complement amplitude stored least significant byte first.
      *
-     * @param source            the raw data of the signals samples
+     * @param source          the raw data of the signals samples
      * @param numberOfSamples the number of samples
      * @return a formatted array of samples
      */
@@ -89,7 +89,7 @@ final class SignalFormatter {
      * Convert sampling data to format 32 in where each sample is represented by a
      * 32-bit two’s complement amplitude stored least significant byte first.
      *
-     * @param source            the raw data of the signals samples
+     * @param source          the raw data of the signals samples
      * @param numberOfSamples the number of samples
      * @return a formatted array of samples
      */
@@ -103,7 +103,7 @@ final class SignalFormatter {
      * Convert sampling data to format 61 in where each sample is represented by a
      * 16-bit two’s complement amplitude stored most significant byte first.
      *
-     * @param source            the raw data of the signals samples
+     * @param source          the raw data of the signals samples
      * @param numberOfSamples the number of samples
      * @return a formatted array of samples
      */
@@ -123,7 +123,7 @@ final class SignalFormatter {
      * 8-bit amplitude in offset binary form (i.e., 128 must be subtracted from each
      * unsigned byte to obtain a signed 8-bit amplitude).
      *
-     * @param source            the raw data of the signals samples
+     * @param source          the raw data of the signals samples
      * @param numberOfSamples the number of samples
      * @return a formatted array of samples
      */
@@ -141,7 +141,7 @@ final class SignalFormatter {
      * each unsigned byte pair to obtain a signed 16-bit amplitude). As for format
      * 16, the least significant byte of each pair is first.
      *
-     * @param source            the raw data of the signals samples
+     * @param source          the raw data of the signals samples
      * @param numberOfSamples the number of samples
      * @return a formatted array of samples
      */
@@ -165,8 +165,8 @@ final class SignalFormatter {
      * (which contains the remaining 8 bits of the second sample). The process is
      * repeated for each successive pair of samples.
      *
-     * NOTE: In the current implementation an extra value is added to the data array
-     * in order to support odd samples of data
+     * NOTE: In the current implementation two extra values is added to the data
+     * array in order to support odd samples of data
      *
      * Given 3 unsigned bytes : represented as 244 15 78
      * 244 -> 1 1 1 1 0 1 0 0
@@ -184,10 +184,12 @@ final class SignalFormatter {
      * @return a formatted array of samples
      */
     public static int[] toFormat212(byte[] source, int numberOfSamples) {
-        byte[] data = Arrays.copyOf(source, source.length + 1);
-        int[] samples = new int[numberOfSamples + 1];
+        int distribution = 3;
+        int samplesPerDistribution = 2;
+        byte[] data = Arrays.copyOf(source, source.length + (distribution - source.length % distribution));
+        int[] samples = new int[numberOfSamples + samplesPerDistribution];
         int index = 0;
-        for (int i = 0; i < data.length; i += 3) {
+        for (int i = 0; i < data.length; i += distribution) {
             // first sample
             int firstByteUnsigned = data[i] & 0xFF;
             int secondByteUnsigned = data[i + 1] & 0xFF;
@@ -202,7 +204,7 @@ final class SignalFormatter {
             // Convert to two complement amplitude
             samples[index + 1] = secondSample > 2047 ? secondSample - 4096 : secondSample;
             // increment array index
-            index += 2;
+            index += samplesPerDistribution;
         }
         return Arrays.copyOf(samples, numberOfSamples);
     }
@@ -217,7 +219,7 @@ final class SignalFormatter {
      * two byte pairs (those from the first byte pair are the least significant bits
      * of the third sample).
      *
-     * NOTE: In the current implementation two extra values is added to the data
+     * NOTE: In the current implementation three extra values is added to the data
      * array in order to support odd samples of data
      *
      * Given 3 unsigned bytes: represented as 246 223 0
@@ -239,10 +241,12 @@ final class SignalFormatter {
      * @return a formatted array of samples
      */
     public static int[] toFormat310(byte[] source, int numberOfSamples) {
-        byte[] data = Arrays.copyOf(source, source.length + 2);
-        int[] samples = new int[numberOfSamples + 2];
+        int distribution = 4;
+        int samplesPerDistribution = 3;
+        byte[] data = Arrays.copyOf(source, source.length + (distribution - source.length % distribution));
+        int[] samples = new int[numberOfSamples + samplesPerDistribution];
         int index = 0;
-        for (int i = 0; i < data.length; i += 4) {
+        for (int i = 0; i < data.length; i += distribution) {
             // first sample
             int firstByteUnsigned = data[i] & 0xFF;
             int secondByteUnsigned = data[i + 1] & 0xFF;
@@ -265,7 +269,7 @@ final class SignalFormatter {
             int thirdSample = (firstFiveBitsOfFourthByte << 5) + firstFiveBitsOfSecondByte;
             samples[index + 2] = thirdSample > 511 ? thirdSample - 1024 : thirdSample;
             // Convert to two complement amplitude
-            index += 3;
+            index += samplesPerDistribution;
         }
         return Arrays.copyOf(samples, numberOfSamples);
     }
@@ -281,21 +285,23 @@ final class SignalFormatter {
      * are unused. This process is repeated for each successive set of three
      * samples.
      *
-     * NOTE: In the current implementation two extra values is added to the data
+     * NOTE: In the current implementation three extra values is added to the data
      * array in order to support odd samples of data
      *
      * Two complement form where values greater than 2^9 - 1 = 511 are negative
      * 10 bits goes from 0 to 1024 for unsigned -512 to 511 for signed
      * 
-     * @param source            the raw data of the signals samples
+     * @param source          the raw data of the signals samples
      * @param numberOfSamples the number of samples
      * @return a formatted array of samples
      */
     public static int[] toFormat311(byte[] source, int numberOfSamples) {
-        byte[] data = Arrays.copyOf(source, source.length + 2);
-        int[] samples = new int[numberOfSamples + 2];
+        int distribution = 4;
+        int samplesPerDistribution = 3;
+        byte[] data = Arrays.copyOf(source, source.length + (distribution - source.length % distribution));
+        int[] samples = new int[numberOfSamples + samplesPerDistribution];
         int index = 0;
-        for (int i = 0; i < data.length; i += 4) {
+        for (int i = 0; i < data.length; i += distribution) {
             int firstByteUnsigned = data[i] & 0xFF;
             int secondByteUnsigned = data[i + 1] & 0xFF;
             int lastTwoBitsOfSecondByte = secondByteUnsigned & 0x03;
@@ -316,7 +322,7 @@ final class SignalFormatter {
             int thirdSample = (firstSixBitsOfFourthByte << 4) + firstFourBitsOfThirdByte;
             // Convert to two complement amplitude
             samples[index + 2] = thirdSample > 511 ? thirdSample - 1024 : thirdSample;
-            index += 3;
+            index += samplesPerDistribution;
         }
         return Arrays.copyOf(samples, numberOfSamples);
     }

@@ -96,7 +96,7 @@ class SignalFormatterTest {
         byte[] data = { 1, 2, 3, 4 };
         int[] formattedSamples = SignalFormatter.toFormat311(data, 3);
         assertNotNull(formattedSamples);
-        assertArrayEquals(new int[] { -511, 192, 16 }, formattedSamples);
+        assertArrayEquals(new int[] { -511, 192, 64 }, formattedSamples);
     }
 
 }
