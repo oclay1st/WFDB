@@ -27,8 +27,7 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
             if (headerSignal.initialValue() != samplesOfSignal[0]) {
                 throw new IllegalStateException("Missmatch initial value on sigal: " + headerSignal.description());
             }
-            int calculatedChecksum = HeaderSignal.calculateChecksum(samplesOfSignal);
-            if (headerSignal.checksum() != calculatedChecksum) {
+            if (!headerSignal.matchChecksum(samplesOfSignal)) {
                 throw new IllegalStateException("Missmatch checksum on signal: " + headerSignal.description());
             }
         }
