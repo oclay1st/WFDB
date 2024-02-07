@@ -130,10 +130,10 @@ public record HeaderSignal(String filename, int format, @Deprecated int samplesP
     }
 
     /**
-     * Deterimine if the given array of samples match a cheksum
+     * Check if the given array of samples match the checksum. Both, signed and
+     * unsigned checksum are currently accepted
      *
      * @param samples the array of samples
-     * @param cheksum the checksum to match
      * @return true if the checksum matches, otherwise false
      */
     public boolean matchChecksum(int[] samples) {
@@ -144,7 +144,7 @@ public record HeaderSignal(String filename, int format, @Deprecated int samplesP
 
     /**
      * Calculate the checksum of a given array of signal samples
-     * The cheksum is a 16bit signed value: 2^16 = 65536
+     * The checksum is a 16bit signed value: 2^16 = 65536
      * 
      * @param samples the array of samples
      * @return the checksum value
