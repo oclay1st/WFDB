@@ -20,7 +20,7 @@ This library is a pure Java implementation of the Waveform Database(WFDB) [speci
 <dependency>
   <groupId>com.github.oclay1st</groupId>
   <artifactId>wfdb</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
