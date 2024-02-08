@@ -55,7 +55,7 @@ jobs:
         AUTO_RELEASE_AFTER_CLOSE: ${{ env.auto_release }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         OSSRH_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
-        OSSRH_PASSWORD: ${{ secrets.MAVEN_CENRAL_TOKEN }}
+        OSSRH_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
         SIGN_KEY_PASS: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
 
