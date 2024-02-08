@@ -28,7 +28,7 @@
     <scm>
         <connection>scm:git:${project.scm.url}</connection>
         <developerConnection>scm:git:${project.scm.url}</developerConnection>
-        <url>git@github.com:oclay1st/WFDB.git</url>
+        <url>https://github.com/oclay1st/WFDB.git</url>
         <tag>HEAD</tag>
     </scm>
 
