@@ -8,7 +8,7 @@
 
     <groupId>io.github.oclay1st</groupId>
     <artifactId>wfdb</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.1-SNAPSHOT</version>
 
     <developers>
         <developer>
@@ -28,7 +28,7 @@
     <scm>
         <connection>scm:git:${project.scm.url}</connection>
         <developerConnection>scm:git:${project.scm.url}</developerConnection>
-        <url>git@github.com:oclay1st/WFDB.git</url>
+        <url>https://github.com/oclay1st/WFDB.git</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -74,8 +74,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
                     <version>3.1.0</version>
-                    <configuration>
-                        <passphraseServerId>gpg</passphraseServerId>
+                     <configuration>
+                        <gpgArguments>
+                            <arg>--pinentry-mode</arg>
+                            <arg>loopback</arg>
+                        </gpgArguments>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -86,8 +89,7 @@
                     <configuration>
                         <publishingServerId>central</publishingServerId>
                         <tokenAuth>true</tokenAuth>
-                        <autoPublish>false</autoPublish>
-                        <skipPublishing>true</skipPublishing>
+                        <autoPublish>true</autoPublish>
                         <checksums>required</checksums>
                     </configuration>
                 </plugin>
@@ -99,6 +101,7 @@
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <useReleaseProfile>false</useReleaseProfile>
                         <releaseProfiles>release</releaseProfiles>
+                        <scmCommentPrefix>[ci-cd]</scmCommentPrefix>
                     </configuration>
                 </plugin>
             </plugins>

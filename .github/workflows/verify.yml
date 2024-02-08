@@ -1,0 +1,29 @@
+name: Project Build Integrity
+
+on:
+  push:
+    branches: [ 'main' ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Maven Central Repository
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        java-package: 'jdk'
+        cache: 'maven'
+    - name: Build With Maven
+      run: |
+        mvn -B verify
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+     
