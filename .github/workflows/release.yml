@@ -11,11 +11,13 @@ on:
         description: "Snapshot version"
         required: true
         default: ""
-permissions:
-  contents: write
+
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
     steps:
     - uses: actions/checkout@v4
     - name: Set up Maven Central Repository
@@ -51,6 +53,7 @@ jobs:
           -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
       env:
         AUTO_RELEASE_AFTER_CLOSE: ${{ env.auto_release }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Artifact Name
       shell: bash
       run: |
