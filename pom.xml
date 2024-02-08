@@ -89,8 +89,7 @@
                     <configuration>
                         <publishingServerId>central</publishingServerId>
                         <tokenAuth>true</tokenAuth>
-                        <autoPublish>false</autoPublish>
-                        <skipPublishing>true</skipPublishing>
+                        <autoPublish>true</autoPublish>
                         <checksums>required</checksums>
                     </configuration>
                 </plugin>
@@ -102,6 +101,7 @@
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <useReleaseProfile>false</useReleaseProfile>
                         <releaseProfiles>release</releaseProfiles>
+                        <scmCommentPrefix>[ci-cd]</scmCommentPrefix>
                     </configuration>
                 </plugin>
             </plugins>
