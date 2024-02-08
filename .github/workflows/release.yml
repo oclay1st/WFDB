@@ -1,3 +1,4 @@
+
 name: Maven Package Release
 
 on:
@@ -28,10 +29,10 @@ jobs:
         java-package: 'jdk'
         cache: 'maven'
         server-id: central
-        server-username: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
-        server-password: ${{ secrets.MAVEN_CENRAL_TOKEN }}
+        server-username: OSSRH_USERNAME 
+        server-password: OSSRH_PASSWORD 
         gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-        gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        gpg-passphrase: SIGN_KEY_PASS 
     - name: Verify Whether a Release is Ready
       id: release
       shell: bash
@@ -54,6 +55,10 @@ jobs:
       env:
         AUTO_RELEASE_AFTER_CLOSE: ${{ env.auto_release }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        OSSRH_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+        OSSRH_PASSWORD: ${{ secrets.MAVEN_CENRAL_TOKEN }}
+        SIGN_KEY_PASS: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
     - name: Artifact Name
       shell: bash
       run: |
@@ -75,3 +80,4 @@ jobs:
       with:
         event-type: release-notes
         client-payload: '{"auto_release": "${{ env.auto_release }}", "artifact": "${{ env.artifact_name }}-${{ env.sha_short }}"}'
+       client-payload: '{"auto_release": "${{ env.auto_release }}", "artifact": "${{ env.artifact_name }}-${{ env.sha_short }}"}'
