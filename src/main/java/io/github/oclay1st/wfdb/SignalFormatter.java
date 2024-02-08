@@ -45,7 +45,7 @@ final class SignalFormatter {
 
     /**
      * Convert sampling data to format 16 in where each sample is represented by a
-     * 16-bit two’s complement amplitude stored least significant byte first. Any
+     * 16-bit two’s complement amplitude stored the least significant byte first. Any
      * unused high-order bits are sign-extended from the most significant bit.
      *
      * @param source          the raw data of the signals samples
@@ -65,7 +65,7 @@ final class SignalFormatter {
 
     /**
      * Convert sampling data to format 24 in where each sample is represented by a
-     * 24-bit two’s complement amplitude stored least significant byte first.
+     * 24-bit two’s complement amplitude stored the least significant byte first.
      *
      * @param source          the raw data of the signals samples
      * @param numberOfSamples the number of samples
@@ -87,7 +87,7 @@ final class SignalFormatter {
 
     /**
      * Convert sampling data to format 32 in where each sample is represented by a
-     * 32-bit two’s complement amplitude stored least significant byte first.
+     * 32-bit two’s complement amplitude stored the least significant byte first.
      *
      * @param source          the raw data of the signals samples
      * @param numberOfSamples the number of samples

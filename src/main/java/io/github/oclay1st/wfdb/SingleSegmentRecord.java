@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,19 +17,19 @@ import java.util.stream.Collectors;
  * Represents a single-segment record
  * 
  * @param header           the single-segment header {@link SingleSegmentHeader}
- * @param samplesPerSingal the array of samples per signal
+ * @param samplesPerSignal the array of samples per signal
  */
-public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPerSingal) {
+public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPerSignal) {
 
     public SingleSegmentRecord {
         for (int i = 0; i < header.headerSignals().length; i++) {
             HeaderSignal headerSignal = header.headerSignals()[i];
-            int[] samplesOfSignal = samplesPerSingal[i];
+            int[] samplesOfSignal = samplesPerSignal[i];
             if (headerSignal.initialValue() != samplesOfSignal[0]) {
-                throw new IllegalStateException("Missmatch initial value on sigal: " + headerSignal.description());
+                throw new IllegalStateException("Mismatched initial value on signal: " + headerSignal.description());
             }
             if (!headerSignal.matchChecksum(samplesOfSignal)) {
-                throw new IllegalStateException("Missmatch checksum on signal: " + headerSignal.description());
+                throw new IllegalStateException("Mismatched checksum on signal: " + headerSignal.description());
             }
         }
     }
@@ -125,8 +126,10 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
      *
      * @return the value of the time in seconds
      */
-    public int time() {
-        return (int) (header.headerRecord().numberOfSamplesPerSignal() / header.headerRecord().samplingFrequency());
+    public Duration durationTime() {
+        int seconds = (int) (header.headerRecord().numberOfSamplesPerSignal()
+                / header.headerRecord().samplingFrequency());
+        return Duration.ofSeconds(seconds);
     }
 
 }
