@@ -86,7 +86,8 @@
                     <configuration>
                         <publishingServerId>central</publishingServerId>
                         <tokenAuth>true</tokenAuth>
-                        <autoPublish>true</autoPublish>
+                        <autoPublish>false</autoPublish>
+                        <skipPublishing>true</skipPublishing>
                         <checksums>required</checksums>
                     </configuration>
                 </plugin>
