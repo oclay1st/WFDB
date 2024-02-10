@@ -37,8 +37,8 @@ public class SingleSegmentHeaderTest {
         assertEquals(100, header.headerRecord().samplingFrequency());
         assertEquals(1000, header.headerRecord().numberOfSamplesPerSignal());
         assertEquals("000006.dat", header.headerSignals()[0].filename());
-        assertEquals(16, header.headerSignals()[0].format());
-        assertEquals("mV", header.headerSignals()[0].units());
+        assertEquals(SignalFormat.FORMAT_16, header.headerSignals()[0].format());
+        assertEquals(SignalUnit.MILLIVOLT, header.headerSignals()[0].unit());
         assertEquals(755, header.headerSignals()[0].checksum());
         assertEquals("ii", header.headerSignals()[0].description());
         headerInput.close();
@@ -60,8 +60,8 @@ public class SingleSegmentHeaderTest {
         assertEquals(500, header.headerRecord().samplingFrequency());
         assertEquals(5000, header.headerRecord().numberOfSamplesPerSignal());
         assertEquals("16.dat", header.headerSignals()[0].filename());
-        assertEquals(16, header.headerSignals()[0].format());
-        assertEquals("mV", header.headerSignals()[0].units());
+        assertEquals(SignalFormat.FORMAT_16, header.headerSignals()[0].format());
+        assertEquals(SignalUnit.MILLIVOLT, header.headerSignals()[0].unit());
         assertEquals(3038, header.headerSignals()[0].checksum());
         assertEquals("i", header.headerSignals()[0].description());
         headerInput.close();
