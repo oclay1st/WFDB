@@ -17,12 +17,15 @@ import java.util.Arrays;
 public record MultiSegmentHeader(HeaderRecord headerRecord, HeaderSegment[] headerSegments) {
 
     /**
-     * Parse the multi-segment header from an input form
-     * As an example of the header file text:
+     * Parse the multi-segment header from an input form.
+     *
+     * <pre>
+     * # As an example of the header file text:
      * multi/3 2 360 45000
      * 100s 21600
      * null 1800
      * 100s 21600
+     * </pre>
      *
      * @param input an {@link InputStream} of the header info
      * @return a new {@link MultiSegmentHeader} instance
