@@ -16,10 +16,13 @@ public record HeaderSegment(String name, int numberOfSamplesPerSignal) {
             \\s*(?<numberOfSamplesPerSignal>\\d*)""");
 
     /**
-     * Parse the header segment for a text line
-     * As an example the text line may look like:
+     * Parse the header segment for a text line.
+     * 
+     * <pre>
+     * # As an example the text line may look like:
      * 100s 21600
-     *
+     * </pre>
+     * 
      * @param text the text that represents the segment info
      * @return a new {@link HeaderSegment} instance
      * @throws ParseException if the text can't be parsed
