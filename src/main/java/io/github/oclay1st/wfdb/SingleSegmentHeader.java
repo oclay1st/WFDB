@@ -15,15 +15,18 @@ import java.util.Arrays;
 public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] headerSignals) {
 
     /**
-     * Parse the single-segment header from an input form
-     * As an example of the header file text:
+     * Parse the single-segment header from an input form.
+     * 
+     * <pre>
+     * # Example of the header file text:
      * 100 2 360 650000 0:0:0 0/0/0
      * 100.dat 212 200 11 1024 995 -22131 0 MLII
      * 100.dat 212 200 11 1024 1011 20052 0 V5
      * 
      * # 69 M 1085 1629 x1
      * # Aldomet, Inderal
-     * 
+     * </pre>
+     *
      * @param input an {@link InputStream} of the header info
      * @return a new {@link SingleSegmentHeader} instance
      * @throws IOException    if the input is invalid
@@ -61,9 +64,9 @@ public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] head
     }
 
     /**
-     * Check if all the header signals have the same signal samples file
+     * Check if all the header signals have the same signal samples file.
      *
-     * @return true if all header signal match, otherwise false
+     * @return true if all header signal match, otherwise false.
      */
     public boolean hasSingleSamplesSource() {
         return Arrays.stream(headerSignals)
