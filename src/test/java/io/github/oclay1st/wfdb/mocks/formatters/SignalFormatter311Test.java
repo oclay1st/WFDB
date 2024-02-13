@@ -3,6 +3,7 @@ package io.github.oclay1st.wfdb.mocks.formatters;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,8 +16,8 @@ import io.github.oclay1st.wfdb.mocks.MockHeaderSignal;
 class SignalFormatter311Test {
 
     @Test
-    @DisplayName("Should parse signal samples with format 311")
-    void shouldParseFormat311() {
+    @DisplayName("Should convert raw data to signal samples with format 311")
+    void shouldConvertFromRawDataToFormat311() {
         byte[] source = { 1, 2, 3, 4 };
         HeaderSignal signal = new MockHeaderSignal.Builder()
                 .format(SignalFormat.FORMAT_311)
@@ -29,4 +30,19 @@ class SignalFormatter311Test {
         assertArrayEquals(new int[] { -511, 192, 64 }, formattedSamples);
     }
 
+    @Test
+    @DisplayName("Should convert signal samples with format 311 to raw data")
+    @Disabled
+    void shouldConvertFromFormat311ToRawData() {
+        int[] samples = { -511, 192, 64 };
+        HeaderSignal signal = new MockHeaderSignal.Builder()
+                .format(SignalFormat.FORMAT_311)
+                .initialValue(-511)
+                .build();
+        HeaderSignal[] headerSignals = { signal };
+        SignalFormatter formatter = new SignalFormatter311();
+        byte[] formattedSamples = formatter.convertSamplesToBytes(samples, headerSignals);
+        assertNotNull(formattedSamples);
+        assertArrayEquals(new byte[] { 1, 2, 3, 4 }, formattedSamples);
+    }
 }
