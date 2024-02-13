@@ -42,7 +42,7 @@ public final class SignalFormatter16 implements SignalFormatter {
         for (int i = 0; i < samples.length; i++) {
             shortSamples[i] = (short) samples[i];
         }
-        ByteBuffer buffer = ByteBuffer.allocate(samples.length);
+        ByteBuffer buffer = ByteBuffer.allocate(samples.length * 2);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         buffer.asShortBuffer().put(shortSamples);
         return buffer.array();

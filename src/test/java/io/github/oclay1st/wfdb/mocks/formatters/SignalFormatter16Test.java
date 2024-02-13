@@ -15,8 +15,8 @@ import io.github.oclay1st.wfdb.mocks.MockHeaderSignal;
 class SignalFormatter16Test {
 
     @Test
-    @DisplayName("Should parse signal samples with format 16")
-    void shouldParseFormat16() {
+    @DisplayName("Should convert raw data to signal samples with format 16")
+    void shouldConvertFromRawDataToFormat16() {
         byte[] source = { 1, 2, 3, 4 };
         HeaderSignal signal = new MockHeaderSignal.Builder()
                 .format(SignalFormat.FORMAT_16)
@@ -27,6 +27,21 @@ class SignalFormatter16Test {
         int[] formattedSamples = formatter.convertBytesToSamples(source, headerSignals);
         assertNotNull(formattedSamples);
         assertArrayEquals(new int[] { 513, 1027 }, formattedSamples);
+    }
+
+    @Test
+    @DisplayName("Should convert signal samples with format 16 to raw data")
+    void shouldConvertFromFormat16ToRawData() {
+        int[] samples = new int[] { 513, 1027 };
+        HeaderSignal signal = new MockHeaderSignal.Builder()
+                .format(SignalFormat.FORMAT_16)
+                .initialValue(513)
+                .build();
+        HeaderSignal[] headerSignals = { signal };
+        SignalFormatter16 formatter = new SignalFormatter16();
+        byte[] source = formatter.convertSamplesToBytes(samples, headerSignals);
+        assertNotNull(source);
+        assertArrayEquals(new byte[]{ 1, 2, 3, 4 }, source);
     }
 
 }
