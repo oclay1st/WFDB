@@ -63,14 +63,4 @@ public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] head
                 + Arrays.toString(headerSignals) + "]";
     }
 
-    /**
-     * Check if all the header signals have the same signal samples file.
-     *
-     * @return true if all header signal match, otherwise false.
-     */
-    public boolean hasSingleSamplesSource() {
-        return Arrays.stream(headerSignals)
-                .allMatch(s -> s.filename().equals(headerSignals[0].filename()));
-    }
-
 }
