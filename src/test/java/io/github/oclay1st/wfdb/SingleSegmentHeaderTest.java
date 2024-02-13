@@ -1,13 +1,17 @@
 package io.github.oclay1st.wfdb;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class SingleSegmentHeaderTest {
 
@@ -32,6 +36,7 @@ public class SingleSegmentHeaderTest {
         assertNotNull(header);
         assertNotNull(header.headerRecord());
         assertNotNull(header.headerSignals());
+        assertFalse(header.headerRecord().isMultiSegment());
         assertEquals(header.headerRecord().numberOfSignals(), header.headerSignals().length);
         assertEquals("000006", header.headerRecord().name());
         assertEquals(100, header.headerRecord().samplingFrequency());
@@ -55,6 +60,7 @@ public class SingleSegmentHeaderTest {
         assertNotNull(header);
         assertNotNull(header.headerSignals());
         assertNotNull(header.headerRecord());
+        assertFalse(header.headerRecord().isMultiSegment());
         assertEquals(header.headerSignals().length, header.headerRecord().numberOfSignals());
         assertEquals("16", header.headerRecord().name());
         assertEquals(500, header.headerRecord().samplingFrequency());
@@ -65,6 +71,14 @@ public class SingleSegmentHeaderTest {
         assertEquals(3038, header.headerSignals()[0].checksum());
         assertEquals("i", header.headerSignals()[0].description());
         headerInput.close();
+    }
+
+    @ParameterizedTest(name = ": {0}")
+    @ValueSource(strings = {  "**", "---" })
+    @DisplayName("Should throw ParseException for input")
+    void shouldThrowParseException(String headerText) {
+        ByteArrayInputStream headerInput = new ByteArrayInputStream(headerText.getBytes());
+        assertThrows(ParseException.class, () -> SingleSegmentHeader.parse(headerInput));
     }
 
 }

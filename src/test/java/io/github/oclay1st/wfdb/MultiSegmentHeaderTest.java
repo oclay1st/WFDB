@@ -50,6 +50,7 @@ public class MultiSegmentHeaderTest {
         MultiSegmentHeader header = MultiSegmentHeader.parse(headerInput);
         assertNotNull(header);
         assertNotNull(header.headerRecord());
+        assertTrue(header.headerRecord().isMultiSegment());
         assertEquals(3, header.headerSegments().length);
     }
 
