@@ -20,6 +20,11 @@ import java.util.stream.Collectors;
  */
 public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPerSignal) {
 
+    /**
+     * Constructs a new instance of SingleSegmentRecord where each signal samples
+     * must match the checksum and the inital values from the header info.
+     * {@inheritDoc}
+     */
     public SingleSegmentRecord {
         for (int i = 0; i < header.headerSignals().length; i++) {
             HeaderSignal headerSignal = header.headerSignals()[i];
@@ -81,7 +86,7 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
         try (InputStream samplesInputStream = Files.newInputStream(samplesFilePath)) {
             byte[] source = samplesInputStream.readAllBytes();
             SignalFormat format = headerSignals[0].format(); // All signals have the same format
-            int[] formattedSamples = format.convertToSamples(source, headerSignals);
+            int[] formattedSamples = format.formatter().convertBytesToSamples(source, headerSignals);
             int[][] samplesPerSignal = new int[headerSignals.length][numberOfSamples / headerSignals.length];
             int signalIndex;
             for (int i = 0; i < headerSignals.length; i++) {
