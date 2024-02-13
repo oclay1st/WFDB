@@ -39,10 +39,10 @@ public final class SignalFormatter24 implements SignalFormatter {
         int index = 0;
         byte[] source = new byte[samples.length * 3];
         for (int i = 0; i < samples.length; i++) {
-            source[index] = (byte) (samples[i] >> 16);
+            source[index] = (byte) samples[i];
             source[index + 1] = (byte) (samples[i] >> 8);
-            source[index + 2] = (byte) samples[i];
-            index++;
+            source[index + 2] = (byte) (samples[i] >> 16);
+            index += 3;
         }
         return source;
     }
