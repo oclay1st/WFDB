@@ -55,7 +55,7 @@ public enum SignalUnit {
     public static SignalUnit parse(String symbolText) throws ParseException {
         Objects.requireNonNull(symbolText);
         return Arrays.stream(VALUES)
-                .filter(unit -> unit.getSymbol().equalsIgnoreCase(symbolText))
+                .filter(unit -> unit.symbol().equalsIgnoreCase(symbolText))
                 .findFirst()
                 .orElseThrow(() -> new ParseException("Unsupported signal unit :" + symbolText));
     }
@@ -65,7 +65,7 @@ public enum SignalUnit {
      * 
      * @return the value of the symbol
      */
-    public String getSymbol() {
+    public String symbol() {
         return symbol;
     }
 
