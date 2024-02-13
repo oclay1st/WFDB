@@ -15,8 +15,8 @@ import io.github.oclay1st.wfdb.mocks.MockHeaderSignal;
 class SignalFormatter80Test {
 
     @Test
-    @DisplayName("Should parse signal samples with format 80")
-    void shouldParseFormat80() {
+    @DisplayName("Should convert raw data to signal samples with format 80")
+    void shouldConvertFromRawDataToFormat80() {
         byte[] source = { 1, 2, 3, 4 };
         HeaderSignal signal = new MockHeaderSignal.Builder()
                 .format(SignalFormat.FORMAT_80)
@@ -29,4 +29,19 @@ class SignalFormatter80Test {
         assertArrayEquals(new int[] { -127, -126, -125, -124 }, formattedSamples);
     }
 
+    @Test
+    @DisplayName("Should convert signal samples with format 80 to raw data")
+    void shouldConvertFromFormat80ToRawData() {
+        int[] samples = { -127, -126, -125, -124 };
+        HeaderSignal signal = new MockHeaderSignal.Builder()
+                .format(SignalFormat.FORMAT_80)
+                .initialValue(-127)
+                .build();
+        HeaderSignal[] headerSignals = { signal };
+        SignalFormatter formatter = new SignalFormatter80();
+        byte[] source = formatter.convertSamplesToBytes(samples, headerSignals);
+        assertNotNull(source);
+        assertArrayEquals(new byte[] { 1, 2, 3, 4 }, source);
+    }
+     
 }
