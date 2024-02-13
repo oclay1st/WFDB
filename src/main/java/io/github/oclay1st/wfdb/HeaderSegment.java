@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
 public record HeaderSegment(String name, int numberOfSamplesPerSignal) {
 
     private static final Pattern PATTERN = Pattern.compile("""
-            (?<name>[-\\w]+)\
-            \\s*(?<numberOfSamplesPerSignal>\\d*)""");
+            (?<name>[-\\w]*~?)\
+            \\s*(?<numberOfSamplesPerSignal>\\d+)""");
 
     /**
      * Parse the header segment for a text line.
