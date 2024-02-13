@@ -183,8 +183,9 @@ public enum SignalFormat {
      *
      * @param value the text value representation of the format
      * @return the {@link SignalFormat} instance
+     * @throws ParseException if the given value is invalid
      */
-    public static SignalFormat parse(String value) {
+    public static SignalFormat parse(String value) throws ParseException {
         return switch (value) {
             case "8" -> FORMAT_8;
             case "16" -> FORMAT_16;
@@ -196,7 +197,7 @@ public enum SignalFormat {
             case "212" -> FORMAT_212;
             case "310" -> FORMAT_310;
             case "311" -> FORMAT_311;
-            default -> throw new IllegalStateException("Invalid signal format");
+            default -> throw new ParseException("Invalid signal format");
         };
     }
 
