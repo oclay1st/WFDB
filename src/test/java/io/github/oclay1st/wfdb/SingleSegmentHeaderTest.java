@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class SingleSegmentHeaderTest {
+class SingleSegmentHeaderTest {
 
     @Test
     @DisplayName("Should parse the single segment header ignoring comments and blank lines")

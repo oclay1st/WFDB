@@ -1,23 +1,52 @@
 package io.github.oclay1st.wfdb;
 
+/**
+ * Utility reference
+ */
 public class Util {
 
     private Util() {
         throw new IllegalAccessError("Util class");
     }
 
+    /**
+     * Determine if a given text is empty, blank or null.
+     * 
+     * @param text the value of the text
+     * @return true if is empty, blank or null, otherwise false
+     */
     public static boolean isEmpty(String text) {
         return text == null || text.isBlank();
     }
 
+    /**
+     * Parse an integer or return a default value if the text is empty
+     * 
+     * @param text         the value of the text to parse
+     * @param defaultValue the default int value
+     * @return the parse value or default
+     */
     public static int parseOrDefault(String text, int defaultValue) {
         return isEmpty(text) ? defaultValue : Integer.parseInt(text);
     }
 
+    /**
+     * Parse a float or return a default value if the text is empty
+     * 
+     * @param text         the value of the text to parse
+     * @param defaultValue the default float value
+     * @return the parse value or default
+     */
     public static float parseOrDefault(String text, float defaultValue) {
         return isEmpty(text) ? defaultValue : Float.parseFloat(text);
     }
 
+    /**
+     * Cast a short array to an int array.
+     * 
+     * @param values the short array
+     * @return the int array
+     */
     public static int[] castArray(short[] values) {
         int[] newValues = new int[values.length];
         for (int i = 0; i < values.length; i++) {
@@ -26,6 +55,12 @@ public class Util {
         return newValues;
     }
 
+    /**
+     * Cast a int array to an short array.
+     * 
+     * @param values the int array
+     * @return the short array
+     */
     public static short[] castArray(int[] values) {
         short[] newValues = new short[values.length];
         for (int i = 0; i < values.length; i++) {

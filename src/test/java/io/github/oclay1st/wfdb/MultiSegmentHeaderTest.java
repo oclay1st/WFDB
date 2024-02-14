@@ -10,7 +10,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class MultiSegmentHeaderTest {
+class MultiSegmentHeaderTest {
 
     @Test
     @DisplayName("Should parse the multi segment header")

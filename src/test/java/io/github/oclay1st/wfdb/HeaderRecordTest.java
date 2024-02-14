@@ -9,7 +9,7 @@ import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class HeaderRecordTest {
+class HeaderRecordTest {
 
     @Test
     @DisplayName("Should parse the header record")

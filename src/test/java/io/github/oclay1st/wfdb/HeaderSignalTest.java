@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class HeaderSignalTest {
+class HeaderSignalTest {
 
     @Test
     @DisplayName("Should parse millivot as default unit if not present")
