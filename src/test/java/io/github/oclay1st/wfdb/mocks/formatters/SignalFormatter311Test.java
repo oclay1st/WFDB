@@ -3,7 +3,6 @@ package io.github.oclay1st.wfdb.mocks.formatters;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +31,6 @@ class SignalFormatter311Test {
 
     @Test
     @DisplayName("Should convert signal samples with format 311 to raw data")
-    @Disabled
     void shouldConvertFromFormat311ToRawData() {
         int[] samples = { -511, 192, 64 };
         HeaderSignal signal = new MockHeaderSignal.Builder()
@@ -41,8 +39,9 @@ class SignalFormatter311Test {
                 .build();
         HeaderSignal[] headerSignals = { signal };
         SignalFormatter formatter = new SignalFormatter311();
-        byte[] formattedSamples = formatter.convertSamplesToBytes(samples, headerSignals);
-        assertNotNull(formattedSamples);
-        assertArrayEquals(new byte[] { 1, 2, 3, 4 }, formattedSamples);
+        byte[] source = formatter.convertSamplesToBytes(samples, headerSignals);
+        assertNotNull(source);
+        assertArrayEquals(new byte[] { 1, 2, 3, 4 }, source);
     }
+
 }
