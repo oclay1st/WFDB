@@ -102,7 +102,6 @@
                         <useReleaseProfile>false</useReleaseProfile>
                         <releaseProfiles>release</releaseProfiles>
                         <scmCommentPrefix>[CI/CD] </scmCommentPrefix>
-                        <pushChanges>false</pushChanges>
                     </configuration>
                 </plugin>
             </plugins>
