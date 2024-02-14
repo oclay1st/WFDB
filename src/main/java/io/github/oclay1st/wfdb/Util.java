@@ -1,6 +1,6 @@
 package io.github.oclay1st.wfdb;
 
-class Util {
+public class Util {
 
     private Util() {
         throw new IllegalAccessError("Util class");
@@ -16,6 +16,22 @@ class Util {
 
     public static float parseOrDefault(String text, float defaultValue) {
         return isEmpty(text) ? defaultValue : Float.parseFloat(text);
+    }
+
+    public static int[] castArray(short[] values) {
+        int[] newValues = new int[values.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = values[i];
+        }
+        return newValues;
+    }
+
+    public static short[] castArray(int[] values) {
+        short[] newValues = new short[values.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = (short) values[i];
+        }
+        return newValues;
     }
 
 }
