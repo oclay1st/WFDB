@@ -15,6 +15,9 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
     steps:
     - uses: actions/checkout@v4
     - name: Set up Maven Central Repository
@@ -54,5 +57,3 @@ jobs:
         OSSRH_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
         OSSRH_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
         SIGN_KEY_PASS: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-
-
