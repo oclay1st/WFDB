@@ -22,7 +22,7 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
 
     /**
      * Constructs a new instance of SingleSegmentRecord where each signal samples
-     * must match the checksum and the inital values from the header info.
+     * must match the checksum and the initial values from the header info.
      * {@inheritDoc}
      */
     public SingleSegmentRecord {
