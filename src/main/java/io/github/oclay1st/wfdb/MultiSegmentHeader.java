@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Represent the info from a multi-segment header
@@ -63,4 +64,18 @@ public record MultiSegmentHeader(HeaderRecord headerRecord, HeaderSegment[] head
                 + Arrays.toString(headerSegments) + "]";
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof MultiSegmentHeader instance) {
+            return headerRecord.equals(instance.headerRecord) && Arrays.equals(headerSegments, instance.headerSegments);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(headerRecord);
+        result = 31 * result + Arrays.hashCode(headerSegments);
+        return result;
+    }
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Represents a single segment record header
@@ -63,4 +64,18 @@ public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] head
                 + Arrays.toString(headerSignals) + "]";
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof SingleSegmentHeader instance) {
+            return headerRecord.equals(instance.headerRecord) && Arrays.equals(headerSignals, instance.headerSignals);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(headerRecord);
+        result = 31 * result + Arrays.hashCode(headerSignals);
+        return result;
+    }
 }
