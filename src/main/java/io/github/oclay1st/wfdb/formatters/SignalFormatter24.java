@@ -38,10 +38,10 @@ public final class SignalFormatter24 implements SignalFormatter {
     public byte[] convertSamplesToBytes(int[] samples, HeaderSignal[] headerSignals) {
         int index = 0;
         byte[] source = new byte[samples.length * 3];
-        for (int i = 0; i < samples.length; i++) {
-            source[index] = (byte) samples[i];
-            source[index + 1] = (byte) (samples[i] >> 8);
-            source[index + 2] = (byte) (samples[i] >> 16);
+        for (int sample : samples) {
+            source[index] = (byte) sample;
+            source[index + 1] = (byte) (sample >> 8);
+            source[index + 2] = (byte) (sample >> 16);
             index += 3;
         }
         return source;

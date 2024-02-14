@@ -46,15 +46,15 @@ public final class SignalFormatter8 implements SignalFormatter {
     @Override
     public byte[] convertSamplesToBytes(int[] samples, HeaderSignal[] headerSignals) {
         byte[] source = new byte[samples.length];
-        int[] auxiliarSamples = new int[samples.length];
+        int[] intermediateSamples = new int[samples.length];
         for (int i = 0; i < headerSignals.length; i++) {
             for (int j = i; j < samples.length; j += headerSignals.length) {
-                auxiliarSamples[j] = samples[j] - headerSignals[i].initialValue();
+                intermediateSamples[j] = samples[j] - headerSignals[i].initialValue();
             }
         }
-        source[0] = (byte) auxiliarSamples[0];
-        for (int i = auxiliarSamples.length - 1; i > 0; i--) {
-            source[i] = (byte) (auxiliarSamples[i] - auxiliarSamples[i - 1]);
+        source[0] = (byte) intermediateSamples[0];
+        for (int i = intermediateSamples.length - 1; i > 0; i--) {
+            source[i] = (byte) (intermediateSamples[i] - intermediateSamples[i - 1]);
         }
         return source;
     }
