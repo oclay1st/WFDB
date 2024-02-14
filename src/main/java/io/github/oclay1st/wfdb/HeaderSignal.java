@@ -35,7 +35,7 @@ public record HeaderSignal(String filename, SignalFormat format, int samplesPerF
         float adcGain, int baseline, SignalUnit unit, int adcResolution, int adcZero, int initialValue, int checksum,
         int blockSize, String description) {
 
-    private final static Pattern PATTERN = Pattern.compile("""
+    private static final Pattern PATTERN = Pattern.compile("""
             (?<filename>~?[-\\w]*\\.?[\\w]*)
             \\s+(?<format>\\d+)
             x?(?<samplesPerFrame>\\d*)
@@ -49,7 +49,7 @@ public record HeaderSignal(String filename, SignalFormat format, int samplesPerF
             \\s*(?<initialValue>-?\\d*)
             \\s*(?<checksum>-?\\d*)
             \\s*(?<blockSize>\\d*)
-            \\s*(?<description>[\\S]?[^\\t\\n\\r\\f\\v]*)
+            \\s*(?<description>[\\S]?[^\t\r\f\\v]*)
             """.replaceAll("[\n\r]", ""));
 
     /**
