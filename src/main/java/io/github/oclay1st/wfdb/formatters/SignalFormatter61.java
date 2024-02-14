@@ -2,9 +2,9 @@ package io.github.oclay1st.wfdb.formatters;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
 
 import io.github.oclay1st.wfdb.HeaderSignal;
+import io.github.oclay1st.wfdb.Util;
 
 /**
  * Represents the signal formatter for format 61.
@@ -20,14 +20,9 @@ public final class SignalFormatter61 implements SignalFormatter {
      */
     @Override
     public int[] convertBytesToSamples(byte[] source, HeaderSignal[] headerSignals) {
-        int index = 0;
-        int[] samples = new int[source.length / 2];
-        ShortBuffer buffer = ByteBuffer.wrap(source).order(ByteOrder.BIG_ENDIAN).asShortBuffer();
-        while (buffer.hasRemaining()) {
-            samples[index] = buffer.get();
-            index++;
-        }
-        return samples;
+        short[] values = new short[source.length / 2];
+        ByteBuffer.wrap(source).order(ByteOrder.BIG_ENDIAN).asShortBuffer().get(values);
+        return Util.castArray(values);
     }
 
     /**
@@ -36,10 +31,7 @@ public final class SignalFormatter61 implements SignalFormatter {
      */
     @Override
     public byte[] convertSamplesToBytes(int[] samples, HeaderSignal[] headerSignals) {
-        short[] shortSamples = new short[samples.length];
-        for (int i = 0; i < samples.length; i++) {
-            shortSamples[i] = (short) samples[i];
-        }
+        short[] shortSamples = Util.castArray(samples);
         ByteBuffer buffer = ByteBuffer.allocate(samples.length * 2);
         buffer.order(ByteOrder.BIG_ENDIAN);
         buffer.asShortBuffer().put(shortSamples);
