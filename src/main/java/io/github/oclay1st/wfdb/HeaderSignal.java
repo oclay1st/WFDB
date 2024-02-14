@@ -12,14 +12,14 @@ import java.util.regex.Pattern;
  * @param format          the storage format of the signal
  * @param samplesPerFrame the samples per frame
  * @param skew            indicate the number of samples of the signal that are
- *                        considered to to precede the sample 0
+ *                        considered to precede the sample 0
  * @param bytesOffset     the offset of bytes form the beginning of the signal
  *                        file to sample 0
  * @param adcGain         the difference in sample values that would be observed
  *                        if a step of one physical unit occurred in the
  *                        original analog signal
  * @param baseline        the sample value corresponding to 0 physical units
- * @param units           the unit of the signal samples
+ * @param unit            the unit of the signal samples
  * @param adcResolution   the resolution for the analog to digital converter to
  *                        digitize the signal
  * @param adcZero         the sample value that would be observed if the analog
@@ -31,11 +31,11 @@ import java.util.regex.Pattern;
  *                        in bytes
  * @param description     the description of the signal
  */
-public record HeaderSignal(String filename, int format, @Deprecated int samplesPerFrame, @Deprecated int skew,
-        @Deprecated int bytesOffset, float adcGain, @Deprecated int baseline, String units, int adcResolution,
-        int adcZero, int initialValue, int checksum, int blockSize, String description) {
+public record HeaderSignal(String filename, SignalFormat format, int samplesPerFrame, int skew, int bytesOffset,
+        float adcGain, int baseline, SignalUnit unit, int adcResolution, int adcZero, int initialValue, int checksum,
+        int blockSize, String description) {
 
-    private final static Pattern PATTERN = Pattern.compile("""
+    private static final Pattern PATTERN = Pattern.compile("""
             (?<filename>~?[-\\w]*\\.?[\\w]*)
             \\s+(?<format>\\d+)
             x?(?<samplesPerFrame>\\d*)
@@ -43,20 +43,23 @@ public record HeaderSignal(String filename, int format, @Deprecated int samplesP
             \\+?(?<bytesOffset>\\d*)
             \\s*(?<adcGain>-?\\d*\\.?\\d*e?[+-]?\\d*)
             \\(?(?<baseline>-?\\d*)\\)?
-            /?(?<units>[\\w^\\-?%/]*)
+            /?(?<unit>[\\w^\\-?%/]*)
             \\s*(?<adcResolution>\\d*)
             \\s*(?<adcZero>-?\\d*)
             \\s*(?<initialValue>-?\\d*)
             \\s*(?<checksum>-?\\d*)
             \\s*(?<blockSize>\\d*)
-            \\s*(?<description>[\\S]?[^\\t\\n\\r\\f\\v]*)
+            \\s*(?<description>[\\S]?[^\t\r\f\\v]*)
             """.replaceAll("[\n\r]", ""));
 
     /**
      * Parse the header signal from a text line.
+     * 
+     * <pre>
      * As an example the text line may look like:
      * 100.dat 212 200 11 1024 995 -22131 0 MLII
-     *
+     * </pre>
+     * 
      * @param text the text that represents the signals info
      * @return a new {@link HeaderSignal} instance
      * @throws ParseException if the text can't be parsed
@@ -67,66 +70,22 @@ public record HeaderSignal(String filename, int format, @Deprecated int samplesP
             throw new ParseException("Unable to parse the header signal");
         }
         String filename = matcher.group("filename");
-        int format = Util.parseOrDefault(matcher.group("format"), 8);
+        SignalFormat format = SignalFormat.parse(matcher.group("format"));
         int samplesPerFrame = Util.parseOrDefault(matcher.group("samplesPerFrame"), 1);
         int skew = Util.parseOrDefault(matcher.group("skew"), 0);
         int bytesOffset = Util.parseOrDefault(matcher.group("bytesOffset"), 0);
         float adcGain = Util.parseOrDefault(matcher.group("adcGain"), 200f);
         int adcZero = Util.parseOrDefault(matcher.group("adcZero"), 0);
         int baseline = Util.parseOrDefault(matcher.group("baseline"), adcZero);
-        String unitsText = matcher.group("units");
-        String units = !Util.isEmpty(unitsText) ? unitsText : "mV";
+        String unitText = matcher.group("unit");
+        SignalUnit unit = !Util.isEmpty(unitText) ? SignalUnit.parse(unitText) : SignalUnit.MILLIVOLT;
         int adcResolution = Util.parseOrDefault(matcher.group("adcResolution"), 12);
         int initialValue = Util.parseOrDefault(matcher.group("initialValue"), 0);
         int checksum = Util.parseOrDefault(matcher.group("checksum"), 0);
         int blockSize = Util.parseOrDefault(matcher.group("blockSize"), 0);
         String description = matcher.group("description");
-        return new HeaderSignal(filename, format, samplesPerFrame, skew, bytesOffset, adcGain, baseline, units,
+        return new HeaderSignal(filename, format, samplesPerFrame, skew, bytesOffset, adcGain, baseline, unit,
                 adcResolution, adcZero, initialValue, checksum, blockSize, description);
-    }
-
-    /**
-     * The samples per frame value
-     * 
-     * @deprecated recent versions of the spec ignore this field
-     * @return the sample per frame value
-     */
-    @Deprecated
-    public int samplesPerFrame() {
-        return samplesPerFrame;
-    }
-
-    /**
-     * The skew value
-     * 
-     * @deprecated recent versions of the spec ignore this field
-     * @return the skew value
-     */
-    @Deprecated
-    public int skew() {
-        return skew;
-    }
-
-    /**
-     * The byte offset
-     * 
-     * @deprecated recent versions of the spec ignore this field
-     * @return the bytes offset value
-     */
-    @Deprecated
-    public int bytesOffset() {
-        return bytesOffset;
-    }
-
-    /**
-     * The baseline specifies the sample value corresponding to 0 physical units
-     * 
-     * @deprecated recent versions of the spec ignore this field
-     * @return the baseline value
-     */
-    @Deprecated
-    public int baseline() {
-        return baseline;
     }
 
     /**
@@ -143,8 +102,8 @@ public record HeaderSignal(String filename, int format, @Deprecated int samplesP
     }
 
     /**
-     * Calculate the checksum of a given array of signal samples
-     * The checksum is a 16bit signed value: 2^16 = 65536
+     * Calculate the checksum of a given array of signal samples. The checksum is a
+     * 16bit signed value: 2^16 = 65536
      * 
      * @param samples the array of samples
      * @return the checksum value

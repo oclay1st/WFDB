@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Represent the info from a multi-segment header
@@ -17,12 +18,15 @@ import java.util.Arrays;
 public record MultiSegmentHeader(HeaderRecord headerRecord, HeaderSegment[] headerSegments) {
 
     /**
-     * Parse the multi-segment header from an input form
-     * As an example of the header file text:
+     * Parse the multi-segment header from an input form.
+     *
+     * <pre>
+     * # As an example of the header file text:
      * multi/3 2 360 45000
      * 100s 21600
      * null 1800
      * 100s 21600
+     * </pre>
      *
      * @param input an {@link InputStream} of the header info
      * @return a new {@link MultiSegmentHeader} instance
@@ -60,4 +64,18 @@ public record MultiSegmentHeader(HeaderRecord headerRecord, HeaderSegment[] head
                 + Arrays.toString(headerSegments) + "]";
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof MultiSegmentHeader instance) {
+            return headerRecord.equals(instance.headerRecord) && Arrays.equals(headerSegments, instance.headerSegments);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(headerRecord);
+        result = 31 * result + Arrays.hashCode(headerSegments);
+        return result;
+    }
 }

@@ -15,7 +15,7 @@ public class HeaderSignalTest {
     void shouldParseMillivoltAsDefaultUnit() throws ParseException {
         String headerSignalText = "d1.7001 8 100 10 0 -69 15626 0 ECG signal 1";
         HeaderSignal headerSignal = HeaderSignal.parse(headerSignalText);
-        assertEquals("mV", headerSignal.units());
+        assertEquals(SignalUnit.MILLIVOLT, headerSignal.unit());
     }
 
     @Test
@@ -24,9 +24,9 @@ public class HeaderSignalTest {
         String headerSignalText = "100.dat 212 200 11 1024 995 -22131 0 MLII";
         HeaderSignal headerSignal = HeaderSignal.parse(headerSignalText);
         assertEquals("100.dat", headerSignal.filename());
-        assertEquals(212, headerSignal.format());
+        assertEquals(SignalFormat.FORMAT_212, headerSignal.format());
         assertEquals(200f, headerSignal.adcGain());
-        assertEquals("mV", headerSignal.units());
+        assertEquals(SignalUnit.MILLIVOLT, headerSignal.unit());
         assertEquals(11, headerSignal.adcResolution());
         assertEquals(1024, headerSignal.adcZero());
         assertEquals(995, headerSignal.initialValue());

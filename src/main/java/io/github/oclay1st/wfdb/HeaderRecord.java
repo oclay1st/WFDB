@@ -1,5 +1,6 @@
 package io.github.oclay1st.wfdb;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -23,8 +24,8 @@ import java.util.regex.Pattern;
  *                                 the record, in DD/MM/YYYY format
  */
 public record HeaderRecord(String name, int numberOfSegments, int numberOfSignals, float samplingFrequency,
-        @Deprecated float counterFrequency, @Deprecated float baseCounter, int numberOfSamplesPerSignal,
-        LocalTime baseTime, LocalDate baseDate) {
+        float counterFrequency, float baseCounter, int numberOfSamplesPerSignal, LocalTime baseTime,
+        LocalDate baseDate) {
 
     private static final Pattern PATTERN = Pattern.compile("""
             (?<name>[-\\w]+)
@@ -43,9 +44,12 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
     private static final DateTimeFormatter BASE_DATE_FORMATTER = DateTimeFormatter.ofPattern("d/M/y");
 
     /**
-     * Parse the header record from a text line
-     * As an example of the text line may look like:
+     * Parse the header record from a text line.
+     * 
+     * <pre>
+     * # As an example of the text line may look like:
      * 100 2 360 650000 0:0:0 10/01/2001
+     * </pre>
      * 
      * @param text the text that represents the header record info
      * @return a new {@link HeaderRecord} instance
@@ -87,25 +91,13 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
     }
 
     /**
-     * The counter frequency value
+     * The whole time of the record that was recorded
      *
-     * @deprecated recent versions of the spec ignore this field
-     * @return the counter frequency value
+     * @return the value of the time in seconds
      */
-    @Deprecated
-    public float counterFrequency() {
-        return counterFrequency;
-    }
-
-    /**
-     * The counter value corresponding to sample 0
-     *
-     * @deprecated recent versions of the spec ignore this field
-     * @return the base counter value
-     */
-    @Deprecated
-    public float baseCounter() {
-        return baseCounter;
+    public Duration durationTime() {
+        int seconds = (int) (numberOfSamplesPerSignal / samplingFrequency);
+        return Duration.ofSeconds(seconds);
     }
 
 }

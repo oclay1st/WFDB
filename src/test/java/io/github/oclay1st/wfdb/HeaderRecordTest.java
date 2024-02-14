@@ -2,6 +2,7 @@ package io.github.oclay1st.wfdb;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -13,15 +14,16 @@ public class HeaderRecordTest {
     @Test
     @DisplayName("Should parse the header record")
     void shouldParseRecord() throws ParseException {
-        String headerRecordText = "100 2 360 650000 0:0:0 10/01/2001";
+        String headerRecordText = "100 2 360 3600 0:0:0 10/01/2001";
         HeaderRecord headerRecord = HeaderRecord.parse(headerRecordText);
         assertEquals("100", headerRecord.name());
         assertEquals(1, headerRecord.numberOfSegments());
         assertEquals(2, headerRecord.numberOfSignals());
         assertEquals(360f, headerRecord.samplingFrequency());
-        assertEquals(650000, headerRecord.numberOfSamplesPerSignal());
+        assertEquals(3600, headerRecord.numberOfSamplesPerSignal());
         assertEquals(LocalTime.of(0, 0, 0), headerRecord.baseTime());
         assertEquals(LocalDate.of(2001, 01, 10), headerRecord.baseDate());
+        assertEquals(Duration.ofSeconds(10), headerRecord.durationTime());
     }
 
     @Test

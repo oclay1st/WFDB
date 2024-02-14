@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Represents a single segment record header
@@ -15,15 +16,18 @@ import java.util.Arrays;
 public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] headerSignals) {
 
     /**
-     * Parse the single-segment header from an input form
-     * As an example of the header file text:
+     * Parse the single-segment header from an input form.
+     * 
+     * <pre>
+     * # Example of the header file text:
      * 100 2 360 650000 0:0:0 0/0/0
      * 100.dat 212 200 11 1024 995 -22131 0 MLII
      * 100.dat 212 200 11 1024 1011 20052 0 V5
      * 
      * # 69 M 1085 1629 x1
      * # Aldomet, Inderal
-     * 
+     * </pre>
+     *
      * @param input an {@link InputStream} of the header info
      * @return a new {@link SingleSegmentHeader} instance
      * @throws IOException    if the input is invalid
@@ -60,14 +64,18 @@ public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] head
                 + Arrays.toString(headerSignals) + "]";
     }
 
-    /**
-     * Check if all the header signals have the same signal samples file
-     *
-     * @return true if all header signal match, otherwise false
-     */
-    public boolean hasSingleSamplesSource() {
-        return Arrays.stream(headerSignals)
-                .allMatch(s -> s.filename().equals(headerSignals[0].filename()));
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof SingleSegmentHeader instance) {
+            return headerRecord.equals(instance.headerRecord) && Arrays.equals(headerSignals, instance.headerSignals);
+        }
+        return false;
     }
 
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(headerRecord);
+        result = 31 * result + Arrays.hashCode(headerSignals);
+        return result;
+    }
 }

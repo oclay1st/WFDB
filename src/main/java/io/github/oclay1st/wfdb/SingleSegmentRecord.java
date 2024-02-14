@@ -13,28 +13,33 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Represents a single-segment record
+ * Represents a single-segment record.
  * 
  * @param header           the single-segment header {@link SingleSegmentHeader}
- * @param samplesPerSingal the array of samples per signal
+ * @param samplesPerSignal the array of samples per signal
  */
-public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPerSingal) {
+public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPerSignal) {
 
+    /**
+     * Constructs a new instance of SingleSegmentRecord where each signal samples
+     * must match the checksum and the initial values from the header info.
+     * {@inheritDoc}
+     */
     public SingleSegmentRecord {
         for (int i = 0; i < header.headerSignals().length; i++) {
             HeaderSignal headerSignal = header.headerSignals()[i];
-            int[] samplesOfSignal = samplesPerSingal[i];
+            int[] samplesOfSignal = samplesPerSignal[i];
             if (headerSignal.initialValue() != samplesOfSignal[0]) {
-                throw new IllegalStateException("Missmatch initial value on sigal: " + headerSignal.description());
+                throw new IllegalStateException("Mismatched initial value on signal: " + headerSignal.description());
             }
             if (!headerSignal.matchChecksum(samplesOfSignal)) {
-                throw new IllegalStateException("Missmatch checksum on signal: " + headerSignal.description());
+                throw new IllegalStateException("Mismatched checksum on signal: " + headerSignal.description());
             }
         }
     }
 
     /**
-     * Parse a single-segment record given a path
+     * Parse a single-segment record given a path.
      *
      * @param recordPath the path where the record will be parsed
      * @return a new {@link SingleSegmentRecord} instance
@@ -68,65 +73,31 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
 
     /**
      * Parse the samples of the signals given a file. It may contain one or many
-     * signals samples
+     * signals samples.
      *
      * @param samplesFilePath the file path of the samples of the signals
-     * @param signals         the array of signals
+     * @param headerSignals   the array of signals
      * @param numberOfSamples the number of samples on the file
      * @return an array of samples for each signal
      * @throws IOException if the input is invalid
      */
-    private static int[][] parseSamples(Path samplesFilePath, HeaderSignal[] signals, int numberOfSamples)
+    private static int[][] parseSamples(Path samplesFilePath, HeaderSignal[] headerSignals, int numberOfSamples)
             throws IOException {
         try (InputStream samplesInputStream = Files.newInputStream(samplesFilePath)) {
-            byte[] data = samplesInputStream.readAllBytes();
-            int format = signals[0].format(); // All signals have the same format
-            int[] formattedSamples = toFormat(format, data, signals, numberOfSamples);
-            int[][] samplesPerSignal = new int[signals.length][numberOfSamples / signals.length];
-            int signalIndex = 0;
-            for (int i = 0; i < signals.length; i++) {
+            byte[] source = samplesInputStream.readAllBytes();
+            SignalFormat format = headerSignals[0].format(); // All signals have the same format
+            int[] formattedSamples = format.formatter().convertBytesToSamples(source, headerSignals);
+            int[][] samplesPerSignal = new int[headerSignals.length][numberOfSamples / headerSignals.length];
+            int signalIndex;
+            for (int i = 0; i < headerSignals.length; i++) {
                 signalIndex = 0;
-                for (int j = i; j < formattedSamples.length; j += signals.length) {
+                for (int j = i; j < formattedSamples.length; j += headerSignals.length) {
                     samplesPerSignal[i][signalIndex] = formattedSamples[j];
                     signalIndex++;
                 }
             }
             return samplesPerSignal;
         }
-    }
-
-    /**
-     * Convert raw data to the corresponding format
-     * 
-     * @param format          the format of the signal
-     * @param data            the raw data
-     * @param headerSignals   the array of signals
-     * @param numberOfSamples the number of samples
-     * @return an array of all the samples on the given format
-     */
-    private static int[] toFormat(int format, byte[] data, HeaderSignal[] headerSignals, int numberOfSamples) {
-        return switch (format) {
-            case 8 -> SignalFormatter.toFormat8(data, numberOfSamples, headerSignals);
-            case 16 -> SignalFormatter.toFormat16(data, numberOfSamples);
-            case 24 -> SignalFormatter.toFormat24(data, numberOfSamples);
-            case 32 -> SignalFormatter.toFormat32(data, numberOfSamples);
-            case 61 -> SignalFormatter.toFormat61(data, numberOfSamples);
-            case 80 -> SignalFormatter.toFormat80(data, numberOfSamples);
-            case 160 -> SignalFormatter.toFormat160(data, numberOfSamples);
-            case 212 -> SignalFormatter.toFormat212(data, numberOfSamples);
-            case 310 -> SignalFormatter.toFormat310(data, numberOfSamples);
-            case 311 -> SignalFormatter.toFormat311(data, numberOfSamples);
-            default -> throw new IllegalArgumentException("Unsupported bit reference : " + format);
-        };
-    }
-
-    /**
-     * The whole time of the record that was recorded
-     *
-     * @return the value of the time in seconds
-     */
-    public int time() {
-        return (int) (header.headerRecord().numberOfSamplesPerSignal() / header.headerRecord().samplingFrequency());
     }
 
 }
