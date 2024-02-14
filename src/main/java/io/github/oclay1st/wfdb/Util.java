@@ -21,7 +21,7 @@ public class Util {
     public static int[] castArray(short[] values) {
         int[] newValues = new int[values.length];
         for (int i = 0; i < values.length; i++) {
-            values[i] = values[i];
+            newValues[i] = values[i];
         }
         return newValues;
     }
@@ -29,7 +29,7 @@ public class Util {
     public static short[] castArray(int[] values) {
         short[] newValues = new short[values.length];
         for (int i = 0; i < values.length; i++) {
-            values[i] = (short) values[i];
+            newValues[i] = (short) values[i];
         }
         return newValues;
     }

@@ -20,7 +20,8 @@ public final class SignalFormatter61 implements SignalFormatter {
      */
     @Override
     public int[] convertBytesToSamples(byte[] source, HeaderSignal[] headerSignals) {
-        short[] values = ByteBuffer.wrap(source).order(ByteOrder.BIG_ENDIAN).asShortBuffer().array();
+        short[] values = new short[source.length / 2];
+        ByteBuffer.wrap(source).order(ByteOrder.BIG_ENDIAN).asShortBuffer().get(values);
         return Util.castArray(values);
     }
 
@@ -30,7 +31,7 @@ public final class SignalFormatter61 implements SignalFormatter {
      */
     @Override
     public byte[] convertSamplesToBytes(int[] samples, HeaderSignal[] headerSignals) {
-        short[] shortSamples = Util.castArray(samples); 
+        short[] shortSamples = Util.castArray(samples);
         ByteBuffer buffer = ByteBuffer.allocate(samples.length * 2);
         buffer.order(ByteOrder.BIG_ENDIAN);
         buffer.asShortBuffer().put(shortSamples);

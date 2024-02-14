@@ -21,7 +21,8 @@ public final class SignalFormatter16 implements SignalFormatter {
      */
     @Override
     public int[] convertBytesToSamples(byte[] source, HeaderSignal[] headerSignals) {
-        short[] values = ByteBuffer.wrap(source).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().array();
+        short[] values = new short[source.length/2];
+        ByteBuffer.wrap(source).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(values);
         return Util.castArray(values);
     }
 
