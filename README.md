@@ -1,4 +1,6 @@
-[![codecov](https://codecov.io/gh/oclay1st/WFDB/graph/badge.svg?token=BFPK6IMO1K)](https://codecov.io/gh/oclay1st/WFDB)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=oclay1st_WFDB&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=oclay1st_WFDB)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=oclay1st_WFDB&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=oclay1st_WFDB)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=oclay1st_WFDB&metric=coverage)](https://sonarcloud.io/summary/new_code?id=oclay1st_WFDB)
 # Java WFDB Library
 This library is a pure Java implementation of the Waveform Database(WFDB) [specifications](https://github.com/wfdb/wfdb-spec).
 

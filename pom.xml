@@ -101,7 +101,7 @@
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <useReleaseProfile>false</useReleaseProfile>
                         <releaseProfiles>release</releaseProfiles>
-                        <scmCommentPrefix>[ci-cd]</scmCommentPrefix>
+                        <scmCommentPrefix>[CI/CD] </scmCommentPrefix>
                     </configuration>
                 </plugin>
             </plugins>
