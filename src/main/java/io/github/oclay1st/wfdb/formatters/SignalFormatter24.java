@@ -39,9 +39,10 @@ public final class SignalFormatter24 implements SignalFormatter {
         int index = 0;
         byte[] source = new byte[samples.length * 3];
         for (int sample : samples) {
-            source[index] = (byte) sample;
-            source[index + 1] = (byte) (sample >> 8);
-            source[index + 2] = (byte) (sample >> 16);
+            int sampleUsigned = sample & 0xFFFFFF;
+            source[index] = (byte) sampleUsigned;
+            source[index + 1] = (byte) (sampleUsigned >> 8);
+            source[index + 2] = (byte) (sampleUsigned >> 16);
             index += 3;
         }
         return source;
