@@ -1,7 +1,5 @@
 package io.github.oclay1st.wfdb.formatters;
 
-import io.github.oclay1st.wfdb.HeaderSignal;
-
 /**
  * Represents the signal formatter for format 24.
  * 
@@ -15,7 +13,7 @@ public final class SignalFormatter24 implements SignalFormatter {
      * least significant byte first.
      */
     @Override
-    public int[] convertBytesToSamples(byte[] source, HeaderSignal[] headerSignals) {
+    public int[] convertBytesToSamples(byte[] source) {
         int index = 0;
         int numberOfSamples = source.length / 3;
         int[] samples = new int[numberOfSamples];
@@ -35,14 +33,14 @@ public final class SignalFormatter24 implements SignalFormatter {
      * Each formatted samples of format 24 will be converted to raw data as bytes.
      */
     @Override
-    public byte[] convertSamplesToBytes(int[] samples, HeaderSignal[] headerSignals) {
+    public byte[] convertSamplesToBytes(int[] samples) {
         int index = 0;
         byte[] source = new byte[samples.length * 3];
         for (int sample : samples) {
-            int sampleUsigned = sample & 0xFFFFFF;
-            source[index] = (byte) sampleUsigned;
-            source[index + 1] = (byte) (sampleUsigned >> 8);
-            source[index + 2] = (byte) (sampleUsigned >> 16);
+            int sampleUnsigned = sample & 0xFFFFFF;
+            source[index] = (byte) sampleUnsigned;
+            source[index + 1] = (byte) (sampleUnsigned >> 8);
+            source[index + 2] = (byte) (sampleUnsigned >> 16);
             index += 3;
         }
         return source;

@@ -4,8 +4,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
-import io.github.oclay1st.wfdb.HeaderSignal;
-
 /**
  * Represents the signal formatter for format 160
  * 
@@ -21,7 +19,7 @@ public final class SignalFormatter160 implements SignalFormatter {
      * is first.
      */
     @Override
-    public int[] convertBytesToSamples(byte[] source, HeaderSignal[] headerSignals) {
+    public int[] convertBytesToSamples(byte[] source) {
         int index = 0;
         int[] samples = new int[source.length / 2];
         ShortBuffer buffer = ByteBuffer.wrap(source).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
@@ -37,7 +35,7 @@ public final class SignalFormatter160 implements SignalFormatter {
      * Each formatted samples of format 160 will be converted to raw data as bytes.
      */
     @Override
-    public byte[] convertSamplesToBytes(int[] samples, HeaderSignal[] headerSignals) {
+    public byte[] convertSamplesToBytes(int[] samples) {
         short[] shortSamples = new short[samples.length];
         for (int i = 0; i < samples.length; i++) {
             shortSamples[i] = (short) (samples[i] + 32768);

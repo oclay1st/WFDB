@@ -2,8 +2,6 @@ package io.github.oclay1st.wfdb.formatters;
 
 import java.util.Arrays;
 
-import io.github.oclay1st.wfdb.HeaderSignal;
-
 /**
  * Represents the signal formatter for format 310.
  * 
@@ -19,7 +17,7 @@ public final class SignalFormatter310 implements SignalFormatter {
      * {@inheritDoc}
      * Each sample is represented by a 10-bit two’s-complement amplitude. The first
      * sample is obtained from the 11 least significant bits of the first byte pair
-     * (stored least significant byte first), with the low bit discarded. The second
+     * (stored the least significant byte first), with the low bit discarded. The second
      * sample comes from the 11 least significant bits of the second byte pair, in
      * the same way as the first. The third sample is formed from the 5 most
      * significant bits of each of the first two byte pairs (those from the first
@@ -46,7 +44,7 @@ public final class SignalFormatter310 implements SignalFormatter {
      * 10 bits goes from 0 to 1024 for unsigned -512 to 511 for signed.
      */
     @Override
-    public int[] convertBytesToSamples(byte[] source, HeaderSignal[] headerSignals) {
+    public int[] convertBytesToSamples(byte[] source) {
         int sampleIndex = 0;
         int numberOfSamples = source.length - (Math.round(source.length / (float) DISTRIBUTION));
         byte[] data = Arrays.copyOf(source, source.length + (DISTRIBUTION - source.length % DISTRIBUTION));
@@ -84,7 +82,7 @@ public final class SignalFormatter310 implements SignalFormatter {
      * Each formatted samples of format 310 will be converted to raw data as bytes.
      */
     @Override
-    public byte[] convertSamplesToBytes(int[] samples, HeaderSignal[] headerSignals) {
+    public byte[] convertSamplesToBytes(int[] samples) {
         int sourceIndex = 0;
         int numberOfBytes = samples.length + (Math.round(samples.length / (float) DISTRIBUTION));
         byte[] source = new byte[numberOfBytes];

@@ -1,7 +1,5 @@
 package io.github.oclay1st.wfdb.formatters;
 
-import io.github.oclay1st.wfdb.HeaderSignal;
-
 /**
  * Represents the signal formatter for format 80.
  * 
@@ -16,7 +14,7 @@ public final class SignalFormatter80 implements SignalFormatter {
      * amplitude).
      */
     @Override
-    public int[] convertBytesToSamples(byte[] source, HeaderSignal[] headerSignals) {
+    public int[] convertBytesToSamples(byte[] source) {
         int[] samples = new int[source.length];
         for (int i = 0; i < source.length; i++) {
             samples[i] = (source[i] & 0xFF) - 128;
@@ -29,7 +27,7 @@ public final class SignalFormatter80 implements SignalFormatter {
      * Each formatted samples of format 80 will be converted to raw data as bytes.
      */
     @Override
-    public byte[] convertSamplesToBytes(int[] samples, HeaderSignal[] headerSignals) {
+    public byte[] convertSamplesToBytes(int[] samples) {
         byte[] source = new byte[samples.length];
         for (int i = 0; i < samples.length; i++) {
             source[i] = (byte) (samples[i] + 128);

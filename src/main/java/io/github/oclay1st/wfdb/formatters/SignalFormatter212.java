@@ -2,8 +2,6 @@ package io.github.oclay1st.wfdb.formatters;
 
 import java.util.Arrays;
 
-import io.github.oclay1st.wfdb.HeaderSignal;
-
 /**
  * Represents the signal formatter for format 212.
  * 
@@ -19,7 +17,7 @@ public final class SignalFormatter212 implements SignalFormatter {
      * {@inheritDoc}
      * Each sample is represented by a 12-bit two’s complement amplitude. The first
      * sample is obtained from the 12 least significant bits of the first byte pair
-     * (stored least significant byte first). The second sample is formed from the 4
+     * (stored the least significant byte first). The second sample is formed from the 4
      * remaining bits of the first byte pair (which are the 4 high bits of the
      * 12-bit sample) and the next byte (which contains the remaining 8 bits of the
      * second sample). The process is repeated for each successive pair of samples.
@@ -42,7 +40,7 @@ public final class SignalFormatter212 implements SignalFormatter {
      * 12 bits goes 0 to 4096 for unsigned and -2048 to 2047 for signed
      */
     @Override
-    public int[] convertBytesToSamples(byte[] source, HeaderSignal[] headerSignals) {
+    public int[] convertBytesToSamples(byte[] source) {
         int numberOfSamples = source.length - (Math.round(source.length / (float) DISTRIBUTION));
         byte[] data = Arrays.copyOf(source, source.length + (DISTRIBUTION - source.length % DISTRIBUTION));
         int[] samples = new int[numberOfSamples + SAMPLES_PER_DISTRIBUTION];
@@ -72,7 +70,7 @@ public final class SignalFormatter212 implements SignalFormatter {
      * Each formatted samples of format 212 will be converted to raw data as bytes.
      */
     @Override
-    public byte[] convertSamplesToBytes(int[] samples, HeaderSignal[] headerSignals) {
+    public byte[] convertSamplesToBytes(int[] samples) {
         int sourceIndex = 0;
         int numberOfBytes = samples.length + (Math.round(samples.length / (float) DISTRIBUTION));
         byte[] source = new byte[numberOfBytes];

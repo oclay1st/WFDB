@@ -3,7 +3,6 @@ package io.github.oclay1st.wfdb.formatters;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import io.github.oclay1st.wfdb.HeaderSignal;
 import io.github.oclay1st.wfdb.Util;
 
 /**
@@ -20,7 +19,7 @@ public final class SignalFormatter16 implements SignalFormatter {
      * from the most significant bit.
      */
     @Override
-    public int[] convertBytesToSamples(byte[] source, HeaderSignal[] headerSignals) {
+    public int[] convertBytesToSamples(byte[] source) {
         short[] values = new short[source.length/2];
         ByteBuffer.wrap(source).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(values);
         return Util.castArray(values);
@@ -31,7 +30,7 @@ public final class SignalFormatter16 implements SignalFormatter {
      * Each formatted samples of format 16 will be converted to raw data as bytes.
      */
     @Override
-    public byte[] convertSamplesToBytes(int[] samples, HeaderSignal[] headerSignals) {
+    public byte[] convertSamplesToBytes(int[] samples) {
         short[] shortSamples = Util.castArray(samples); 
         ByteBuffer buffer = ByteBuffer.allocate(samples.length * 2);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
