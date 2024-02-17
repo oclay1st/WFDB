@@ -42,26 +42,12 @@ public class Util {
     }
 
     /**
-     * Cast a short array to an int array.
-     * 
-     * @param values the short array
-     * @return the int array
-     */
-    public static int[] castArray(short[] values) {
-        int[] newValues = new int[values.length];
-        for (int i = 0; i < values.length; i++) {
-            newValues[i] = values[i];
-        }
-        return newValues;
-    }
-
-    /**
      * Cast a int array to an short array.
      * 
      * @param values the int array
      * @return the short array
      */
-    public static short[] castArray(int[] values) {
+    public static short[] convertArray(int[] values) {
         short[] newValues = new short[values.length];
         for (int i = 0; i < values.length; i++) {
             newValues[i] = (short) values[i];
