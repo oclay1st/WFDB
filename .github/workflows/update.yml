@@ -1,8 +1,7 @@
-name: Project Build Integrity
+name: Project Updates 
 
 on:
-  pull_request:
-    types: [opened, reopened]
+  push:
     branches: [ 'main' ]
 
 permissions:
@@ -20,6 +19,12 @@ jobs:
         distribution: 'temurin'
         java-package: 'jdk'
         cache: 'maven'
-    - name: Build With Maven
+    - name: Coverage analyze
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        mvn -B verify
+        mvn verify sonar:sonar \
+        -Dsonar.host.url=https://sonarcloud.io \
+        -Dsonar.organization=oclay1st \
+        -Dsonar.projectKey=oclay1st_WFDB
+     
