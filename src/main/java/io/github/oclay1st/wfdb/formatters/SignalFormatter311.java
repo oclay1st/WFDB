@@ -2,8 +2,6 @@ package io.github.oclay1st.wfdb.formatters;
 
 import java.util.Arrays;
 
-import io.github.oclay1st.wfdb.HeaderSignal;
-
 /**
  * Represents the signal formatter for format 311.
  * 
@@ -33,7 +31,7 @@ public final class SignalFormatter311 implements SignalFormatter {
      * 10 bits goes from 0 to 1024 for unsigned -512 to 511 for signed.
      */
     @Override
-    public int[] convertBytesToSamples(byte[] source, HeaderSignal[] headerSignals) {
+    public int[] convertBytesToSamples(byte[] source) {
         int numberOfSamples = source.length - (Math.round(source.length / (float) DISTRIBUTION));
         byte[] data = Arrays.copyOf(source, source.length + (DISTRIBUTION - source.length % DISTRIBUTION));
         int sampleIndex = 0;
@@ -69,7 +67,7 @@ public final class SignalFormatter311 implements SignalFormatter {
      * Each formatted samples of format 311 will be converted to raw data as bytes.
      */
     @Override
-    public byte[] convertSamplesToBytes(int[] samples, HeaderSignal[] headerSignals) {
+    public byte[] convertSamplesToBytes(int[] samples) {
         int numberOfBytes = samples.length + (Math.round(samples.length / (float) DISTRIBUTION));
         byte[] source = new byte[numberOfBytes];
         int sourceIndex = 0;

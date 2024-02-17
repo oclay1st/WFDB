@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import io.github.oclay1st.wfdb.formatters.SignalFormatter;
+import io.github.oclay1st.wfdb.formatters.SignalFormatter8;
+
 /**
  * Represents a single-segment record.
  * 
@@ -32,7 +35,7 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
             if (headerSignal.initialValue() != samplesOfSignal[0]) {
                 throw new IllegalStateException("Mismatched initial value on signal: " + headerSignal.description());
             }
-            if (!headerSignal.matchChecksum(samplesOfSignal)) {
+            if (headerSignal.checksum() != 0 && !headerSignal.matchChecksum(samplesOfSignal)) {
                 throw new IllegalStateException("Mismatched checksum on signal: " + headerSignal.description());
             }
         }
@@ -85,19 +88,38 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
             throws IOException {
         try (InputStream samplesInputStream = Files.newInputStream(samplesFilePath)) {
             byte[] source = samplesInputStream.readAllBytes();
-            SignalFormat format = headerSignals[0].format(); // All signals have the same format
-            int[] formattedSamples = format.formatter().convertBytesToSamples(source, headerSignals);
+            SignalFormatter formatter = resolveSignalFormatter(headerSignals);
+            int[] samples = formatter.convertBytesToSamples(source);
             int[][] samplesPerSignal = new int[headerSignals.length][numberOfSamples / headerSignals.length];
             int signalIndex;
             for (int i = 0; i < headerSignals.length; i++) {
                 signalIndex = 0;
-                for (int j = i; j < formattedSamples.length; j += headerSignals.length) {
-                    samplesPerSignal[i][signalIndex] = formattedSamples[j];
+                for (int j = i; j < samples.length; j += headerSignals.length) {
+                    samplesPerSignal[i][signalIndex] = samples[j];
                     signalIndex++;
                 }
             }
             return samplesPerSignal;
         }
+    }
+
+    /**
+     * Resolve the signal formatter to be use.
+     *
+     * By definition: all signals samples of the same file must have the same format
+     * 
+     * @param headerSignals the array of header signals
+     * @return the {@link SignalFormatter} instance
+     */
+    private static SignalFormatter resolveSignalFormatter(HeaderSignal[] headerSignals) {
+        // takes the signal formatter from the first header signal
+        SignalFormatter formatter = headerSignals[0].format().formatter();
+        // format 8 is a special case that needs the initial values of header signals
+        if (formatter instanceof SignalFormatter8 instance) {
+            int[] initialValues = Arrays.stream(headerSignals).mapToInt(HeaderSignal::initialValue).toArray();
+            instance.setInitialSignalSamples(initialValues);
+        }
+        return formatter;
     }
 
 }

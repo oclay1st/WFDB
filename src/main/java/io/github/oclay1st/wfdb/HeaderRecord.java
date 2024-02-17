@@ -93,11 +93,11 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
     /**
      * The whole time of the record that was recorded
      *
-     * @return the value of the time in seconds
+     * @return the value of the duration time
      */
     public Duration durationTime() {
-        int seconds = (int) (numberOfSamplesPerSignal / samplingFrequency);
-        return Duration.ofSeconds(seconds);
+        int milliseconds = (int) (numberOfSamplesPerSignal / samplingFrequency * 1000);
+        return Duration.ofMillis(milliseconds);
     }
 
 }

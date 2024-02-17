@@ -43,4 +43,5 @@ class SingleSegmentRecordTest {
         SingleSegmentRecord record = SingleSegmentRecord.parse(recordPath);
         assertNotNull(record);
     }
+
 }
