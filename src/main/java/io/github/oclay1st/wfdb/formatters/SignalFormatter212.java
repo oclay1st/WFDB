@@ -47,16 +47,16 @@ public final class SignalFormatter212 implements SignalFormatter {
         int sampleIndex = 0;
         for (int i = 0; i < data.length; i += DISTRIBUTION) {
             // first sample
-            int firstByteUnsigned = data[i] & 0xFF;
-            int secondByteUnsigned = data[i + 1] & 0xFF;
-            int lastFourBitsOfSecondByte = secondByteUnsigned & 0x0F;
-            int firstSample = (lastFourBitsOfSecondByte << 8) + firstByteUnsigned;
+            int firstUnsignedByte = data[i] & 0xFF;
+            int secondUnsignedByte = data[i + 1] & 0xFF;
+            int lastFourBitsOfSecondByte = secondUnsignedByte & 0x0F;
+            int firstSample = (lastFourBitsOfSecondByte << 8) + firstUnsignedByte;
             // Convert to two complement amplitude
             samples[sampleIndex] = firstSample > 2047 ? firstSample - 4096 : firstSample;
             // second sample
-            int thirdByteUnsigned = data[i + 2] & 0xFF;
-            int firstFourBitsOfSecondByte = secondByteUnsigned >> 4;
-            int secondSample = (firstFourBitsOfSecondByte << 8) + thirdByteUnsigned;
+            int thirdUnsignedByte = data[i + 2] & 0xFF;
+            int firstFourBitsOfSecondByte = secondUnsignedByte >> 4;
+            int secondSample = (firstFourBitsOfSecondByte << 8) + thirdUnsignedByte;
             // Convert to two complement amplitude
             samples[sampleIndex + 1] = secondSample > 2047 ? secondSample - 4096 : secondSample;
             // increment array index
@@ -75,16 +75,16 @@ public final class SignalFormatter212 implements SignalFormatter {
         int numberOfBytes = samples.length + (Math.round(samples.length / (float) DISTRIBUTION));
         byte[] source = new byte[numberOfBytes];
         for (int i = 0; i < samples.length; i += SAMPLES_PER_DISTRIBUTION) {
-            int firstSampleUnsigned = samples[i] & 0x7FF;
-            int secondSampleUnsigned = samples[i + 1] & 0x7FF;
+            int firstUnsignedSample = samples[i] & 0x7FF;
+            int secondUnsignedSample = samples[i + 1] & 0x7FF;
             // first byte
-            source[sourceIndex] = (byte) firstSampleUnsigned;
+            source[sourceIndex] = (byte) firstUnsignedSample;
             // second byte
-            int lastFourBitsOfSecondByte = firstSampleUnsigned >> 8;
-            int firstFourBitsOfSecondByte = secondSampleUnsigned >> 8;
+            int lastFourBitsOfSecondByte = firstUnsignedSample >> 8;
+            int firstFourBitsOfSecondByte = secondUnsignedSample >> 8;
             source[sourceIndex + 1] = (byte) (firstFourBitsOfSecondByte + lastFourBitsOfSecondByte);
             // third byte
-            source[sourceIndex + 2] = (byte) secondSampleUnsigned;
+            source[sourceIndex + 2] = (byte) secondUnsignedSample;
             // increment array index
             sourceIndex += DISTRIBUTION;
         }
