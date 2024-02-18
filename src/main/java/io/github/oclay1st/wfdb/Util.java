@@ -1,5 +1,7 @@
 package io.github.oclay1st.wfdb;
 
+import java.nio.ShortBuffer;
+
 /**
  * Utility reference
  */
@@ -39,6 +41,22 @@ public class Util {
      */
     public static float parseOrDefault(String text, float defaultValue) {
         return isEmpty(text) ? defaultValue : Float.parseFloat(text);
+    }
+
+    /**
+     * Cast a {@link ShortBuffer} to an int array.
+     * 
+     * @param values the {@link ShortBuffer}
+     * @return the int array
+     */
+    public static int[] convertShortBufferToIntArray(ShortBuffer buffer) {
+        int index = 0;
+        int[] values = new int[buffer.capacity()];
+        while (buffer.hasRemaining()) {
+            values[index] = buffer.get();
+            index++;
+        }
+        return values;
     }
 
     /**
