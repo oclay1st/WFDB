@@ -1,13 +1,13 @@
-package io.github.oclay1st.wfdb;
+package io.github.oclay1st.wfdb.utils;
 
 import java.nio.ShortBuffer;
 
 /**
  * Utility reference
  */
-public class Util {
+public class CommonUtil {
 
-    private Util() {
+    private CommonUtil() {
         throw new IllegalAccessError("Util class");
     }
 
