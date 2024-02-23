@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import io.github.oclay1st.wfdb.exceptions.ParseException;
@@ -146,4 +147,20 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
         return formatter;
     }
 
+    @Override
+    public boolean equals(Object object) {
+        return object instanceof SingleSegmentRecord instance && header.equals(instance.header)
+                && Arrays.deepEquals(samplesPerSignal, instance.samplesPerSignal);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * Objects.hash(header) + Arrays.deepHashCode(samplesPerSignal);
+    }
+
+    @Override
+    public String toString() {
+        return "SingleSegmentRecord [ header = " + header + ", samplesPerSignal = " + Arrays.toString(samplesPerSignal)
+                + ']';
+    }
 }
