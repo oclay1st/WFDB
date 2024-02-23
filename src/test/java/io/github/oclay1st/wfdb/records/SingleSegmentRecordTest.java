@@ -1,13 +1,17 @@
-package io.github.oclay1st.wfdb;
+package io.github.oclay1st.wfdb.records;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Duration;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import io.github.oclay1st.wfdb.exceptions.ParseException;
+import io.github.oclay1st.wfdb.filters.Filter;
 
 class SingleSegmentRecordTest {
 
@@ -33,6 +37,24 @@ class SingleSegmentRecordTest {
         assertEquals(record.header().headerSignals()[9].initialValue(), record.samplesPerSignal()[9][0]);
         assertEquals(record.header().headerSignals()[10].initialValue(), record.samplesPerSignal()[10][0]);
         assertEquals(record.header().headerSignals()[11].initialValue(), record.samplesPerSignal()[11][0]);
+    }
+
+    @Test
+    @DisplayName("Should parse and filter the waveform file")
+    void shouldParseAndFilterFromFile() throws IOException, ParseException {
+        Path recordPath = Path.of("src", "test", "resources", "single-segment", "00001", "00001_lr").toAbsolutePath();
+        Filter filter = new Filter.Builder()
+                .startTime(0)
+                .endTime(5000)
+                .signals(new int[] { 0, 1, 2 })
+                .build();
+        SingleSegmentRecord record = SingleSegmentRecord.parse(recordPath, filter);
+        assertNotNull(record);
+        assertNotNull(record.header());
+        assertNotNull(record.samplesPerSignal());
+        assertEquals(3, record.samplesPerSignal().length);
+        assertEquals(3, record.header().headerRecord().numberOfSignals());
+        assertEquals(Duration.ofSeconds(5), record.header().headerRecord().durationTime());
     }
 
     @Test
