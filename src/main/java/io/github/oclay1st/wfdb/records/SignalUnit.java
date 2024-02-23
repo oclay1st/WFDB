@@ -1,7 +1,9 @@
-package io.github.oclay1st.wfdb;
+package io.github.oclay1st.wfdb.records;
 
 import java.util.Arrays;
 import java.util.Objects;
+
+import io.github.oclay1st.wfdb.exceptions.ParseException;
 
 /**
  * Represents the unit of the signal sample

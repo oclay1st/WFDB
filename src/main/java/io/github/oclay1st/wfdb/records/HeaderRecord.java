@@ -1,4 +1,4 @@
-package io.github.oclay1st.wfdb;
+package io.github.oclay1st.wfdb.records;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -6,6 +6,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import io.github.oclay1st.wfdb.exceptions.ParseException;
+import io.github.oclay1st.wfdb.utils.CommonUtil;
 
 /**
  * Represents the data info from the first line of a header file.
@@ -61,12 +64,12 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
             throw new ParseException("Unable to parse the header record");
         }
         String name = matcher.group("name");
-        int numberOfSegments = Util.parseOrDefault(matcher.group("numberOfSegments"), 1);
-        int numberOfSignals = Util.parseOrDefault(matcher.group("numberOfSignals"), 0);
-        float samplingFrequency = Util.parseOrDefault(matcher.group("samplingFrequency"), 250f);
-        float counterFrequency = Util.parseOrDefault(matcher.group("counterFrequency"), samplingFrequency);
-        float baseCounter = Util.parseOrDefault(matcher.group("baseCounter"), 0f);
-        int numberOfSamplesPerSignal = Util.parseOrDefault(matcher.group("numberOfSamplesPerSignal"), 0);
+        int numberOfSegments = CommonUtil.parseOrDefault(matcher.group("numberOfSegments"), 1);
+        int numberOfSignals = CommonUtil.parseOrDefault(matcher.group("numberOfSignals"), 0);
+        float samplingFrequency = CommonUtil.parseOrDefault(matcher.group("samplingFrequency"), 250f);
+        float counterFrequency = CommonUtil.parseOrDefault(matcher.group("counterFrequency"), samplingFrequency);
+        float baseCounter = CommonUtil.parseOrDefault(matcher.group("baseCounter"), 0f);
+        int numberOfSamplesPerSignal = CommonUtil.parseOrDefault(matcher.group("numberOfSamplesPerSignal"), 0);
         LocalTime baseTime = parseBaseTime(matcher.group("baseTime"));
         LocalDate baseDate = parseBaseDate(matcher.group("baseDate"));
         return new HeaderRecord(name, numberOfSegments, numberOfSignals, samplingFrequency, counterFrequency,
@@ -74,11 +77,11 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
     }
 
     private static LocalTime parseBaseTime(String text) {
-        return !Util.isEmpty(text) ? LocalTime.parse(text.split("\\.")[0], BASE_TIME_FORMATTER) : null;
+        return !CommonUtil.isEmpty(text) ? LocalTime.parse(text.split("\\.")[0], BASE_TIME_FORMATTER) : null;
     }
 
     private static LocalDate parseBaseDate(String text) {
-        return !Util.isEmpty(text) ? LocalDate.parse(text, BASE_DATE_FORMATTER) : null;
+        return !CommonUtil.isEmpty(text) ? LocalDate.parse(text, BASE_DATE_FORMATTER) : null;
     }
 
     /**

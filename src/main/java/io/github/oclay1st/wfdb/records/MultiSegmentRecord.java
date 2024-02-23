@@ -1,4 +1,4 @@
-package io.github.oclay1st.wfdb;
+package io.github.oclay1st.wfdb.records;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
+
+import io.github.oclay1st.wfdb.exceptions.ParseException;
 
 /**
  * Represents a multi-segment record
@@ -43,17 +45,19 @@ public record MultiSegmentRecord(MultiSegmentHeader header, SingleSegmentRecord[
 
     @Override
     public boolean equals(Object object) {
-        if (object instanceof MultiSegmentRecord instance) {
-            return header.equals(instance.header) && Arrays.equals(records, instance.records);
-        }
-        return false;
+        return object instanceof MultiSegmentRecord instance && header.equals(instance.header)
+                && Arrays.equals(records, instance.records);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hash(header);
-        result = 31 * result + Arrays.hashCode(records);
-        return result;
+        return 31 * result + Arrays.hashCode(records);
+    }
+
+    @Override
+    public String toString() {
+        return "MultiSegmentRecord = [ header=" + header + ", records=" + Arrays.toString(records) + ']';
     }
 
 }

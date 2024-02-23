@@ -1,4 +1,4 @@
-package io.github.oclay1st.wfdb;
+package io.github.oclay1st.wfdb.records;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Objects;
+
+import io.github.oclay1st.wfdb.exceptions.ParseException;
 
 /**
  * Represents a single segment record header
@@ -66,16 +68,13 @@ public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] head
 
     @Override
     public boolean equals(Object object) {
-        if (object instanceof SingleSegmentHeader instance) {
-            return headerRecord.equals(instance.headerRecord) && Arrays.equals(headerSignals, instance.headerSignals);
-        }
-        return false;
+        return object instanceof SingleSegmentHeader instance && headerRecord.equals(instance.headerRecord)
+                && Arrays.equals(headerSignals, instance.headerSignals);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hash(headerRecord);
-        result = 31 * result + Arrays.hashCode(headerSignals);
-        return result;
+        return 31 * result + Arrays.hashCode(headerSignals);
     }
 }

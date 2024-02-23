@@ -1,4 +1,4 @@
-package io.github.oclay1st.wfdb;
+package io.github.oclay1st.wfdb.records;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -8,6 +8,8 @@ import java.nio.file.Path;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import io.github.oclay1st.wfdb.exceptions.ParseException;
 
 class MultiSegmentRecordTest {
 

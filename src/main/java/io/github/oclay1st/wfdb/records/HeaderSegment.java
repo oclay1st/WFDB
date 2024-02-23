@@ -1,7 +1,10 @@
-package io.github.oclay1st.wfdb;
+package io.github.oclay1st.wfdb.records;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import io.github.oclay1st.wfdb.exceptions.ParseException;
+import io.github.oclay1st.wfdb.utils.CommonUtil;
 
 /**
  * Represent the info from header segment
@@ -33,7 +36,7 @@ public record HeaderSegment(String name, int numberOfSamplesPerSignal) {
             throw new ParseException("Unable to parse the header segment");
         }
         String name = matcher.group("name");
-        int numberOfSamplesPerSignal = Util.parseOrDefault(matcher.group("numberOfSamplesPerSignal"), 0);
+        int numberOfSamplesPerSignal = CommonUtil.parseOrDefault(matcher.group("numberOfSamplesPerSignal"), 0);
         return new HeaderSegment(name, numberOfSamplesPerSignal);
     }
 

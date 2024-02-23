@@ -1,5 +1,6 @@
-package io.github.oclay1st.wfdb;
+package io.github.oclay1st.wfdb.records;
 
+import io.github.oclay1st.wfdb.exceptions.ParseException;
 import io.github.oclay1st.wfdb.formatters.SignalFormatter;
 import io.github.oclay1st.wfdb.formatters.SignalFormatter311;
 import io.github.oclay1st.wfdb.formatters.SignalFormatter16;
@@ -32,6 +33,11 @@ public enum SignalFormat {
             return new SignalFormatter8();
         }
 
+        @Override
+        public float bytesPerSample() {
+            return 1;
+        }
+
     },
     /**
      * Represents the signal format 16
@@ -48,6 +54,10 @@ public enum SignalFormat {
             return new SignalFormatter16();
         }
 
+        @Override
+        public float bytesPerSample() {
+            return 2;
+        }
     },
     /**
      * Represents the signal format 24
@@ -62,6 +72,11 @@ public enum SignalFormat {
         @Override
         public SignalFormatter formatter() {
             return new SignalFormatter24();
+        }
+
+        @Override
+        public float bytesPerSample() {
+            return 3;
         }
 
     },
@@ -80,6 +95,11 @@ public enum SignalFormat {
             return new SignalFormatter32();
         }
 
+        @Override
+        public float bytesPerSample() {
+            return 4;
+        }
+
     },
     /**
      * Represents the signal format 61
@@ -94,6 +114,11 @@ public enum SignalFormat {
         @Override
         public SignalFormatter formatter() {
             return new SignalFormatter61();
+        }
+
+        @Override
+        public float bytesPerSample() {
+            return 2;
         }
 
     },
@@ -112,6 +137,11 @@ public enum SignalFormat {
             return new SignalFormatter80();
         }
 
+        @Override
+        public float bytesPerSample() {
+            return 1;
+        }
+
     },
     /**
      * Represents the signal format 160
@@ -126,6 +156,11 @@ public enum SignalFormat {
         @Override
         public SignalFormatter formatter() {
             return new SignalFormatter160();
+        }
+
+        @Override
+        public float bytesPerSample() {
+            return 2;
         }
 
     },
@@ -144,6 +179,11 @@ public enum SignalFormat {
             return new SignalFormatter212();
         }
 
+        @Override
+        public float bytesPerSample() {
+            return 1.5f; // 3 bytes for each 2 samples = 3/2
+        }
+
     },
     /**
      * Represents the signal format 310
@@ -160,6 +200,11 @@ public enum SignalFormat {
             return new SignalFormatter310();
         }
 
+        @Override
+        public float bytesPerSample() {
+            return 4 / 3f; /// 4 bytes for each 3 samples = 4/3
+        }
+
     },
     /**
      * Represents the signal format 311
@@ -174,6 +219,11 @@ public enum SignalFormat {
         @Override
         public SignalFormatter formatter() {
             return new SignalFormatter311();
+        }
+
+        @Override
+        public float bytesPerSample() {
+            return 4 / 3f; /// 4 bytes for each 3 samples = 4/3
         }
 
     };
@@ -214,5 +264,12 @@ public enum SignalFormat {
      * @return the value of the bit resolution
      */
     public abstract int bitResolution();
+
+    /**
+     * Returns a float numbers of the bytes per samples of the format
+     *
+     * @return the value of the bytes per sample
+     */
+    public abstract float bytesPerSample();
 
 }
