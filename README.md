@@ -1,3 +1,4 @@
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.oclay1st/wfdb)](https://central.sonatype.com/artifact/io.github.oclay1st/wfdb)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=oclay1st_WFDB&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=oclay1st_WFDB)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=oclay1st_WFDB&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=oclay1st_WFDB)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=oclay1st_WFDB&metric=coverage)](https://sonarcloud.io/summary/new_code?id=oclay1st_WFDB)
@@ -12,25 +13,32 @@ This library is a pure Java implementation of the Waveform Database(WFDB) [speci
 - [x] Support for signal format: 8, 16, 24, 32, 61, 80, 160, 212, 310, 311 
 - [x] Support for different signal formats and files
 - [x] Multi-segment support
-- [ ] Parse ranges of time
+- [x] Filter by a range of time
+- [x] Filter by signals indices
 - [ ] Export records
 
-## Installation using Maven
-
-```xml
-
-<dependency>
-  <groupId>com.github.oclay1st</groupId>
-  <artifactId>wfdb</artifactId>
-  <version>1.1.0</version>
-</dependency>
-```
-
 ## Usage
+
 Parse a single segment record:
 ```
 Path path = Path.of(...);
 SingleSegementRecord record = SingleSegmentRecord.parse(path);
+```
+
+Parse and filter by time a single-segment record:
+```
+Path path = Path.of(...);
+long start = 0; // 0 millisecond
+long end = 1000; // 1000 milliseconds, first second 
+Filter filter = new Filter.Builder().startTime(start).endTime(end).build();
+SingleSegementRecord record = SingleSegmentRecord.parse(path, filter);
+```
+
+Parse and filter by singal indices a single-segment record:
+```
+Path path = Path.of(...);
+Filter filter = new Filter.Builder().signals(new int[]{0, 1, 2}).build();
+SingleSegementRecord record = SingleSegmentRecord.parse(path, filter);
 ```
 
 Parse a multi-segment record:
