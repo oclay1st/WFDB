@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
-import io.github.oclay1st.wfdb.Util;
+import io.github.oclay1st.wfdb.utils.CommonUtil;
 
 /**
  * Represents the signal formatter for format 61.
@@ -21,7 +21,7 @@ public final class SignalFormatter61 implements SignalFormatter {
     @Override
     public int[] convertBytesToSamples(byte[] source) {
         ShortBuffer buffer = ByteBuffer.wrap(source).order(ByteOrder.BIG_ENDIAN).asShortBuffer();
-        return Util.convertShortBufferToIntArray(buffer);
+        return CommonUtil.convertShortBufferToIntArray(buffer);
     }
 
     /**
@@ -30,7 +30,7 @@ public final class SignalFormatter61 implements SignalFormatter {
      */
     @Override
     public byte[] convertSamplesToBytes(int[] samples) {
-        short[] shortSamples = Util.convertArray(samples);
+        short[] shortSamples = CommonUtil.convertArray(samples);
         ByteBuffer buffer = ByteBuffer.allocate(samples.length * 2);
         buffer.order(ByteOrder.BIG_ENDIAN);
         buffer.asShortBuffer().put(shortSamples);
