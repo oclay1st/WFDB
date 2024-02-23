@@ -37,23 +37,23 @@ public final class SignalFormatter311 implements SignalFormatter {
         int sampleIndex = 0;
         int[] samples = new int[numberOfSamples + SAMPLES_PER_DISTRIBUTION];
         for (int i = 0; i < data.length; i += DISTRIBUTION) {
-            int firstByteUnsigned = data[i] & 0xFF;
-            int secondByteUnsigned = data[i + 1] & 0xFF;
-            int lastTwoBitsOfSecondByte = secondByteUnsigned & 0x03;
-            int firstSample = (lastTwoBitsOfSecondByte << 8) + firstByteUnsigned;
+            int firstUnsignedByte = data[i] & 0xFF;
+            int secondUnsignedByte = data[i + 1] & 0xFF;
+            int lastTwoBitsOfSecondByte = secondUnsignedByte & 0x03;
+            int firstSample = (lastTwoBitsOfSecondByte << 8) + firstUnsignedByte;
             // Convert to two complement amplitude
             samples[sampleIndex] = firstSample > 511 ? firstSample - 1024 : firstSample;
             // second sample
-            int thirdByteUnsigned = data[i + 2] & 0xFF;
-            int firstSixBitsOfSecondByte = secondByteUnsigned >> 2;
-            int lastFourBitsOfThirdByte = thirdByteUnsigned & 0x0F;
+            int thirdUnsignedByte = data[i + 2] & 0xFF;
+            int firstSixBitsOfSecondByte = secondUnsignedByte >> 2;
+            int lastFourBitsOfThirdByte = thirdUnsignedByte & 0x0F;
             int secondSample = (lastFourBitsOfThirdByte << 6) + firstSixBitsOfSecondByte;
             // Convert to two complement amplitude
             samples[sampleIndex + 1] = secondSample > 511 ? secondSample - 1024 : secondSample;
             // third sample
-            int fourthByteUnsigned = data[i + 3] & 0xFF;
-            int lastSevenBitsOfFourthByte = fourthByteUnsigned & 0x7F;
-            int firstFourBitsOfThirdByte = thirdByteUnsigned >> 4;
+            int fourthUnsignedByte = data[i + 3] & 0xFF;
+            int lastSevenBitsOfFourthByte = fourthUnsignedByte & 0x7F;
+            int firstFourBitsOfThirdByte = thirdUnsignedByte >> 4;
             int thirdSample = (lastSevenBitsOfFourthByte << 4) + firstFourBitsOfThirdByte;
             // Convert to two complement amplitude
             samples[sampleIndex + 2] = thirdSample > 511 ? thirdSample - 1024 : thirdSample;
@@ -72,21 +72,21 @@ public final class SignalFormatter311 implements SignalFormatter {
         byte[] source = new byte[numberOfBytes];
         int sourceIndex = 0;
         for (int i = 0; i < samples.length; i += SAMPLES_PER_DISTRIBUTION) {
-            int firstSampleUnsigned = samples[i] & 0x3FF;
-            int secondSampleUnsigned = samples[i + 1] & 0x3FF;
-            int thirdSampleUnsigned = samples[i + 2] & 0x3FF;
+            int firstUnsignedSample = samples[i] & 0x3FF;
+            int secondUnsignedSample = samples[i + 1] & 0x3FF;
+            int thirdUnsignedSample = samples[i + 2] & 0x3FF;
             // first byte
-            source[sourceIndex] = (byte) (firstSampleUnsigned);
+            source[sourceIndex] = (byte) (firstUnsignedSample);
             // second byte
-            int lastTwoBitsOfSecondByte = firstSampleUnsigned >> 8;
-            int firstSixBitsOfSecondByte = secondSampleUnsigned & 0xF;
+            int lastTwoBitsOfSecondByte = firstUnsignedSample >> 8;
+            int firstSixBitsOfSecondByte = secondUnsignedSample & 0xF;
             source[sourceIndex + 1] = (byte) (firstSixBitsOfSecondByte + lastTwoBitsOfSecondByte);
             // third byte
-            int lastFourBitsOfThirdByte = secondSampleUnsigned >> 6;
-            int firstFourBitsOfThirdByte = thirdSampleUnsigned & 0xF;
+            int lastFourBitsOfThirdByte = secondUnsignedSample >> 6;
+            int firstFourBitsOfThirdByte = thirdUnsignedSample & 0xF;
             source[sourceIndex + 2] = (byte) (firstFourBitsOfThirdByte + lastFourBitsOfThirdByte);
             // fourth byte
-            int lastSixBitsOfFourthByte = thirdSampleUnsigned >> 4;
+            int lastSixBitsOfFourthByte = thirdUnsignedSample >> 4;
             source[sourceIndex + 3] = (byte) (lastSixBitsOfFourthByte);
             // increment array index
             sourceIndex += DISTRIBUTION;

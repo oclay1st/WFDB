@@ -18,10 +18,10 @@ public final class SignalFormatter24 implements SignalFormatter {
         int numberOfSamples = source.length / 3;
         int[] samples = new int[numberOfSamples];
         for (int i = 0; i < source.length; i += 3) {
-            int firstByteUnsigned = source[i] & 0xFF;
-            int secondByteUnsigned = source[i + 1] & 0xFF;
-            int thirdByteUnsigned = source[i + 2] & 0xFF;
-            int sample = (thirdByteUnsigned << 16) + (secondByteUnsigned << 8) + firstByteUnsigned;
+            int firstUnsignedByte = source[i] & 0xFF;
+            int secondUnsignedByte = source[i + 1] & 0xFF;
+            int thirdUnsignedByte = source[i + 2] & 0xFF;
+            int sample = (thirdUnsignedByte << 16) + (secondUnsignedByte << 8) + firstUnsignedByte;
             samples[index] = sample > 8388607 ? sample - 16777216 : sample;
             index++;
         }
@@ -37,10 +37,10 @@ public final class SignalFormatter24 implements SignalFormatter {
         int index = 0;
         byte[] source = new byte[samples.length * 3];
         for (int sample : samples) {
-            int sampleUnsigned = sample & 0xFFFFFF;
-            source[index] = (byte) sampleUnsigned;
-            source[index + 1] = (byte) (sampleUnsigned >> 8);
-            source[index + 2] = (byte) (sampleUnsigned >> 16);
+            int unsignedSample = sample & 0xFFFFFF;
+            source[index] = (byte) unsignedSample;
+            source[index + 1] = (byte) (unsignedSample >> 8);
+            source[index + 2] = (byte) (unsignedSample >> 16);
             index += 3;
         }
         return source;
