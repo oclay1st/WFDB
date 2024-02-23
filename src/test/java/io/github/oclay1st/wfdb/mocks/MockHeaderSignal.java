@@ -1,8 +1,8 @@
 package io.github.oclay1st.wfdb.mocks;
 
-import io.github.oclay1st.wfdb.HeaderSignal;
-import io.github.oclay1st.wfdb.SignalFormat;
-import io.github.oclay1st.wfdb.SignalUnit;
+import io.github.oclay1st.wfdb.records.HeaderSignal;
+import io.github.oclay1st.wfdb.records.SignalFormat;
+import io.github.oclay1st.wfdb.records.SignalUnit;
 
 public class MockHeaderSignal {
 
