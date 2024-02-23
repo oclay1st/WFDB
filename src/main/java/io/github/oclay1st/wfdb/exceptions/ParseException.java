@@ -1,4 +1,4 @@
-package io.github.oclay1st.wfdb;
+package io.github.oclay1st.wfdb.exceptions;
 
 /**
  * Represents an exceptional situation in where is not possible to parse an
