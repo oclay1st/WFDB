@@ -1,13 +1,10 @@
-package io.github.oclay1st.wfdb.mocks.formatters;
+package io.github.oclay1st.wfdb.formatters;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import io.github.oclay1st.wfdb.formatters.SignalFormatter;
-import io.github.oclay1st.wfdb.formatters.SignalFormatter16;
 
 class SignalFormatter16Test {
 
@@ -28,7 +25,7 @@ class SignalFormatter16Test {
         SignalFormatter16 formatter = new SignalFormatter16();
         byte[] source = formatter.convertSamplesToBytes(samples);
         assertNotNull(source);
-        assertArrayEquals(new byte[]{ 1, 2, 3, 4 }, source);
+        assertArrayEquals(new byte[] { 1, 2, 3, 4 }, source);
     }
 
 }
