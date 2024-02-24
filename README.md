@@ -25,7 +25,7 @@ Path path = Path.of(...);
 SingleSegementRecord record = SingleSegmentRecord.parse(path);
 ```
 
-Parse and filter by time a single-segment record:
+Parse and filter a single-segment record by time:
 ```
 Path path = Path.of(...);
 long start = 0; // 0 millisecond
@@ -34,7 +34,7 @@ Filter filter = new Filter.Builder().startTime(start).endTime(end).build();
 SingleSegementRecord record = SingleSegmentRecord.parse(path, filter);
 ```
 
-Parse and filter by singal indices a single-segment record:
+Parse and filter a single-segment record by singal indices:
 ```
 Path path = Path.of(...);
 Filter filter = new Filter.Builder().signals(new int[]{0, 1, 2}).build();
