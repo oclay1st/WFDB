@@ -47,7 +47,7 @@ jobs:
           git config user.name "GitHub Actions"
     - name: Verify 
       run: |
-        mvn -Prelease verify
+        mvn -Prelease verify -Dgpg.skip
     - name: Release With Maven
       run: |
         export GPG_TTY=$(tty)

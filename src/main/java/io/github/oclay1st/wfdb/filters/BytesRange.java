@@ -10,6 +10,9 @@ public record BytesRange(long start, long end) {
 
     /**
      * Constructor of ByteRange
+     * 
+     * @param start the start byte index can't be less than zero or greater than end index
+     * @param end   the end byte index can't be less than zero or less than start index
      */
     public BytesRange {
         if (start < 0 || end < 0) {
