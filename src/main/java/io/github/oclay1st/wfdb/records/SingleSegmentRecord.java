@@ -1,18 +1,14 @@
 package io.github.oclay1st.wfdb.records;
 
-import static java.util.stream.Collectors.groupingBy;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import io.github.oclay1st.wfdb.exceptions.ParseException;
 import io.github.oclay1st.wfdb.filters.BytesRange;
@@ -46,6 +42,7 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
      * Parse a single-segment record given a path.
      *
      * @param recordPath the path where the record will be parsed
+     * @param filter the filter to apply on the record 
      * @return a new {@link SingleSegmentRecord} instance
      * @throws IOException    if the input is invalid
      * @throws ParseException if the text can't be parsed
@@ -55,12 +52,10 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
         FilterProcessor filterProcessor = FilterProcessor.process(filter, header);
         SingleSegmentHeader filteredHeader = filterProcessor.generateFilteredHeader();
         int numberOfSignals = filteredHeader.headerRecord().numberOfSignals();
-        int numberOfSamplesPerSignal = filteredHeader.headerRecord().numberOfSamplesPerSignal();
-        int[][] samplesPerSignal = new int[numberOfSignals][numberOfSamplesPerSignal];
+        int[][] samplesPerSignal = new int[numberOfSignals][0];
         int samplesPerSignalIndex = 0;
         // Group the signals by filename
-        Map<String, List<HeaderSignal>> recordFileMap = Arrays.stream(filteredHeader.headerSignals())
-                .collect(groupingBy(HeaderSignal::filename, LinkedHashMap::new, Collectors.toList()));
+        Map<String, List<HeaderSignal>> recordFileMap = filteredHeader.groupByHeaderSignalsByFilename();
         // Parse the signals samples in each file
         for (Map.Entry<String, List<HeaderSignal>> entry : recordFileMap.entrySet()) {
             Path samplesFilePath = recordPath.resolveSibling(entry.getKey());
@@ -117,12 +112,13 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
         SignalFormatter formatter = resolveSignalFormatter(headerSignals);
         int[] samples = formatter.convertBytesToSamples(source);
         int[][] samplesPerSignal = new int[headerSignals.length][samples.length / headerSignals.length];
-        int signalIndex;
-        for (int i = 0; i < headerSignals.length; i++) {
-            signalIndex = 0;
-            for (int j = i; j < samples.length; j += headerSignals.length) {
-                samplesPerSignal[i][signalIndex] = samples[j];
-                signalIndex++;
+        int localSignalIndex = 0, localSampleIndex = 0;
+        for (int sample : samples) {
+            samplesPerSignal[localSignalIndex][localSampleIndex] = sample;
+            localSignalIndex++;
+            if (localSignalIndex == headerSignals.length) {
+                localSignalIndex = 0;
+                localSampleIndex++;
             }
         }
         return samplesPerSignal;
