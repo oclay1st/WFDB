@@ -5,7 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import io.github.oclay1st.wfdb.exceptions.ParseException;
 
@@ -58,6 +62,16 @@ public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] head
             }
         }
         return new SingleSegmentHeader(headerRecord, headerSignals);
+    }
+
+    /**
+     * Group the header signals by filename
+     *
+     * @return the group of header signals
+     */
+    public Map<String, List<HeaderSignal>> groupByHeaderSignalsByFilename() {
+        return Arrays.stream(headerSignals)
+                .collect(Collectors.groupingBy(HeaderSignal::filename, LinkedHashMap::new, Collectors.toList()));
     }
 
     @Override
