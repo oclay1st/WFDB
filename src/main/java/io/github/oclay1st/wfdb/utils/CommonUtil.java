@@ -46,7 +46,7 @@ public class CommonUtil {
     /**
      * Cast a {@link ShortBuffer} to an int array.
      * 
-     * @param values the {@link ShortBuffer}
+     * @param buffer the {@link ShortBuffer} instance
      * @return the int array
      */
     public static int[] convertShortBufferToIntArray(ShortBuffer buffer) {

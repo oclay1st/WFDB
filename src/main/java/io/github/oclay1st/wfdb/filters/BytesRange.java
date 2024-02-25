@@ -8,6 +8,9 @@ package io.github.oclay1st.wfdb.filters;
  */
 public record BytesRange(long start, long end) {
 
+    /**
+     * Constructor of ByteRange
+     */
     public BytesRange {
         if (start < 0 || end < 0) {
             throw new IllegalArgumentException("Byte index can't be less than zero");
