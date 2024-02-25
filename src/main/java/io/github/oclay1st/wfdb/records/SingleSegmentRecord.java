@@ -112,7 +112,8 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
         SignalFormatter formatter = resolveSignalFormatter(headerSignals);
         int[] samples = formatter.convertBytesToSamples(source);
         int[][] samplesPerSignal = new int[headerSignals.length][samples.length / headerSignals.length];
-        int localSignalIndex = 0, localSampleIndex = 0;
+        int localSignalIndex = 0;
+        int localSampleIndex = 0;
         for (int sample : samples) {
             samplesPerSignal[localSignalIndex][localSampleIndex] = sample;
             localSignalIndex++;
