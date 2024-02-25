@@ -45,10 +45,13 @@ jobs:
       run: |
           git config user.email "actions@users.noreply.github.com"
           git config user.name "GitHub Actions"
+    - name: Verify 
+      run: |
+        mvn -Prelease verify
     - name: Release With Maven
       run: |
         export GPG_TTY=$(tty)
-        mvn -B --file pom.xml release:prepare release:perform \
+        mvn -B --file pom.xml -DskipTests release:prepare release:perform \
           -DreleaseVersion=${{ github.event.inputs.releaseVersion }} \
           -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
       env:
