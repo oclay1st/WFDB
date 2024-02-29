@@ -40,4 +40,13 @@ public record HeaderSegment(String name, int numberOfSamplesPerSignal) {
         return new HeaderSegment(name, numberOfSamplesPerSignal);
     }
 
+    /**
+     * Returns the header segment representation
+     *
+     * @return the text line representation
+     */
+    public String toTextLine() {
+        return name + " " + numberOfSamplesPerSignal;
+    }
+
 }
