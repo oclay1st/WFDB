@@ -2,12 +2,12 @@ package io.github.oclay1st.wfdb.records;
 
 import io.github.oclay1st.wfdb.exceptions.ParseException;
 import io.github.oclay1st.wfdb.formatters.SignalFormatter;
-import io.github.oclay1st.wfdb.formatters.SignalFormatter311;
 import io.github.oclay1st.wfdb.formatters.SignalFormatter16;
 import io.github.oclay1st.wfdb.formatters.SignalFormatter160;
 import io.github.oclay1st.wfdb.formatters.SignalFormatter212;
 import io.github.oclay1st.wfdb.formatters.SignalFormatter24;
 import io.github.oclay1st.wfdb.formatters.SignalFormatter310;
+import io.github.oclay1st.wfdb.formatters.SignalFormatter311;
 import io.github.oclay1st.wfdb.formatters.SignalFormatter32;
 import io.github.oclay1st.wfdb.formatters.SignalFormatter61;
 import io.github.oclay1st.wfdb.formatters.SignalFormatter8;
@@ -21,209 +21,110 @@ public enum SignalFormat {
     /**
      * Represents the signal format 8
      */
-    FORMAT_8 {
-
-        @Override
-        public int bitResolution() {
-            return 8;
-        }
+    FORMAT_8("8", 1, 8) {
 
         @Override
         public SignalFormatter formatter() {
             return new SignalFormatter8();
         }
 
-        @Override
-        public float bytesPerSample() {
-            return 1;
-        }
-
     },
     /**
      * Represents the signal format 16
      */
-    FORMAT_16 {
-
-        @Override
-        public int bitResolution() {
-            return 16;
-        }
+    FORMAT_16("16", 2, 16) {
 
         @Override
         public SignalFormatter formatter() {
             return new SignalFormatter16();
         }
 
-        @Override
-        public float bytesPerSample() {
-            return 2;
-        }
     },
     /**
      * Represents the signal format 24
      */
-    FORMAT_24 {
-
-        @Override
-        public int bitResolution() {
-            return 24;
-        }
+    FORMAT_24("24", 3, 24) {
 
         @Override
         public SignalFormatter formatter() {
             return new SignalFormatter24();
         }
 
-        @Override
-        public float bytesPerSample() {
-            return 3;
-        }
-
     },
     /**
      * Represents the signal format 32
      */
-    FORMAT_32 {
-
-        @Override
-        public int bitResolution() {
-            return 32;
-        }
+    FORMAT_32("32", 4, 32) {
 
         @Override
         public SignalFormatter formatter() {
             return new SignalFormatter32();
         }
 
-        @Override
-        public float bytesPerSample() {
-            return 4;
-        }
-
     },
     /**
      * Represents the signal format 61
      */
-    FORMAT_61 {
-
-        @Override
-        public int bitResolution() {
-            return 16;
-        }
+    FORMAT_61("61", 2, 16) {
 
         @Override
         public SignalFormatter formatter() {
             return new SignalFormatter61();
         }
 
-        @Override
-        public float bytesPerSample() {
-            return 2;
-        }
-
     },
     /**
      * Represents the signal format 80
      */
-    FORMAT_80 {
-
-        @Override
-        public int bitResolution() {
-            return 8;
-        }
+    FORMAT_80("80", 1, 8) {
 
         @Override
         public SignalFormatter formatter() {
             return new SignalFormatter80();
         }
 
-        @Override
-        public float bytesPerSample() {
-            return 1;
-        }
-
     },
     /**
      * Represents the signal format 160
      */
-    FORMAT_160 {
-
-        @Override
-        public int bitResolution() {
-            return 16;
-        }
+    FORMAT_160("160", 2, 16) {
 
         @Override
         public SignalFormatter formatter() {
             return new SignalFormatter160();
         }
 
-        @Override
-        public float bytesPerSample() {
-            return 2;
-        }
-
     },
     /**
      * Represents the signal format 212
      */
-    FORMAT_212 {
-
-        @Override
-        public int bitResolution() {
-            return 12;
-        }
+    FORMAT_212("212", 1.5f, 12) {
 
         @Override
         public SignalFormatter formatter() {
             return new SignalFormatter212();
         }
 
-        @Override
-        public float bytesPerSample() {
-            return 1.5f; // 3 bytes for each 2 samples = 3/2
-        }
-
     },
     /**
      * Represents the signal format 310
      */
-    FORMAT_310 {
-
-        @Override
-        public int bitResolution() {
-            return 10;
-        }
+    FORMAT_310("310", 4 / 3f, 10) {
 
         @Override
         public SignalFormatter formatter() {
             return new SignalFormatter310();
         }
 
-        @Override
-        public float bytesPerSample() {
-            return 4 / 3f; /// 4 bytes for each 3 samples = 4/3
-        }
-
     },
     /**
      * Represents the signal format 311
      */
-    FORMAT_311 {
-
-        @Override
-        public int bitResolution() {
-            return 10;
-        }
+    FORMAT_311("311", 4 / 3f, 10) {
 
         @Override
         public SignalFormatter formatter() {
             return new SignalFormatter311();
-        }
-
-        @Override
-        public float bytesPerSample() {
-            return 4 / 3f; /// 4 bytes for each 3 samples = 4/3
         }
 
     };
@@ -251,6 +152,18 @@ public enum SignalFormat {
         };
     }
 
+    private final String text;
+
+    private final float bytesPerSample;
+
+    private final int bitResolution;
+
+    SignalFormat(String text, float bytesPerSample, int bitResolution) {
+        this.text = text;
+        this.bytesPerSample = bytesPerSample;
+        this.bitResolution = bitResolution;
+    }
+
     /**
      * Returns the formatter for the current format
      *
@@ -263,13 +176,26 @@ public enum SignalFormat {
      *
      * @return the value of the bit resolution
      */
-    public abstract int bitResolution();
+    public int bitResolution() {
+        return bitResolution;
+    }
 
     /**
      * Returns a float numbers of the bytes per samples of the format
      *
      * @return the value of the bytes per sample
      */
-    public abstract float bytesPerSample();
+    public float bytesPerSample() {
+        return bytesPerSample;
+    }
+
+    /**
+     * Returns the text value of the format
+     *
+     * @return the value of text
+     */
+    public String text() {
+        return text;
+    }
 
 }
