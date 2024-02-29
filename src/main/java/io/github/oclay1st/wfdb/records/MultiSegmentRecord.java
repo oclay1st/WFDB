@@ -28,7 +28,7 @@ public record MultiSegmentRecord(MultiSegmentHeader header, SingleSegmentRecord[
     public static MultiSegmentRecord parse(Path recordPath) throws IOException, ParseException {
         Path headerFilePath = recordPath.resolveSibling(recordPath.getFileName() + ".hea");
         try (InputStream inputStream = Files.newInputStream(headerFilePath)) {
-            // Parse the multi segment header file
+            // Parse the multi-segment header file
             MultiSegmentHeader header = MultiSegmentHeader.parse(inputStream);
             int recordIndex = 0;
             SingleSegmentRecord[] singleSegmentRecords = new SingleSegmentRecord[header.headerRecord()

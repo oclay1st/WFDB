@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 
@@ -58,12 +59,25 @@ class SingleSegmentRecordTest {
     }
 
     @Test
-    @DisplayName("Should parse multiformat record")
-    void shouldParseMultiformatRecord() throws ParseException, IOException {
+    @DisplayName("Should parse multi-format record")
+    void shouldParseMultiFormatRecord() throws ParseException, IOException {
         Path recordPath = Path.of("src", "test", "resources", "single-segment", "all-formats", "binformats")
                 .toAbsolutePath();
         SingleSegmentRecord record = SingleSegmentRecord.parse(recordPath);
         assertNotNull(record);
+    }
+
+    @Test
+    @DisplayName("Should export the record")
+    void shouldExportTheRecord() throws IOException, ParseException {
+        Path recordPath = Path.of("src", "test", "resources", "single-segment", "00001", "00001_lr").toAbsolutePath();
+        SingleSegmentRecord record = SingleSegmentRecord.parse(recordPath);
+        assertNotNull(record);
+        Path exportedRecordPath = Files.createTempDirectory("export-record").resolve("00001_lr");
+        record.export(exportedRecordPath);
+        SingleSegmentRecord exportedRecord = SingleSegmentRecord.parse(exportedRecordPath);
+        assertNotNull(exportedRecordPath);
+        assertEquals(record, exportedRecord);
     }
 
 }

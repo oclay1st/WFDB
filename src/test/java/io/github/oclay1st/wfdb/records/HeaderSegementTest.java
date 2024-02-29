@@ -32,4 +32,15 @@ class HeaderSegementTest {
         assertThrows(ParseException.class, () -> HeaderSegment.parse(headerText));
     }
 
+    @ParameterizedTest(name = "in {0}")
+    @DisplayName("Should parse and generate the same text of header segment")
+    @ValueSource(strings = {
+            "record_0 500",
+            "record_1 100"
+    })
+    void shouldParseAndGenerateTheSameText(String textLine) throws ParseException {
+        HeaderSegment headerSegment = HeaderSegment.parse(textLine);
+        assertEquals(textLine, headerSegment.toTextLine());
+    }
+
 }

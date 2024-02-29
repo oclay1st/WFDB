@@ -1,6 +1,7 @@
 package io.github.oclay1st.wfdb.records;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -8,6 +9,8 @@ import java.time.LocalTime;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import io.github.oclay1st.wfdb.exceptions.ParseException;
 
@@ -37,6 +40,26 @@ class HeaderRecordTest {
         assertEquals(12, headerRecord.numberOfSignals());
         assertEquals(100f, headerRecord.samplingFrequency());
         assertEquals(1000, headerRecord.numberOfSamplesPerSignal());
+    }
+
+    @ParameterizedTest(name = "in {0}")
+    @DisplayName("Should parse and genereate the same text of the single-header record")
+    @ValueSource(strings = {
+            "sample_0 2 500.0 5000",
+            "sample_1 12 100.0 1000 11:20:30 10/10/2001",
+            "sample_2 4 200.0/100.0(2.0) 400"
+    })
+    void shouldParseAndGenerateTheSameText(String textLine) throws ParseException {
+        HeaderRecord headerRecord = HeaderRecord.parse(textLine);
+        assertEquals(textLine, headerRecord.toTextLine());
+    }
+    
+
+    @ParameterizedTest(name = ": {0}")
+    @ValueSource(strings = { "record/f", "record/2 vali" , "record 12 100 e1000"})
+    @DisplayName("Should throw ParseException for input")
+    void shouldThrowParseException(String headerRecordText) {
+        assertThrows(ParseException.class, () -> HeaderRecord.parse(headerRecordText));
     }
 
 }

@@ -2,6 +2,8 @@ package io.github.oclay1st.wfdb.records;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,6 +66,37 @@ class HeaderSignalTest {
         int[] samples = { 2, 4, 6, 8 };
         int checksum = HeaderSignal.calculateChecksum(samples);
         assertEquals(20, checksum);
+    }
+
+    @ParameterizedTest(name = "in {0}")
+    @DisplayName("Should parse and generate the same text of header signal")
+    @ValueSource(strings = {
+            "signal.1 16x4 1000.0(0)/mV 16 0 10 56654 0 I",
+            "signal.2 212x1 1000.0(0)/mV 212 0 -231 32423 0 AVR",
+            "signal.3 212x1:3+1 1000.0(0)/mV 212 0 -231 32423 0 AVR",
+    })
+    void shouldParseAndGenerateTheSameText(String textLine) throws ParseException {
+        HeaderSignal headerSignal = HeaderSignal.parse(textLine);
+        assertEquals(textLine, headerSignal.toTextLine());
+    }
+
+    @ParameterizedTest(name = "in {0}")
+    @DisplayName("Should match the checksum")
+    @ValueSource(strings = {
+            "signal.1 16 1000.0(0)/mV 16 0 10 -1638 0 I",
+            "signal.1 16 1000.0(0)/mV 16 0 10 63898 0 I",
+    })
+    void shouldMatchChecksum(String headerSignalText) throws ParseException {
+        HeaderSignal headerSignal = HeaderSignal.parse(headerSignalText);
+        int[] samples = { 252123, 41562, 21933, 10424 };
+        assertTrue(headerSignal.matchChecksum(samples));
+    }
+
+    @ParameterizedTest(name = ": {0}")
+    @ValueSource(strings = { "**", "---", "signal mv" })
+    @DisplayName("Should throw ParseException for input")
+    void shouldThrowParseException(String headerSignalText) {
+        assertThrows(ParseException.class, () -> HeaderSignal.parse(headerSignalText));
     }
 
 }

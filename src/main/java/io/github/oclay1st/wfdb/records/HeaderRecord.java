@@ -103,4 +103,32 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
         return Duration.ofMillis(milliseconds);
     }
 
+    /**
+     * Returns the header record representation
+     *
+     * @return the text line representation
+     */
+    public String toTextLine() {
+        StringBuilder builder = new StringBuilder(name);
+        if (numberOfSegments > 1) {
+            builder.append("/").append(numberOfSegments);
+        }
+        builder.append(" ").append(numberOfSignals);
+        builder.append(" ").append(samplingFrequency);
+        if (counterFrequency != samplingFrequency) {
+            builder.append("/").append(counterFrequency);
+        }
+        if (baseCounter != 0) {
+            builder.append("(").append(baseCounter).append(")");
+        }
+        builder.append(" ").append(numberOfSamplesPerSignal);
+        if (baseTime != null) {
+            builder.append(" ").append(BASE_TIME_FORMATTER.format(baseTime));
+        }
+        if (baseDate != null) {
+            builder.append(" ").append(BASE_DATE_FORMATTER.format(baseDate));
+        }
+        return builder.toString();
+    }
+
 }
