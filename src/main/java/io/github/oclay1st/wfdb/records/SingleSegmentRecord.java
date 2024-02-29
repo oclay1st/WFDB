@@ -26,7 +26,7 @@ import io.github.oclay1st.wfdb.formatters.SignalFormatter8;
 public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPerSignal) {
 
     /**
-     * Parse a single-segment record given a path.
+     * Parse a single-segment record.
      *
      * @param recordPath the path where the record will be parsed
      * @return a new {@link SingleSegmentRecord} instance
@@ -39,10 +39,10 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
     }
 
     /**
-     * Parse a single-segment record given a path.
+     * Parse and filter a single-segment record.
      *
      * @param recordPath the path where the record will be parsed
-     * @param filter the filter to apply on the record 
+     * @param filter     the filter to apply on the record
      * @return a new {@link SingleSegmentRecord} instance
      * @throws IOException    if the input is invalid
      * @throws ParseException if the text can't be parsed
@@ -55,25 +55,26 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
         int[][] samplesPerSignal = new int[numberOfSignals][0];
         int samplesPerSignalIndex = 0;
         // Group the signals by filename
-        Map<String, List<HeaderSignal>> recordFileMap = filteredHeader.groupByHeaderSignalsByFilename();
+        Map<String, List<HeaderSignal>> recordFileMap = filteredHeader.groupHeaderSignalsByFilename();
         // Parse the signals samples in each file
         for (Map.Entry<String, List<HeaderSignal>> entry : recordFileMap.entrySet()) {
             Path samplesFilePath = recordPath.resolveSibling(entry.getKey());
             HeaderSignal[] headerSignals = entry.getValue().toArray(HeaderSignal[]::new);
             BytesRange bytesRange = filterProcessor.calculateBytesRange(headerSignals);
             byte[] source = parseSamplesFile(samplesFilePath, bytesRange);
-            int[][] samples = parseSamplesSource(source, headerSignals);
+            int[][] samples = convertToSamples(source, headerSignals);
             System.arraycopy(samples, 0, samplesPerSignal, samplesPerSignalIndex, samples.length);
             samplesPerSignalIndex += samples.length;
         }
-        return new SingleSegmentRecord(filteredHeader, samplesPerSignal);
+        SingleSegmentHeader finalHeader = filteredHeader.generateChecksumCopy(samplesPerSignal);
+        return new SingleSegmentRecord(finalHeader, samplesPerSignal);
     }
 
     /**
-     * Read the single segment header from file
+     * Read the single-segment header from file
      *
      * @param recordPath the path where the record will be parsed
-     * @return the single segment header
+     * @return the single-segment header
      * @throws IOException    if the input is invalid
      * @throws ParseException if the text can't be parsed
      */
@@ -102,13 +103,13 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
     }
 
     /**
-     * Convert the samples source to array of samples per signals
+     * Convert the samples source to array of samples per signals.
      *
      * @param source        the source of bytes
      * @param headerSignals the array of signals
      * @return an array of samples for each signal
      */
-    private static int[][] parseSamplesSource(byte[] source, HeaderSignal[] headerSignals) {
+    private static int[][] convertToSamples(byte[] source, HeaderSignal[] headerSignals) {
         SignalFormatter formatter = resolveSignalFormatter(headerSignals);
         int[] samples = formatter.convertBytesToSamples(source);
         int[][] samplesPerSignal = new int[headerSignals.length][samples.length / headerSignals.length];
@@ -142,6 +143,54 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
             instance.setInitialSignalSamples(initialValues);
         }
         return formatter;
+    }
+
+    /**
+     * Export the single-segment record. Generate the header and signal(s) files.
+     *
+     * @param recordPath the path of the record 
+     * @throws IOException if the record can't be exported.
+     */
+    public void export(Path recordPath) throws IOException {
+        // Create the header file
+        Path headerFilePath = recordPath.resolveSibling(recordPath.getFileName() + ".hea");
+        Files.createDirectories(recordPath.getParent());
+        Files.writeString(headerFilePath, header.toTextBlock());
+        // Create the samples files for signals
+        Map<String, List<HeaderSignal>> recordFileMap = header.groupHeaderSignalsByFilename();
+        int samplesPerSignalIndex = 0;
+        for (Map.Entry<String, List<HeaderSignal>> entry : recordFileMap.entrySet()) {
+            Path samplesFilePath = recordPath.resolveSibling(entry.getKey());
+            HeaderSignal[] headerSignals = entry.getValue().toArray(HeaderSignal[]::new);
+            int lastSignalPerSignalIndex = samplesPerSignalIndex + headerSignals.length;
+            int[][] samples = Arrays.copyOfRange(samplesPerSignal, samplesPerSignalIndex, lastSignalPerSignalIndex);
+            byte[] source = convertToSource(samples, headerSignals);
+            Files.write(samplesFilePath, source);
+        }
+    }
+
+    /**
+     * Convert the samples of signals to an array of bytes.
+     *
+     * @param samples       the array of samples
+     * @param headerSignals the array of {@link HeaderSignal}
+     * @return the array of bytes
+     */
+    private byte[] convertToSource(int[][] samples, HeaderSignal[] headerSignals) {
+        int numberOfSamples = samples[0].length * samples.length;
+        int[] formattedSamples = new int[numberOfSamples];
+        int localSignalIndex = 0;
+        int localSampleIndex = 0;
+        for (int i = 0; i < numberOfSamples; i++) {
+            formattedSamples[i] = samples[localSignalIndex][localSampleIndex];
+            localSignalIndex++;
+            if (localSignalIndex == headerSignals.length) {
+                localSignalIndex = 0;
+                localSampleIndex++;
+            }
+        }
+        SignalFormatter formatter = resolveSignalFormatter(headerSignals);
+        return formatter.convertSamplesToBytes(formattedSamples);
     }
 
     @Override
