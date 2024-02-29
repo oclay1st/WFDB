@@ -117,4 +117,33 @@ public record HeaderSignal(String filename, SignalFormat format, int samplesPerF
         return unsignedChecksum > 32767 ? unsignedChecksum - 65536 : unsignedChecksum;
     }
 
+    /**
+     * Returns the header signal representation
+     *
+     * @return the text line representation
+     */
+    public String toTextLine() {
+        StringBuilder builder = new StringBuilder(filename);
+        builder.append(" ").append(format.text()).append("x").append(samplesPerFrame);
+        if (skew != 0) {
+            builder.append(":").append(skew);
+        }
+        if (bytesOffset != 0) {
+            builder.append("+").append(bytesOffset);
+        }
+        builder.append(" ");
+        if (adcGain != 0) {
+            builder.append(adcGain);
+            builder.append("(").append(baseline).append(")");
+            builder.append("/").append(unit.symbol());
+            builder.append(" ").append(adcResolution);
+            builder.append(" ").append(adcZero);
+            builder.append(" ").append(initialValue);
+        }
+        builder.append(" ").append(checksum);
+        builder.append(" ").append(blockSize);
+        builder.append(" ").append(description);
+        return builder.toString();
+    }
+
 }
