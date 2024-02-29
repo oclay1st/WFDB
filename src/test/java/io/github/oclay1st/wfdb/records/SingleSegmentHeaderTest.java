@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ import io.github.oclay1st.wfdb.exceptions.ParseException;
 class SingleSegmentHeaderTest {
 
     @Test
-    @DisplayName("Should parse the single segment header ignoring comments and blank lines")
+    @DisplayName("Should parse the single-segment header ignoring comments and blank lines")
     void shouldIgnoreCommentsAndBlankLines() throws IOException, ParseException {
         String headerText = """
                 #<age>: 60
@@ -52,7 +53,7 @@ class SingleSegmentHeaderTest {
     }
 
     @Test
-    @DisplayName("Should parse the single segment header")
+    @DisplayName("Should parse the single-segment header")
     void shouldParseTheSingleSegmentHeader() throws IOException, ParseException {
         String headerText = """
                 16 1 500 5000
@@ -76,11 +77,27 @@ class SingleSegmentHeaderTest {
     }
 
     @ParameterizedTest(name = ": {0}")
-    @ValueSource(strings = {  "**", "---" })
+    @ValueSource(strings = { "**", "---" })
     @DisplayName("Should throw ParseException for input")
     void shouldThrowParseException(String headerText) {
         ByteArrayInputStream headerInput = new ByteArrayInputStream(headerText.getBytes());
         assertThrows(ParseException.class, () -> SingleSegmentHeader.parse(headerInput));
+    }
+
+    @ParameterizedTest(name = "in {0}")
+    @DisplayName("Should parse and generete the same text block of the header")
+    @ValueSource(strings = {
+            """
+                    sample_0 1 500.0 5000
+                    signal.1 16x4 1000.0(0)/mV 16 0 10 56654 0 I""",
+            """
+                    sample_1 1 100.0 1000 11:20:30 10/10/2001
+                    d0.7001 8x1 100.0(0)/mV 10 0 -53 -1279 0 ECG signal 0"""
+    })
+    void shouldParseAndGenerateTheSameText(String textLine) throws IOException, ParseException {
+        InputStream inputStream = new ByteArrayInputStream(textLine.getBytes());
+        SingleSegmentHeader header = SingleSegmentHeader.parse(inputStream);
+        assertEquals(textLine, header.toTextBlock());
     }
 
 }
