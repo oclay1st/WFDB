@@ -60,6 +60,21 @@ public record MultiSegmentHeader(HeaderRecord headerRecord, HeaderSegment[] head
         return new MultiSegmentHeader(headerRecord, headerSegments);
     }
 
+    /**
+     * Returns the multi-segment header representation
+     *
+     * @return the text block representation
+     */
+    public String toTextBlock() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(headerRecord.toTextLine());
+        for (HeaderSegment headerSegment : headerSegments) {
+            builder.append("\n");
+            builder.append(headerSegment.toTextLine());
+        }
+        return builder.toString();
+    }
+
     @Override
     public String toString() {
         return "MultiSegmentHeader [headerRecord = " + headerRecord + ", headerSegments = "
