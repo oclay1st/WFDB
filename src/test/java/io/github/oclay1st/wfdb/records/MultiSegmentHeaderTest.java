@@ -6,16 +6,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import io.github.oclay1st.wfdb.exceptions.ParseException;
 
 class MultiSegmentHeaderTest {
 
     @Test
-    @DisplayName("Should parse the multi segment header")
+    @DisplayName("Should parse the multi-segment header")
     void shouldParseTheMultiSegmentHeader() throws IOException, ParseException {
         String headerText = """
                 multi/2 4 360 45000
@@ -38,7 +41,7 @@ class MultiSegmentHeaderTest {
     }
 
     @Test
-    @DisplayName("Should parse the multi segment header ignorig comments and blank lines")
+    @DisplayName("Should parse the multi-segment header ignorig comments and blank lines")
     void shouldIgnoreCommentsAndBlankLines() throws IOException, ParseException {
         String headerText = """
                 multi/3 2 360 45000
@@ -56,4 +59,22 @@ class MultiSegmentHeaderTest {
         assertEquals(3, header.headerSegments().length);
     }
 
+    @ParameterizedTest(name = "in {0}")
+    @DisplayName("Should parse and generate the same text block of the multi-segment header")
+    @ValueSource(strings = {
+            """
+                    sample/2 1 100.0 1000
+                    sample_0 500
+                    sample_1 500""",
+            """
+                    multi/3 2 360.0 45000
+                    100s 21600
+                    null 1800
+                    100s 21600"""
+    })
+    void shouldParseAndGenereateTheSameText(String textBlock) throws IOException, ParseException {
+        InputStream inputStream = new ByteArrayInputStream(textBlock.getBytes());
+        MultiSegmentHeader header = MultiSegmentHeader.parse(inputStream);
+        assertEquals(textBlock, header.toTextBlock());
+    }
 }
