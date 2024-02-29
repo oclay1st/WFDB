@@ -15,11 +15,11 @@ This library is a pure Java implementation of the Waveform Database(WFDB) [speci
 - [x] Multi-segment support
 - [x] Filter by a range of time
 - [x] Filter by signals indices
-- [ ] Export records
+- [x] Export records
 
 ## Usage
 
-Parse a single segment record:
+Parse a single-segment record:
 ```
 Path path = Path.of(...);
 SingleSegementRecord record = SingleSegmentRecord.parse(path);
@@ -29,7 +29,7 @@ Parse and filter a single-segment record by time:
 ```
 Path path = Path.of(...);
 long start = 0; // 0 millisecond
-long end = 1000; // 1000 milliseconds, first second 
+long end = 1000; // first second 
 Filter filter = new Filter.Builder().startTime(start).endTime(end).build();
 SingleSegementRecord record = SingleSegmentRecord.parse(path, filter);
 ```
@@ -45,6 +45,15 @@ Parse a multi-segment record:
 ```
 Path path = Path.of(...);
 MultiSegmentRecord record = MultiSegmentRecord.parse(path);
+```
+
+Export a single-segment record:
+```
+Path path = Path.of(...);
+Filter fiter = new Filter(...);
+SingleSegmentRecord record = SingleSegmentRecord.parse(path, filter);
+Path exportPath = Path.of(...);
+record.export(exportPath);
 ```
 
 ## Contributing
