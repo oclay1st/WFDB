@@ -51,7 +51,7 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
         SingleSegmentHeader header = parseHeaderFile(recordPath);
         FilterProcessor filterProcessor = FilterProcessor.process(filter, header);
         SingleSegmentHeader filteredHeader = filterProcessor.generateFilteredHeader();
-        int numberOfSignals = filteredHeader.headerRecord().numberOfSignals();
+        int numberOfSignals = filteredHeader.record().numberOfSignals();
         int[][] samplesPerSignal = new int[numberOfSignals][0];
         int samplesPerSignalIndex = 0;
         // Group the signals by filename
@@ -148,7 +148,7 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
     /**
      * Export the single-segment record. Generate the header and signal(s) files.
      *
-     * @param recordPath the path of the record 
+     * @param recordPath the path of the record
      * @throws IOException if the record can't be exported.
      */
     public void export(Path recordPath) throws IOException {

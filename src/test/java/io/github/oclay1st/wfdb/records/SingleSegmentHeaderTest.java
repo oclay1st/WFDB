@@ -20,7 +20,7 @@ class SingleSegmentHeaderTest {
 
     @Test
     @DisplayName("Should parse the single-segment header ignoring comments and blank lines")
-    void shouldIgnoreCommentsAndBlankLines() throws IOException, ParseException {
+    void shouldIgnoreBlankLines() throws IOException, ParseException {
         String headerText = """
                 #<age>: 60
                 #<sex>: M
@@ -37,18 +37,18 @@ class SingleSegmentHeaderTest {
         ByteArrayInputStream headerInput = new ByteArrayInputStream(headerText.getBytes());
         SingleSegmentHeader header = SingleSegmentHeader.parse(headerInput);
         assertNotNull(header);
-        assertNotNull(header.headerRecord());
-        assertNotNull(header.headerSignals());
-        assertFalse(header.headerRecord().isMultiSegment());
-        assertEquals(header.headerRecord().numberOfSignals(), header.headerSignals().length);
-        assertEquals("000006", header.headerRecord().name());
-        assertEquals(100, header.headerRecord().samplingFrequency());
-        assertEquals(1000, header.headerRecord().numberOfSamplesPerSignal());
-        assertEquals("000006.dat", header.headerSignals()[0].filename());
-        assertEquals(SignalFormat.FORMAT_16, header.headerSignals()[0].format());
-        assertEquals(SignalUnit.MILLIVOLT, header.headerSignals()[0].unit());
-        assertEquals(755, header.headerSignals()[0].checksum());
-        assertEquals("ii", header.headerSignals()[0].description());
+        assertNotNull(header.record());
+        assertNotNull(header.signals());
+        assertFalse(header.record().isMultiSegment());
+        assertEquals(header.record().numberOfSignals(), header.signals().length);
+        assertEquals("000006", header.record().name());
+        assertEquals(100, header.record().samplingFrequency());
+        assertEquals(1000, header.record().numberOfSamplesPerSignal());
+        assertEquals("000006.dat", header.signals()[0].filename());
+        assertEquals(SignalFormat.FORMAT_16, header.signals()[0].format());
+        assertEquals(SignalUnit.MILLIVOLT, header.signals()[0].unit());
+        assertEquals(755, header.signals()[0].checksum());
+        assertEquals("ii", header.signals()[0].description());
         headerInput.close();
     }
 
@@ -61,18 +61,18 @@ class SingleSegmentHeaderTest {
         ByteArrayInputStream headerInput = new ByteArrayInputStream(headerText.getBytes());
         SingleSegmentHeader header = SingleSegmentHeader.parse(headerInput);
         assertNotNull(header);
-        assertNotNull(header.headerSignals());
-        assertNotNull(header.headerRecord());
-        assertFalse(header.headerRecord().isMultiSegment());
-        assertEquals(header.headerSignals().length, header.headerRecord().numberOfSignals());
-        assertEquals("16", header.headerRecord().name());
-        assertEquals(500, header.headerRecord().samplingFrequency());
-        assertEquals(5000, header.headerRecord().numberOfSamplesPerSignal());
-        assertEquals("16.dat", header.headerSignals()[0].filename());
-        assertEquals(SignalFormat.FORMAT_16, header.headerSignals()[0].format());
-        assertEquals(SignalUnit.MILLIVOLT, header.headerSignals()[0].unit());
-        assertEquals(3038, header.headerSignals()[0].checksum());
-        assertEquals("i", header.headerSignals()[0].description());
+        assertNotNull(header.signals());
+        assertNotNull(header.record());
+        assertFalse(header.record().isMultiSegment());
+        assertEquals(header.signals().length, header.record().numberOfSignals());
+        assertEquals("16", header.record().name());
+        assertEquals(500, header.record().samplingFrequency());
+        assertEquals(5000, header.record().numberOfSamplesPerSignal());
+        assertEquals("16.dat", header.signals()[0].filename());
+        assertEquals(SignalFormat.FORMAT_16, header.signals()[0].format());
+        assertEquals(SignalUnit.MILLIVOLT, header.signals()[0].unit());
+        assertEquals(3038, header.signals()[0].checksum());
+        assertEquals("i", header.signals()[0].description());
         headerInput.close();
     }
 

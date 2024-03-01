@@ -84,8 +84,7 @@ public record Filter(Long startTime, Long endTime, int[] signals) {
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(startTime, endTime);
-        return 31 * result + Arrays.hashCode(signals);
+        return 31 * Objects.hash(startTime, endTime) + Arrays.hashCode(signals);
     }
 
     @Override

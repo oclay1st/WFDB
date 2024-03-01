@@ -16,10 +16,10 @@ import io.github.oclay1st.wfdb.exceptions.ParseException;
 /**
  * Represents a single-segment record header.
  *
- * @param headerRecord  the header record
- * @param headerSignals the array of header signals
+ * @param record  the header record
+ * @param signals the array of header signals
  */
-public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] headerSignals) {
+public record SingleSegmentHeader(HeaderRecord record, HeaderSignal[] signals, String comments) { // NOSONAR
 
     /**
      * Parse the single-segment header from an input form.
@@ -47,12 +47,15 @@ public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] head
         int signalIndex = 0;
         String headerLine;
         boolean headerRecordProcessed = false;
+        StringBuilder commentsBuilder = new StringBuilder();
         while ((headerLine = reader.readLine()) != null) {
             String stripedHeaderLine = headerLine.strip();
-            if (stripedHeaderLine.isEmpty() || stripedHeaderLine.charAt(0) == '#') {
+            if (stripedHeaderLine.isEmpty()) {
                 continue;
             }
-            if (!headerRecordProcessed) {
+            if (stripedHeaderLine.charAt(0) == '#') {
+                commentsBuilder.append('\n').append(stripedHeaderLine);
+            } else if (!headerRecordProcessed) {
                 headerRecord = HeaderRecord.parse(stripedHeaderLine);
                 headerSignals = new HeaderSignal[headerRecord.numberOfSignals()];
                 headerRecordProcessed = true;
@@ -61,7 +64,7 @@ public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] head
                 signalIndex++;
             }
         }
-        return new SingleSegmentHeader(headerRecord, headerSignals);
+        return new SingleSegmentHeader(headerRecord, headerSignals, commentsBuilder.toString());
     }
 
     /**
@@ -70,7 +73,7 @@ public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] head
      * @return the group of header signals
      */
     public Map<String, List<HeaderSignal>> groupHeaderSignalsByFilename() {
-        return Arrays.stream(headerSignals)
+        return Arrays.stream(signals)
                 .collect(Collectors.groupingBy(HeaderSignal::filename, LinkedHashMap::new, Collectors.toList()));
     }
 
@@ -81,24 +84,23 @@ public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] head
      */
     public String toTextBlock() {
         StringBuilder builder = new StringBuilder();
-        builder.append(headerRecord.toTextLine());
-        for (HeaderSignal headerSignal : headerSignals) {
-            builder.append("\n");
-            builder.append(headerSignal.toTextLine());
+        builder.append(record.toTextLine());
+        for (HeaderSignal headerSignal : signals) {
+            builder.append('\n').append(headerSignal.toTextLine());
         }
         return builder.toString();
     }
 
     /**
-     * Generate a copy of the header with the checksum of the singals.
+     * Generate a copy of the header with the checksum of the signals.
      *
-     * @param samplesPerSignal the array of samples per singal
+     * @param samplesPerSignal the array of samples per signal
      * @return a new {@link SingleSegmentHeader} instance
      */
     public SingleSegmentHeader generateChecksumCopy(int[][] samplesPerSignal) {
-        HeaderSignal[] newHeaderSignals = new HeaderSignal[headerSignals.length];
-        for (int i = 0; i < headerSignals.length; i++) {
-            HeaderSignal headerSignal = headerSignals[i];
+        HeaderSignal[] newHeaderSignals = new HeaderSignal[signals.length];
+        for (int i = 0; i < signals.length; i++) {
+            HeaderSignal headerSignal = signals[i];
             int initialValue = samplesPerSignal[i][0];
             int checksum = HeaderSignal.calculateChecksum(samplesPerSignal[i]);
             newHeaderSignals[i] = new HeaderSignal(headerSignal.filename(), headerSignal.format(),
@@ -107,24 +109,24 @@ public record SingleSegmentHeader(HeaderRecord headerRecord, HeaderSignal[] head
                     headerSignal.adcZero(), initialValue, checksum, headerSignal.blockSize(),
                     headerSignal.description());
         }
-        return new SingleSegmentHeader(headerRecord, newHeaderSignals);
+        return new SingleSegmentHeader(record, newHeaderSignals, comments);
     }
 
     @Override
     public String toString() {
-        return "SingleSegmentHeader [headerRecord = " + headerRecord + ", headerSignals = "
-                + Arrays.toString(headerSignals) + "]";
+        return "SingleSegmentHeader [headerRecord = " + record + ", headerSignals = "
+                + Arrays.toString(signals) + "]";
     }
 
     @Override
     public boolean equals(Object object) {
-        return object instanceof SingleSegmentHeader instance && headerRecord.equals(instance.headerRecord)
-                && Arrays.equals(headerSignals, instance.headerSignals);
+        return object instanceof SingleSegmentHeader instance && record.equals(instance.record)
+                && Arrays.equals(signals, instance.signals);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(headerRecord);
-        return 31 * result + Arrays.hashCode(headerSignals);
+        return 31 * Objects.hash(record) + Arrays.hashCode(signals);
     }
+
 }
