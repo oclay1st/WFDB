@@ -26,6 +26,17 @@ import io.github.oclay1st.wfdb.formatters.SignalFormatter8;
 public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPerSignal) {
 
     /**
+     * Creates an instance of a SingleSegmentRecord class.
+     *
+     * @param header           the single-segment header. Can't be null.
+     * @param samplesPerSignal the array of samples per signal. Can't be null.
+     */
+    public SingleSegmentRecord {
+        Objects.requireNonNull(header);
+        Objects.requireNonNull(samplesPerSignal);
+    }
+
+    /**
      * Parse a single-segment record.
      *
      * @param recordPath the path where the record will be parsed

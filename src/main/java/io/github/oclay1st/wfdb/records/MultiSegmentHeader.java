@@ -10,14 +10,26 @@ import java.util.Objects;
 import io.github.oclay1st.wfdb.exceptions.ParseException;
 
 /**
- * Represent the info from a multi-segment header
+ * Represent the info from a multi-segment header.
  *
  * @param record   the header record
  * @param segments the array of header segments
- * @see HeaderRecord
- * @see HeaderSegment
+ * @param comments the comments about the record
  */
 public record MultiSegmentHeader(HeaderRecord record, HeaderSegment[] segments, String comments) { // NOSONAR
+
+    /**
+     * Creates an instance of a MultiSegmentHeader class.
+     *
+     * @param record   the header record. Can't be null.
+     * @param segments the array of header segments. Can't be null.
+     * @param comments the comments about the record. Can't be null.
+     */
+    public MultiSegmentHeader {
+        Objects.requireNonNull(record);
+        Objects.requireNonNull(segments);
+        Objects.requireNonNull(comments);
+    }
 
     /**
      * Parse the multi-segment header from an input form.
@@ -74,24 +86,25 @@ public record MultiSegmentHeader(HeaderRecord record, HeaderSegment[] segments, 
         for (HeaderSegment headerSegment : segments) {
             builder.append('\n').append(headerSegment.toTextLine());
         }
+        builder.append(comments);
         return builder.toString();
     }
 
     @Override
     public String toString() {
         return "MultiSegmentHeader [headerRecord = " + record + ", headerSegments = "
-                + Arrays.toString(segments) + "]";
+                + Arrays.toString(segments) + ", comments = " + comments + "]";
     }
 
     @Override
     public boolean equals(Object object) {
         return object instanceof MultiSegmentHeader instance && record.equals(instance.record)
-                && Arrays.equals(segments, instance.segments);
+                && Arrays.equals(segments, instance.segments) && comments.equals(instance.comments);
     }
 
     @Override
     public int hashCode() {
-        return 31 * Objects.hash(record) + Arrays.hashCode(segments);
+        return 31 * Objects.hash(record) + Arrays.hashCode(segments) + Objects.hash(comments);
     }
 
 }

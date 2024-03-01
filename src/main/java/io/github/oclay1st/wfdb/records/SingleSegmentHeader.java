@@ -16,10 +16,24 @@ import io.github.oclay1st.wfdb.exceptions.ParseException;
 /**
  * Represents a single-segment record header.
  *
- * @param record  the header record
- * @param signals the array of header signals
+ * @param record   the header record
+ * @param signals  the array of header signals
+ * @param comments the comments about the record
  */
 public record SingleSegmentHeader(HeaderRecord record, HeaderSignal[] signals, String comments) { // NOSONAR
+
+    /**
+     * Creates an instance of a SingleSegmentHeader class.
+     * 
+     * @param record   the header record. Can't be null.
+     * @param signals  the array or header signals. Can't be null.
+     * @param comments the comments about the record. Can't be null.
+     */
+    public SingleSegmentHeader {
+        Objects.requireNonNull(record);
+        Objects.requireNonNull(signals);
+        Objects.requireNonNull(comments);
+    }
 
     /**
      * Parse the single-segment header from an input form.
@@ -88,6 +102,7 @@ public record SingleSegmentHeader(HeaderRecord record, HeaderSignal[] signals, S
         for (HeaderSignal headerSignal : signals) {
             builder.append('\n').append(headerSignal.toTextLine());
         }
+        builder.append(comments);
         return builder.toString();
     }
 
@@ -115,18 +130,18 @@ public record SingleSegmentHeader(HeaderRecord record, HeaderSignal[] signals, S
     @Override
     public String toString() {
         return "SingleSegmentHeader [headerRecord = " + record + ", headerSignals = "
-                + Arrays.toString(signals) + "]";
+                + Arrays.toString(signals) + ", comments = " + comments + "]";
     }
 
     @Override
     public boolean equals(Object object) {
         return object instanceof SingleSegmentHeader instance && record.equals(instance.record)
-                && Arrays.equals(signals, instance.signals);
+                && Arrays.equals(signals, instance.signals) && comments.equals(instance.comments);
     }
 
     @Override
     public int hashCode() {
-        return 31 * Objects.hash(record) + Arrays.hashCode(signals);
+        return 31 * Objects.hash(record) + Arrays.hashCode(signals) + Objects.hash(comments);
     }
 
 }
