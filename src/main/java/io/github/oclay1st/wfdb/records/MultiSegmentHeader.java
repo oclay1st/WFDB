@@ -40,10 +40,10 @@ public record MultiSegmentHeader(HeaderRecord record, HeaderSegment[] segments, 
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         HeaderRecord headerRecord = null;
         HeaderSegment[] headerSegments = null;
-        int segmentIndex = 0;
         String headerLine;
-        boolean headerRecordProcessed = false;
         StringBuilder commentsBuilder = new StringBuilder();
+        boolean headerRecordProcessed = false;
+        int segmentIndex = 0;
         while ((headerLine = reader.readLine()) != null) {
             String stripedHeaderLine = headerLine.strip();
             if (stripedHeaderLine.isEmpty()) {
