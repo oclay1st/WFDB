@@ -51,8 +51,7 @@ public record MultiSegmentHeader(HeaderRecord record, HeaderSegment[] segments, 
             }
             if (stripedHeaderLine.charAt(0) == '#') {
                 commentsBuilder.append('\n').append(stripedHeaderLine);
-            }
-            if (!headerRecordProcessed) {
+            } else if (!headerRecordProcessed) {
                 headerRecord = HeaderRecord.parse(stripedHeaderLine);
                 headerSegments = new HeaderSegment[headerRecord.numberOfSegments()];
                 headerRecordProcessed = true;

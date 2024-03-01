@@ -20,7 +20,7 @@ class SingleSegmentHeaderTest {
 
     @Test
     @DisplayName("Should parse the single-segment header ignoring comments and blank lines")
-    void shouldIgnoreCommentsAndBlankLines() throws IOException, ParseException {
+    void shouldIgnoreBlankLines() throws IOException, ParseException {
         String headerText = """
                 #<age>: 60
                 #<sex>: M

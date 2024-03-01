@@ -55,8 +55,7 @@ public record SingleSegmentHeader(HeaderRecord record, HeaderSignal[] signals, S
             }
             if (stripedHeaderLine.charAt(0) == '#') {
                 commentsBuilder.append('\n').append(stripedHeaderLine);
-            }
-            if (!headerRecordProcessed) {
+            } else if (!headerRecordProcessed) {
                 headerRecord = HeaderRecord.parse(stripedHeaderLine);
                 headerSignals = new HeaderSignal[headerRecord.numberOfSignals()];
                 headerRecordProcessed = true;
