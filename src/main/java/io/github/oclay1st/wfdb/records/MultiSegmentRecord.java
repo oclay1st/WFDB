@@ -31,9 +31,9 @@ public record MultiSegmentRecord(MultiSegmentHeader header, SingleSegmentRecord[
             // Parse the multi-segment header file
             MultiSegmentHeader header = MultiSegmentHeader.parse(inputStream);
             int recordIndex = 0;
-            SingleSegmentRecord[] singleSegmentRecords = new SingleSegmentRecord[header.headerRecord()
+            SingleSegmentRecord[] singleSegmentRecords = new SingleSegmentRecord[header.record()
                     .numberOfSamplesPerSignal()];
-            for (HeaderSegment segment : header.headerSegments()) {
+            for (HeaderSegment segment : header.segments()) {
                 Path segmentRecordPath = recordPath.resolveSibling(segment.name());
                 SingleSegmentRecord singleSegmentRecord = SingleSegmentRecord.parse(segmentRecordPath);
                 singleSegmentRecords[recordIndex] = singleSegmentRecord;
@@ -51,8 +51,7 @@ public record MultiSegmentRecord(MultiSegmentHeader header, SingleSegmentRecord[
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(header);
-        return 31 * result + Arrays.hashCode(records);
+        return 31 * Objects.hash(header) + Arrays.hashCode(records);
     }
 
     @Override

@@ -34,7 +34,7 @@ Filter filter = new Filter.Builder().startTime(start).endTime(end).build();
 SingleSegementRecord record = SingleSegmentRecord.parse(path, filter);
 ```
 
-Parse and filter a single-segment record by singal indices:
+Parse and filter a single-segment record by signal indices:
 ```
 Path path = Path.of(...);
 Filter filter = new Filter.Builder().signals(new int[]{0, 1, 2}).build();
@@ -49,8 +49,7 @@ MultiSegmentRecord record = MultiSegmentRecord.parse(path);
 
 Export a single-segment record:
 ```
-Path path = Path.of(...);
-Filter fiter = new Filter(...);
+...
 SingleSegmentRecord record = SingleSegmentRecord.parse(path, filter);
 Path exportPath = Path.of(...);
 record.export(exportPath);

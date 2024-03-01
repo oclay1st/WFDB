@@ -20,24 +20,24 @@ class SingleSegmentRecordTest {
     @DisplayName("Should parse the waveform file and header")
     void shouldParseWaveformFile() throws IOException, ParseException {
         Path recordPath = Path.of("src", "test", "resources", "single-segment", "00001", "00001_lr").toAbsolutePath();
-        SingleSegmentRecord record = SingleSegmentRecord.parse(recordPath);
-        assertNotNull(record);
-        assertNotNull(record.header());
-        assertNotNull(record.samplesPerSignal());
-        assertEquals(12, record.samplesPerSignal().length);
-        assertEquals(12, record.header().headerRecord().numberOfSignals());
-        assertEquals(record.header().headerSignals()[0].initialValue(), record.samplesPerSignal()[0][0]);
-        assertEquals(record.header().headerSignals()[1].initialValue(), record.samplesPerSignal()[1][0]);
-        assertEquals(record.header().headerSignals()[2].initialValue(), record.samplesPerSignal()[2][0]);
-        assertEquals(record.header().headerSignals()[3].initialValue(), record.samplesPerSignal()[3][0]);
-        assertEquals(record.header().headerSignals()[4].initialValue(), record.samplesPerSignal()[4][0]);
-        assertEquals(record.header().headerSignals()[5].initialValue(), record.samplesPerSignal()[5][0]);
-        assertEquals(record.header().headerSignals()[6].initialValue(), record.samplesPerSignal()[6][0]);
-        assertEquals(record.header().headerSignals()[7].initialValue(), record.samplesPerSignal()[7][0]);
-        assertEquals(record.header().headerSignals()[8].initialValue(), record.samplesPerSignal()[8][0]);
-        assertEquals(record.header().headerSignals()[9].initialValue(), record.samplesPerSignal()[9][0]);
-        assertEquals(record.header().headerSignals()[10].initialValue(), record.samplesPerSignal()[10][0]);
-        assertEquals(record.header().headerSignals()[11].initialValue(), record.samplesPerSignal()[11][0]);
+        SingleSegmentRecord wfdbRecord = SingleSegmentRecord.parse(recordPath);
+        assertNotNull(wfdbRecord);
+        assertNotNull(wfdbRecord.header());
+        assertNotNull(wfdbRecord.samplesPerSignal());
+        assertEquals(12, wfdbRecord.samplesPerSignal().length);
+        assertEquals(12, wfdbRecord.header().record().numberOfSignals());
+        assertEquals(wfdbRecord.header().signals()[0].initialValue(), wfdbRecord.samplesPerSignal()[0][0]);
+        assertEquals(wfdbRecord.header().signals()[1].initialValue(), wfdbRecord.samplesPerSignal()[1][0]);
+        assertEquals(wfdbRecord.header().signals()[2].initialValue(), wfdbRecord.samplesPerSignal()[2][0]);
+        assertEquals(wfdbRecord.header().signals()[3].initialValue(), wfdbRecord.samplesPerSignal()[3][0]);
+        assertEquals(wfdbRecord.header().signals()[4].initialValue(), wfdbRecord.samplesPerSignal()[4][0]);
+        assertEquals(wfdbRecord.header().signals()[5].initialValue(), wfdbRecord.samplesPerSignal()[5][0]);
+        assertEquals(wfdbRecord.header().signals()[6].initialValue(), wfdbRecord.samplesPerSignal()[6][0]);
+        assertEquals(wfdbRecord.header().signals()[7].initialValue(), wfdbRecord.samplesPerSignal()[7][0]);
+        assertEquals(wfdbRecord.header().signals()[8].initialValue(), wfdbRecord.samplesPerSignal()[8][0]);
+        assertEquals(wfdbRecord.header().signals()[9].initialValue(), wfdbRecord.samplesPerSignal()[9][0]);
+        assertEquals(wfdbRecord.header().signals()[10].initialValue(), wfdbRecord.samplesPerSignal()[10][0]);
+        assertEquals(wfdbRecord.header().signals()[11].initialValue(), wfdbRecord.samplesPerSignal()[11][0]);
     }
 
     @Test
@@ -49,13 +49,13 @@ class SingleSegmentRecordTest {
                 .endTime(5000)
                 .signals(new int[] { 0, 1, 2 })
                 .build();
-        SingleSegmentRecord record = SingleSegmentRecord.parse(recordPath, filter);
-        assertNotNull(record);
-        assertNotNull(record.header());
-        assertNotNull(record.samplesPerSignal());
-        assertEquals(3, record.samplesPerSignal().length);
-        assertEquals(3, record.header().headerRecord().numberOfSignals());
-        assertEquals(Duration.ofSeconds(5), record.header().headerRecord().durationTime());
+        SingleSegmentRecord wfdbRecord = SingleSegmentRecord.parse(recordPath, filter);
+        assertNotNull(wfdbRecord);
+        assertNotNull(wfdbRecord.header());
+        assertNotNull(wfdbRecord.samplesPerSignal());
+        assertEquals(3, wfdbRecord.samplesPerSignal().length);
+        assertEquals(3, wfdbRecord.header().record().numberOfSignals());
+        assertEquals(Duration.ofSeconds(5), wfdbRecord.header().record().durationTime());
     }
 
     @Test
@@ -63,21 +63,21 @@ class SingleSegmentRecordTest {
     void shouldParseMultiFormatRecord() throws ParseException, IOException {
         Path recordPath = Path.of("src", "test", "resources", "single-segment", "all-formats", "binformats")
                 .toAbsolutePath();
-        SingleSegmentRecord record = SingleSegmentRecord.parse(recordPath);
-        assertNotNull(record);
+        SingleSegmentRecord wfdbRecord = SingleSegmentRecord.parse(recordPath);
+        assertNotNull(wfdbRecord);
     }
 
     @Test
     @DisplayName("Should export the record")
     void shouldExportTheRecord() throws IOException, ParseException {
         Path recordPath = Path.of("src", "test", "resources", "single-segment", "00001", "00001_lr").toAbsolutePath();
-        SingleSegmentRecord record = SingleSegmentRecord.parse(recordPath);
-        assertNotNull(record);
+        SingleSegmentRecord wfdbRecord = SingleSegmentRecord.parse(recordPath);
+        assertNotNull(wfdbRecord);
         Path exportedRecordPath = Files.createTempDirectory("export-record").resolve("00001_lr");
-        record.export(exportedRecordPath);
+        wfdbRecord.export(exportedRecordPath);
         SingleSegmentRecord exportedRecord = SingleSegmentRecord.parse(exportedRecordPath);
         assertNotNull(exportedRecordPath);
-        assertEquals(record, exportedRecord);
+        assertEquals(wfdbRecord, exportedRecord);
     }
 
 }

@@ -33,10 +33,10 @@ public class FilterProcessor {
      * @return a new instance of a filter processor
      */
     public static FilterProcessor process(Filter filter, SingleSegmentHeader header) {
-        long duration = header.headerRecord().durationTime().toMillis();
+        long duration = header.record().durationTime().toMillis();
         long startMilliseconds = filter.startTime() != null ? filter.startTime() : 0;
         long endMilliseconds = filter.endTime() != null ? filter.endTime() : duration;
-        int[] indices = IntStream.range(0, header.headerSignals().length).toArray();
+        int[] indices = IntStream.range(0, header.signals().length).toArray();
         if (filter.signals() != null) {
             indices = filter.signals();
         }
@@ -54,7 +54,10 @@ public class FilterProcessor {
      * @return a {@link SingleSegmentHeader} instance
      */
     public SingleSegmentHeader generateFilteredHeader() {
-        return isFilterAsDefault ? header : new SingleSegmentHeader(generateHeaderRecord(), generateHeaderSignals());
+        if (isFilterAsDefault) {
+            return header;
+        }
+        return new SingleSegmentHeader(generateHeaderRecord(), generateHeaderSignals(), header.comments());
     }
 
     /**
@@ -63,7 +66,7 @@ public class FilterProcessor {
      * @return a new {@link HeaderRecord} instance
      */
     private HeaderRecord generateHeaderRecord() {
-        HeaderRecord headerRecord = header.headerRecord();
+        HeaderRecord headerRecord = header.record();
         int numberOfSignals = filter.signals().length;
         long duration = filter.endTime() - filter.startTime();
         int numberOfSamplesPerSignal = Math.round(headerRecord.samplingFrequency() * duration / 1000);
@@ -80,7 +83,7 @@ public class FilterProcessor {
     private HeaderSignal[] generateHeaderSignals() {
         HeaderSignal[] headerSignals = new HeaderSignal[filter.signals().length];
         for (int i = 0; i < headerSignals.length; i++) {
-            HeaderSignal headerSignal = header.headerSignals()[filter.signals()[i]];
+            HeaderSignal headerSignal = header.signals()[filter.signals()[i]];
             headerSignals[i] = new HeaderSignal(headerSignal.filename(), headerSignal.format(),
                     headerSignal.samplesPerFrame(), headerSignal.skew(), headerSignal.bytesOffset(),
                     headerSignal.adcGain(), headerSignal.baseline(), headerSignal.unit(), headerSignal.adcResolution(),
@@ -109,14 +112,15 @@ public class FilterProcessor {
      * Calculate the byte index given the milliseconds, the bytes per sample and the
      * number of signals
      *
-     * @param milliseconds the value of the milliseconds
-     * @param bytesPerSample the value of the bytes per sample
+     * @param milliseconds    the value of the milliseconds
+     * @param bytesPerSample  the value of the bytes per sample
      * @param numberOfSignals the value of number of signals
      * @return the byte index value
      */
     private long calculateByteIndex(long milliseconds, float bytesPerSample, int numberOfSignals) {
-        int numberOfSamplesPerSignal = Math.round(header.headerRecord().samplingFrequency() * milliseconds / 1000);
+        int numberOfSamplesPerSignal = Math.round(header.record().samplingFrequency() * milliseconds / 1000);
         int numberOfSamples = numberOfSamplesPerSignal * numberOfSignals;
         return (int) Math.ceil(numberOfSamples * bytesPerSample);
     }
+
 }

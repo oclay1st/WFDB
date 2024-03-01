@@ -12,12 +12,12 @@ import io.github.oclay1st.wfdb.exceptions.ParseException;
 /**
  * Represent the info from a multi-segment header
  *
- * @param headerRecord   the header record
- * @param headerSegments the array of header segments
+ * @param record   the header record
+ * @param segments the array of header segments
  * @see HeaderRecord
  * @see HeaderSegment
  */
-public record MultiSegmentHeader(HeaderRecord headerRecord, HeaderSegment[] headerSegments) {
+public record MultiSegmentHeader(HeaderRecord record, HeaderSegment[] segments, String comments) { // NOSONAR
 
     /**
      * Parse the multi-segment header from an input form.
@@ -43,10 +43,14 @@ public record MultiSegmentHeader(HeaderRecord headerRecord, HeaderSegment[] head
         int segmentIndex = 0;
         String headerLine;
         boolean headerRecordProcessed = false;
+        StringBuilder commentsBuilder = new StringBuilder();
         while ((headerLine = reader.readLine()) != null) {
             String stripedHeaderLine = headerLine.strip();
-            if (stripedHeaderLine.isEmpty() || stripedHeaderLine.charAt(0) == '#') {
+            if (stripedHeaderLine.isEmpty()) {
                 continue;
+            }
+            if (stripedHeaderLine.charAt(0) == '#') {
+                commentsBuilder.append('\n').append(stripedHeaderLine);
             }
             if (!headerRecordProcessed) {
                 headerRecord = HeaderRecord.parse(stripedHeaderLine);
@@ -57,7 +61,7 @@ public record MultiSegmentHeader(HeaderRecord headerRecord, HeaderSegment[] head
                 segmentIndex++;
             }
         }
-        return new MultiSegmentHeader(headerRecord, headerSegments);
+        return new MultiSegmentHeader(headerRecord, headerSegments, commentsBuilder.toString());
     }
 
     /**
@@ -67,29 +71,28 @@ public record MultiSegmentHeader(HeaderRecord headerRecord, HeaderSegment[] head
      */
     public String toTextBlock() {
         StringBuilder builder = new StringBuilder();
-        builder.append(headerRecord.toTextLine());
-        for (HeaderSegment headerSegment : headerSegments) {
-            builder.append("\n");
-            builder.append(headerSegment.toTextLine());
+        builder.append(record.toTextLine());
+        for (HeaderSegment headerSegment : segments) {
+            builder.append('\n').append(headerSegment.toTextLine());
         }
         return builder.toString();
     }
 
     @Override
     public String toString() {
-        return "MultiSegmentHeader [headerRecord = " + headerRecord + ", headerSegments = "
-                + Arrays.toString(headerSegments) + "]";
+        return "MultiSegmentHeader [headerRecord = " + record + ", headerSegments = "
+                + Arrays.toString(segments) + "]";
     }
 
     @Override
     public boolean equals(Object object) {
-        return object instanceof MultiSegmentHeader instance && headerRecord.equals(instance.headerRecord)
-                && Arrays.equals(headerSegments, instance.headerSegments);
+        return object instanceof MultiSegmentHeader instance && record.equals(instance.record)
+                && Arrays.equals(segments, instance.segments);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(headerRecord);
-        return 31 * result + Arrays.hashCode(headerSegments);
+        return 31 * Objects.hash(record) + Arrays.hashCode(segments);
     }
+
 }

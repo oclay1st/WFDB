@@ -19,7 +19,7 @@ class MultiSegmentRecordTest {
         Path recordPath = Path.of("src", "test", "resources", "multi-segment", "v102s", "v102s");
         MultiSegmentRecord multiSegmentRecord = MultiSegmentRecord.parse(recordPath);
         assertNotNull(multiSegmentRecord);
-        assertEquals(3, multiSegmentRecord.header().headerSegments().length);
+        assertEquals(3, multiSegmentRecord.header().segments().length);
     }
 
 }
