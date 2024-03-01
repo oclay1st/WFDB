@@ -61,7 +61,7 @@ public record HeaderRecord(String name, int numberOfSegments, int numberOfSignal
     public static HeaderRecord parse(String text) throws ParseException {
         Matcher matcher = PATTERN.matcher(text);
         if (!matcher.matches()) {
-            throw new ParseException("Unable to parse the header record");
+            throw new ParseException("Unable to parse the header record: " + text);
         }
         String name = matcher.group("name");
         int numberOfSegments = CommonUtil.parseOrDefault(matcher.group("numberOfSegments"), 1);

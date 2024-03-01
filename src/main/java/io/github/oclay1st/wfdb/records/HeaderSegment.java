@@ -33,7 +33,7 @@ public record HeaderSegment(String name, int numberOfSamplesPerSignal) {
     public static HeaderSegment parse(String text) throws ParseException {
         Matcher matcher = PATTERN.matcher(text);
         if (!matcher.matches()) {
-            throw new ParseException("Unable to parse the header segment");
+            throw new ParseException("Unable to parse the header segment: " + text);
         }
         String name = matcher.group("name");
         int numberOfSamplesPerSignal = CommonUtil.parseOrDefault(matcher.group("numberOfSamplesPerSignal"), 0);

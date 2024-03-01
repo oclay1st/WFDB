@@ -70,7 +70,7 @@ public record HeaderSignal(String filename, SignalFormat format, int samplesPerF
     public static HeaderSignal parse(String text) throws ParseException {
         Matcher matcher = PATTERN.matcher(text);
         if (!matcher.matches()) {
-            throw new ParseException("Unable to parse the header signal");
+            throw new ParseException("Unable to parse the header signal: " + text);
         }
         String filename = matcher.group("filename");
         SignalFormat format = SignalFormat.parse(matcher.group("format"));

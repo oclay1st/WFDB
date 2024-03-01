@@ -10,12 +10,23 @@ import java.util.Objects;
 import io.github.oclay1st.wfdb.exceptions.ParseException;
 
 /**
- * Represents a multi-segment record
+ * Represents a multi-segment record.
  *
  * @param header  the multi-segment header {@link MultiSegmentHeader}
  * @param records the array of single-segment records
  */
 public record MultiSegmentRecord(MultiSegmentHeader header, SingleSegmentRecord[] records) {
+
+    /**
+     * Creates an instance of a MultiSegmentRecord class.
+     *
+     * @param header  the multi-segment header. Can't be null;
+     * @param records the array of single-segment records. Can't be null.
+     */
+    public MultiSegmentRecord {
+        Objects.requireNonNull(header);
+        Objects.requireNonNull(records);
+    }
 
     /**
      * Parse a multi-segment record
