@@ -68,13 +68,15 @@ public final class SignalFormatter311 implements SignalFormatter {
      */
     @Override
     public byte[] convertSamplesToBytes(int[] samples) {
-        int numberOfBytes = samples.length + (Math.round(samples.length / (float) DISTRIBUTION));
-        byte[] source = new byte[numberOfBytes];
+        int numberOfSamples = samples.length + (SAMPLES_PER_DISTRIBUTION - samples.length % SAMPLES_PER_DISTRIBUTION);
+        int[] samplesData = Arrays.copyOf(samples, numberOfSamples);
+        int numberOfBytes = (int) (Math.ceil(samples.length * DISTRIBUTION / (float) SAMPLES_PER_DISTRIBUTION));
+        byte[] source = new byte[numberOfBytes + DISTRIBUTION];
         int sourceIndex = 0;
-        for (int i = 0; i < samples.length; i += SAMPLES_PER_DISTRIBUTION) {
-            int firstUnsignedSample = samples[i] & 0x3FF;
-            int secondUnsignedSample = samples[i + 1] & 0x3FF;
-            int thirdUnsignedSample = samples[i + 2] & 0x3FF;
+        for (int i = 0; i < samplesData.length; i += SAMPLES_PER_DISTRIBUTION) {
+            int firstUnsignedSample = samplesData[i] & 0x3FF;
+            int secondUnsignedSample = samplesData[i + 1] & 0x3FF;
+            int thirdUnsignedSample = samplesData[i + 2] & 0x3FF;
             // first byte
             source[sourceIndex] = (byte) (firstUnsignedSample);
             // second byte
@@ -91,7 +93,7 @@ public final class SignalFormatter311 implements SignalFormatter {
             // increment array index
             sourceIndex += DISTRIBUTION;
         }
-        return source;
+        return Arrays.copyOf(source, numberOfBytes);
     }
 
 }
