@@ -177,6 +177,7 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
             int[][] samples = Arrays.copyOfRange(samplesPerSignal, samplesPerSignalIndex, lastSignalPerSignalIndex);
             byte[] source = convertToSource(samples, headerSignals);
             Files.write(samplesFilePath, source);
+            samplesPerSignalIndex += headerSignals.length;
         }
     }
 
