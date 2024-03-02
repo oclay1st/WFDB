@@ -17,7 +17,8 @@ public final class SignalFormatter310 implements SignalFormatter {
      * {@inheritDoc}
      * Each sample is represented by a 10-bit two’s-complement amplitude. The first
      * sample is obtained from the 11 least significant bits of the first byte pair
-     * (stored the least significant byte first), with the low bit discarded. The second
+     * (stored the least significant byte first), with the low bit discarded. The
+     * second
      * sample comes from the 11 least significant bits of the second byte pair, in
      * the same way as the first. The third sample is formed from the 5 most
      * significant bits of each of the first two byte pairs (those from the first
@@ -84,12 +85,14 @@ public final class SignalFormatter310 implements SignalFormatter {
     @Override
     public byte[] convertSamplesToBytes(int[] samples) {
         int sourceIndex = 0;
-        int numberOfBytes = samples.length + (Math.round(samples.length / (float) DISTRIBUTION));
-        byte[] source = new byte[numberOfBytes];
-        for (int i = 0; i < samples.length; i += SAMPLES_PER_DISTRIBUTION) {
-            int firstUnsignedSample = samples[i] & 0x3FF;
-            int secondUnsignedSample = samples[i + 1] & 0x3FF;
-            int thirdUnsignedSample = samples[i + 2] & 0x3FF;
+        int numberOfSamples = samples.length + (SAMPLES_PER_DISTRIBUTION - samples.length % SAMPLES_PER_DISTRIBUTION);
+        int numberOfBytes = (int) (Math.ceil(samples.length * DISTRIBUTION / (float) SAMPLES_PER_DISTRIBUTION));
+        byte[] source = new byte[numberOfBytes + DISTRIBUTION];
+        int[] samplesData = Arrays.copyOf(samples, numberOfSamples);
+        for (int i = 0; i < samplesData.length; i += SAMPLES_PER_DISTRIBUTION) {
+            int firstUnsignedSample = samplesData[i] & 0x3FF;
+            int secondUnsignedSample = samplesData[i + 1] & 0x3FF;
+            int thirdUnsignedSample = samplesData[i + 2] & 0x3FF;
             // first byte
             source[sourceIndex] = (byte) ((firstUnsignedSample & 0x7F) << 1);
             // second byte
@@ -105,7 +108,7 @@ public final class SignalFormatter310 implements SignalFormatter {
             // increment array index
             sourceIndex += DISTRIBUTION;
         }
-        return source;
+        return Arrays.copyOf(source, numberOfBytes);
     }
 
 }
