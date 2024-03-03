@@ -41,14 +41,10 @@ public record MultiSegmentRecord(MultiSegmentHeader header, SingleSegmentRecord[
         try (InputStream inputStream = Files.newInputStream(headerFilePath)) {
             // Parse the multi-segment header file
             MultiSegmentHeader header = MultiSegmentHeader.parse(inputStream);
-            int recordIndex = 0;
-            SingleSegmentRecord[] singleSegmentRecords = new SingleSegmentRecord[header.record()
-                    .numberOfSamplesPerSignal()];
-            for (HeaderSegment segment : header.segments()) {
-                Path segmentRecordPath = recordPath.resolveSibling(segment.name());
-                SingleSegmentRecord singleSegmentRecord = SingleSegmentRecord.parse(segmentRecordPath);
-                singleSegmentRecords[recordIndex] = singleSegmentRecord;
-                recordIndex++;
+            SingleSegmentRecord[] singleSegmentRecords = new SingleSegmentRecord[header.segments().length];
+            for (int i = 0; i < header.segments().length; i++) {
+                Path segmentRecordPath = recordPath.resolveSibling(header.segments()[i].name());
+                singleSegmentRecords[i] = SingleSegmentRecord.parse(segmentRecordPath);
             }
             return new MultiSegmentRecord(header, singleSegmentRecords);
         }
