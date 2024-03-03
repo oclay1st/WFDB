@@ -86,7 +86,9 @@ public record MultiSegmentHeader(HeaderRecord record, HeaderSegment[] segments, 
         for (HeaderSegment headerSegment : segments) {
             builder.append('\n').append(headerSegment.toTextLine());
         }
-        builder.append('\n').append(comments);
+        if (!comments.isEmpty()) {
+            builder.append('\n').append(comments);
+        }
         return builder.toString();
     }
 
