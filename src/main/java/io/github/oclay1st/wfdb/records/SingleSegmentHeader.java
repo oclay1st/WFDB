@@ -102,7 +102,7 @@ public record SingleSegmentHeader(HeaderRecord record, HeaderSignal[] signals, S
         for (HeaderSignal headerSignal : signals) {
             builder.append('\n').append(headerSignal.toTextLine());
         }
-        builder.append(comments);
+        builder.append('\n').append(comments);
         return builder.toString();
     }
 
