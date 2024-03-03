@@ -9,13 +9,12 @@ This library is a pure Java implementation of the Waveform Database(WFDB) [speci
 [Waveform Database (WFDB)](https://wfdb.io) is a set of file standards designed for reading and storing physiologic signal data, and associated annotations backed by MIT-LCP members.
 
 ## Features:
-- [x] Parse WFDB records
+- [x] Parse single-segment and multi-segment records
 - [x] Support for signal format: 8, 16, 24, 32, 61, 80, 160, 212, 310, 311 
 - [x] Support for different signal formats and files
-- [x] Multi-segment support
 - [x] Filter by a range of time
 - [x] Filter by signals indices
-- [x] Export records
+- [x] Export single-segment records
 
 ## Usage
 
