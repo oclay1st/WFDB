@@ -1,8 +1,8 @@
 package io.github.oclay1st.wfdb.records;
 
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 import io.github.oclay1st.wfdb.exceptions.ParseException;
 import io.github.oclay1st.wfdb.utils.CommonUtil;
@@ -112,13 +112,13 @@ public record HeaderSignal(String filename, SignalFormat format, int samplesPerF
      * @return the checksum value
      */
     public static int calculateChecksum(int[] samples) {
-        int sum = Arrays.stream(samples).sum();
+        int sum = IntStream.of(samples).sum();
         int unsignedChecksum = Math.floorMod(sum, 65536);
         return unsignedChecksum > 32767 ? unsignedChecksum - 65536 : unsignedChecksum;
     }
 
     /**
-     * Returns the header signal representation
+     * Returns the header signal representation.
      *
      * @return the text line representation
      */
