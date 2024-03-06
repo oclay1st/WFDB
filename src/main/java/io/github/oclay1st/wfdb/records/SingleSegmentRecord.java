@@ -218,7 +218,8 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
 
     @Override
     public String toString() {
-        return "SingleSegmentRecord [ header = " + header + ", samplesPerSignal = " + Arrays.toString(samplesPerSignal)
-                + ']';
+        String samplesPerSignalText = Arrays.toString(samplesPerSignal);
+        return "SingleSegmentRecord [ header = " + header + ", samplesPerSignal = " + samplesPerSignalText + ']';
     }
+
 }
