@@ -41,7 +41,7 @@ class MultiSegmentHeaderTest {
     }
 
     @Test
-    @DisplayName("Should parse the multi-segment header ignorig comments and blank lines")
+    @DisplayName("Should parse the multi-segment header ignoring comments and blank lines")
     void shouldIgnoreCommentsAndBlankLines() throws IOException, ParseException {
         String headerText = """
                 multi/3 2 360 45000
@@ -72,7 +72,7 @@ class MultiSegmentHeaderTest {
                     null 1800
                     100s 21600"""
     })
-    void shouldParseAndGenereateTheSameText(String textBlock) throws IOException, ParseException {
+    void shouldParseAndGenerateTheSameText(String textBlock) throws IOException, ParseException {
         InputStream inputStream = new ByteArrayInputStream(textBlock.getBytes());
         MultiSegmentHeader header = MultiSegmentHeader.parse(inputStream);
         assertEquals(textBlock, header.toTextBlock());

@@ -85,7 +85,7 @@ class SingleSegmentHeaderTest {
     }
 
     @ParameterizedTest(name = "in {0}")
-    @DisplayName("Should parse and generete the same text block of the header")
+    @DisplayName("Should parse and generate the same text block of the header")
     @ValueSource(strings = {
             """
                     sample_0 1 500.0 5000

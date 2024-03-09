@@ -60,7 +60,7 @@ public record HeaderSignal(String filename, SignalFormat format, int samplesPerF
      * 
      * <pre>
      * As an example the text line may look like:
-     * 100.dat 212 200 11 1024 995 -22131 0 MLII
+     * 100.dat 212 200 11 1024 995 -22131 0 II
      * </pre>
      * 
      * @param text the text that represents the signals info

@@ -12,11 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-
 class CommonUtilTest {
 
-
-    @DisplayName("Sould be empty")
+    @DisplayName("Should be empty")
     void shouldBeEmpty() {
         assertTrue(CommonUtil.isEmpty(""));
         assertTrue(CommonUtil.isEmpty("  "));
@@ -24,7 +22,7 @@ class CommonUtilTest {
     }
 
     @ParameterizedTest
-    @DisplayName("Sould not be empty")
+    @DisplayName("Should not be empty")
     @ValueSource(strings = { "1", "   #   ", "string" })
     void shouldNotBeEmpty(String text) {
         assertFalse(CommonUtil.isEmpty(text));
