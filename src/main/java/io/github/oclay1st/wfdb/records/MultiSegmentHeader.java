@@ -4,7 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import io.github.oclay1st.wfdb.exceptions.ParseException;
@@ -16,7 +17,7 @@ import io.github.oclay1st.wfdb.exceptions.ParseException;
  * @param segments the array of header segments
  * @param comments the comments about the record
  */
-public record MultiSegmentHeader(HeaderRecord record, HeaderSegment[] segments, String comments) { // NOSONAR
+public record MultiSegmentHeader(HeaderRecord record, List<HeaderSegment> segments, String comments) { // NOSONAR
 
     /**
      * Creates an instance of a MultiSegmentHeader class.
@@ -51,11 +52,10 @@ public record MultiSegmentHeader(HeaderRecord record, HeaderSegment[] segments, 
     public static MultiSegmentHeader parse(InputStream input) throws IOException, ParseException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         HeaderRecord headerRecord = null;
-        HeaderSegment[] headerSegments = null;
+        List<HeaderSegment> headerSegments = new ArrayList<>();
         String headerLine;
         StringBuilder commentsBuilder = new StringBuilder();
         boolean headerRecordProcessed = false;
-        int segmentIndex = 0;
         while ((headerLine = reader.readLine()) != null) {
             String stripedHeaderLine = headerLine.strip();
             if (stripedHeaderLine.isEmpty()) {
@@ -65,11 +65,9 @@ public record MultiSegmentHeader(HeaderRecord record, HeaderSegment[] segments, 
                 commentsBuilder.append('\n').append(stripedHeaderLine);
             } else if (!headerRecordProcessed) {
                 headerRecord = HeaderRecord.parse(stripedHeaderLine);
-                headerSegments = new HeaderSegment[headerRecord.numberOfSegments()];
                 headerRecordProcessed = true;
             } else {
-                headerSegments[segmentIndex] = HeaderSegment.parse(stripedHeaderLine);
-                segmentIndex++;
+                headerSegments.add(HeaderSegment.parse(stripedHeaderLine));
             }
         }
         return new MultiSegmentHeader(headerRecord, headerSegments, commentsBuilder.toString());
@@ -95,18 +93,18 @@ public record MultiSegmentHeader(HeaderRecord record, HeaderSegment[] segments, 
     @Override
     public String toString() {
         return "MultiSegmentHeader [headerRecord = " + record + ", headerSegments = "
-                + Arrays.toString(segments) + ", comments = " + comments + "]";
+                + segments + ", comments = " + comments + "]";
     }
 
     @Override
     public boolean equals(Object object) {
         return object instanceof MultiSegmentHeader instance && record.equals(instance.record)
-                && Arrays.equals(segments, instance.segments) && comments.equals(instance.comments);
+                && segments.equals(instance.segments) && comments.equals(instance.comments);
     }
 
     @Override
     public int hashCode() {
-        return 31 * Objects.hash(record) + Arrays.hashCode(segments) + Objects.hash(comments);
+        return Objects.hash(record, segments, comments);
     }
 
 }

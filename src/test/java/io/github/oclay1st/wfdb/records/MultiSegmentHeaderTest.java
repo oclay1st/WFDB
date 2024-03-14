@@ -33,11 +33,11 @@ class MultiSegmentHeaderTest {
         assertEquals(4, header.record().numberOfSignals());
         assertEquals(360, header.record().samplingFrequency());
         assertEquals(45000, header.record().numberOfSamplesPerSignal());
-        assertEquals(2, header.segments().length);
-        assertEquals("test", header.segments()[0].name());
-        assertEquals(22500, header.segments()[0].numberOfSamplesPerSignal());
-        assertEquals("other", header.segments()[1].name());
-        assertEquals(22500, header.segments()[1].numberOfSamplesPerSignal());
+        assertEquals(2, header.segments().size());
+        assertEquals("test", header.segments().get(0).name());
+        assertEquals(22500, header.segments().get(0).numberOfSamplesPerSignal());
+        assertEquals("other", header.segments().get(1).name());
+        assertEquals(22500, header.segments().get(1).numberOfSamplesPerSignal());
     }
 
     @Test
@@ -56,7 +56,7 @@ class MultiSegmentHeaderTest {
         assertNotNull(header);
         assertNotNull(header.record());
         assertTrue(header.record().isMultiSegment());
-        assertEquals(3, header.segments().length);
+        assertEquals(3, header.segments().size());
     }
 
     @ParameterizedTest(name = "in {0}")
