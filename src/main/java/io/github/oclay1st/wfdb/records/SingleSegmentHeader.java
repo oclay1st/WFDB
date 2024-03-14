@@ -18,7 +18,7 @@ import io.github.oclay1st.wfdb.exceptions.ParseException;
  * Represents a single-segment record header.
  *
  * @param record   the header record
- * @param signals  the array of header signals
+ * @param signals  the list of header signals
  * @param comments the comments about the record
  */
 public record SingleSegmentHeader(HeaderRecord record, List<HeaderSignal> signals, String comments) { // NOSONAR

@@ -14,7 +14,7 @@ import io.github.oclay1st.wfdb.exceptions.ParseException;
  * Represents a multi-segment record.
  *
  * @param header  the multi-segment header {@link MultiSegmentHeader}
- * @param records the array of single-segment records
+ * @param records the list of single-segment records
  */
 public record MultiSegmentRecord(MultiSegmentHeader header, List<SingleSegmentRecord> records) {
 

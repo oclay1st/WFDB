@@ -14,7 +14,7 @@ import io.github.oclay1st.wfdb.exceptions.ParseException;
  * Represent the info from a multi-segment header.
  *
  * @param record   the header record
- * @param segments the array of header segments
+ * @param segments the list of header segments
  * @param comments the comments about the record
  */
 public record MultiSegmentHeader(HeaderRecord record, List<HeaderSegment> segments, String comments) { // NOSONAR
