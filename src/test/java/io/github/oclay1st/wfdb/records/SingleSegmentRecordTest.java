@@ -26,18 +26,18 @@ class SingleSegmentRecordTest {
         assertNotNull(wfdbRecord.samplesPerSignal());
         assertEquals(12, wfdbRecord.samplesPerSignal().length);
         assertEquals(12, wfdbRecord.header().record().numberOfSignals());
-        assertEquals(wfdbRecord.header().signals()[0].initialValue(), wfdbRecord.samplesPerSignal()[0][0]);
-        assertEquals(wfdbRecord.header().signals()[1].initialValue(), wfdbRecord.samplesPerSignal()[1][0]);
-        assertEquals(wfdbRecord.header().signals()[2].initialValue(), wfdbRecord.samplesPerSignal()[2][0]);
-        assertEquals(wfdbRecord.header().signals()[3].initialValue(), wfdbRecord.samplesPerSignal()[3][0]);
-        assertEquals(wfdbRecord.header().signals()[4].initialValue(), wfdbRecord.samplesPerSignal()[4][0]);
-        assertEquals(wfdbRecord.header().signals()[5].initialValue(), wfdbRecord.samplesPerSignal()[5][0]);
-        assertEquals(wfdbRecord.header().signals()[6].initialValue(), wfdbRecord.samplesPerSignal()[6][0]);
-        assertEquals(wfdbRecord.header().signals()[7].initialValue(), wfdbRecord.samplesPerSignal()[7][0]);
-        assertEquals(wfdbRecord.header().signals()[8].initialValue(), wfdbRecord.samplesPerSignal()[8][0]);
-        assertEquals(wfdbRecord.header().signals()[9].initialValue(), wfdbRecord.samplesPerSignal()[9][0]);
-        assertEquals(wfdbRecord.header().signals()[10].initialValue(), wfdbRecord.samplesPerSignal()[10][0]);
-        assertEquals(wfdbRecord.header().signals()[11].initialValue(), wfdbRecord.samplesPerSignal()[11][0]);
+        assertEquals(wfdbRecord.header().signals().get(0).initialValue(), wfdbRecord.samplesPerSignal()[0][0]);
+        assertEquals(wfdbRecord.header().signals().get(1).initialValue(), wfdbRecord.samplesPerSignal()[1][0]);
+        assertEquals(wfdbRecord.header().signals().get(2).initialValue(), wfdbRecord.samplesPerSignal()[2][0]);
+        assertEquals(wfdbRecord.header().signals().get(3).initialValue(), wfdbRecord.samplesPerSignal()[3][0]);
+        assertEquals(wfdbRecord.header().signals().get(4).initialValue(), wfdbRecord.samplesPerSignal()[4][0]);
+        assertEquals(wfdbRecord.header().signals().get(5).initialValue(), wfdbRecord.samplesPerSignal()[5][0]);
+        assertEquals(wfdbRecord.header().signals().get(6).initialValue(), wfdbRecord.samplesPerSignal()[6][0]);
+        assertEquals(wfdbRecord.header().signals().get(7).initialValue(), wfdbRecord.samplesPerSignal()[7][0]);
+        assertEquals(wfdbRecord.header().signals().get(8).initialValue(), wfdbRecord.samplesPerSignal()[8][0]);
+        assertEquals(wfdbRecord.header().signals().get(9).initialValue(), wfdbRecord.samplesPerSignal()[9][0]);
+        assertEquals(wfdbRecord.header().signals().get(10).initialValue(), wfdbRecord.samplesPerSignal()[10][0]);
+        assertEquals(wfdbRecord.header().signals().get(11).initialValue(), wfdbRecord.samplesPerSignal()[11][0]);
     }
 
     @Test

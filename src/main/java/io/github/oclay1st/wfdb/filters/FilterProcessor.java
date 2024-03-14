@@ -1,5 +1,6 @@
 package io.github.oclay1st.wfdb.filters;
 
+import java.util.List;
 import java.util.stream.IntStream;
 
 import io.github.oclay1st.wfdb.records.HeaderRecord;
@@ -36,7 +37,7 @@ public class FilterProcessor {
         long duration = header.record().durationTime().toMillis();
         long startMilliseconds = filter.startTime() != null ? filter.startTime() : 0;
         long endMilliseconds = filter.endTime() != null ? filter.endTime() : duration;
-        int[] indices = IntStream.range(0, header.signals().length).toArray();
+        int[] indices = IntStream.range(0, header.signals().size()).toArray();
         if (filter.signals() != null) {
             indices = filter.signals();
         }
@@ -80,16 +81,14 @@ public class FilterProcessor {
      *
      * @return a new array of {@link HeaderSignal}
      */
-    private HeaderSignal[] generateHeaderSignals() {
-        HeaderSignal[] headerSignals = new HeaderSignal[filter.signals().length];
-        for (int i = 0; i < headerSignals.length; i++) {
-            HeaderSignal headerSignal = header.signals()[filter.signals()[i]];
-            headerSignals[i] = new HeaderSignal(headerSignal.filename(), headerSignal.format(),
-                    headerSignal.samplesPerFrame(), headerSignal.skew(), headerSignal.bytesOffset(),
-                    headerSignal.adcGain(), headerSignal.baseline(), headerSignal.unit(), headerSignal.adcResolution(),
-                    headerSignal.adcZero(), 0, 0, headerSignal.blockSize(), headerSignal.description());
-        }
-        return headerSignals;
+    private List<HeaderSignal> generateHeaderSignals() {
+        return IntStream.of(filter.signals())
+                .mapToObj(index -> {
+                    HeaderSignal signal = header.signals().get(index);
+                    return new HeaderSignal(signal.filename(), signal.format(), signal.samplesPerFrame(), signal.skew(),
+                            signal.bytesOffset(), signal.adcGain(), signal.baseline(), signal.unit(),
+                            signal.adcResolution(), signal.adcZero(), 0, 0, signal.blockSize(), signal.description());
+                }).toList();
     }
 
     /**
@@ -98,13 +97,13 @@ public class FilterProcessor {
      * @param headerSignals the array of header signals
      * @return a {@link BytesRange} instance
      */
-    public BytesRange calculateBytesRange(HeaderSignal[] headerSignals) {
+    public BytesRange calculateBytesRange(List<HeaderSignal> headerSignals) {
         // Take the format, the bytes offset of the first header signals because by
         // definition those values are the same in the signal file
-        float bytesPerSample = headerSignals[0].format().bytesPerSample();
-        int bytesOffset = headerSignals[0].bytesOffset();
-        long start = bytesOffset + calculateByteIndex(filter.startTime(), bytesPerSample, headerSignals.length);
-        long end = bytesOffset + calculateByteIndex(filter.endTime(), bytesPerSample, headerSignals.length);
+        float bytesPerSample = headerSignals.get(0).format().bytesPerSample();
+        int bytesOffset = headerSignals.get(0).bytesOffset();
+        long start = bytesOffset + calculateByteIndex(filter.startTime(), bytesPerSample, headerSignals.size());
+        long end = bytesOffset + calculateByteIndex(filter.endTime(), bytesPerSample, headerSignals.size());
         return new BytesRange(start, end);
     }
 
