@@ -30,9 +30,7 @@ public record SingleSegmentHeader(HeaderRecord record, List<HeaderSignal> signal
      * @param signals  the array or header signals. Can't be null.
      * @param comments the comments about the record. Can't be null.
      */
-    public SingleSegmentHeader
-
-    {
+    public SingleSegmentHeader {
         Objects.requireNonNull(record);
         Objects.requireNonNull(signals);
         Objects.requireNonNull(comments);
