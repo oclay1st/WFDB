@@ -89,8 +89,8 @@ public record Filter(Long startTime, Long endTime, int[] signals) {
 
     @Override
     public String toString() {
-        return "Filter [startTime = " + startTime + ", endTime = " + endTime + ", signals = " + Arrays.toString(signals)
-                + "]";
+        String signalsText = Arrays.toString(signals);
+        return "Filter [startTime = " + startTime + ", endTime = " + endTime + ", signals = " + signalsText + "]";
     }
 
 }

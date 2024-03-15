@@ -22,7 +22,7 @@ class BytesRangeTest {
     }
 
     @Test
-    @DisplayName("Should calulate total bytes length")
+    @DisplayName("Should calculate total bytes length")
     void shouldCalculate() {
         assertEquals(5, new BytesRange(5, 10).total());
         assertEquals(0, new BytesRange(0, 0).total());

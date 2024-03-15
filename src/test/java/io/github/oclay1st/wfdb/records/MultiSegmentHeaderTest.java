@@ -33,15 +33,15 @@ class MultiSegmentHeaderTest {
         assertEquals(4, header.record().numberOfSignals());
         assertEquals(360, header.record().samplingFrequency());
         assertEquals(45000, header.record().numberOfSamplesPerSignal());
-        assertEquals(2, header.segments().length);
-        assertEquals("test", header.segments()[0].name());
-        assertEquals(22500, header.segments()[0].numberOfSamplesPerSignal());
-        assertEquals("other", header.segments()[1].name());
-        assertEquals(22500, header.segments()[1].numberOfSamplesPerSignal());
+        assertEquals(2, header.segments().size());
+        assertEquals("test", header.segments().get(0).name());
+        assertEquals(22500, header.segments().get(0).numberOfSamplesPerSignal());
+        assertEquals("other", header.segments().get(1).name());
+        assertEquals(22500, header.segments().get(1).numberOfSamplesPerSignal());
     }
 
     @Test
-    @DisplayName("Should parse the multi-segment header ignorig comments and blank lines")
+    @DisplayName("Should parse the multi-segment header ignoring comments and blank lines")
     void shouldIgnoreCommentsAndBlankLines() throws IOException, ParseException {
         String headerText = """
                 multi/3 2 360 45000
@@ -56,7 +56,7 @@ class MultiSegmentHeaderTest {
         assertNotNull(header);
         assertNotNull(header.record());
         assertTrue(header.record().isMultiSegment());
-        assertEquals(3, header.segments().length);
+        assertEquals(3, header.segments().size());
     }
 
     @ParameterizedTest(name = "in {0}")
@@ -72,7 +72,7 @@ class MultiSegmentHeaderTest {
                     null 1800
                     100s 21600"""
     })
-    void shouldParseAndGenereateTheSameText(String textBlock) throws IOException, ParseException {
+    void shouldParseAndGenerateTheSameText(String textBlock) throws IOException, ParseException {
         InputStream inputStream = new ByteArrayInputStream(textBlock.getBytes());
         MultiSegmentHeader header = MultiSegmentHeader.parse(inputStream);
         assertEquals(textBlock, header.toTextBlock());

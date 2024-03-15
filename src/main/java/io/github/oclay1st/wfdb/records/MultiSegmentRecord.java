@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import io.github.oclay1st.wfdb.exceptions.ParseException;
@@ -13,9 +14,9 @@ import io.github.oclay1st.wfdb.exceptions.ParseException;
  * Represents a multi-segment record.
  *
  * @param header  the multi-segment header {@link MultiSegmentHeader}
- * @param records the array of single-segment records
+ * @param records the list of single-segment records
  */
-public record MultiSegmentRecord(MultiSegmentHeader header, SingleSegmentRecord[] records) {
+public record MultiSegmentRecord(MultiSegmentHeader header, List<SingleSegmentRecord> records) {
 
     /**
      * Creates an instance of a MultiSegmentRecord class.
@@ -41,10 +42,10 @@ public record MultiSegmentRecord(MultiSegmentHeader header, SingleSegmentRecord[
         try (InputStream inputStream = Files.newInputStream(headerFilePath)) {
             // Parse the multi-segment header file
             MultiSegmentHeader header = MultiSegmentHeader.parse(inputStream);
-            SingleSegmentRecord[] singleSegmentRecords = new SingleSegmentRecord[header.segments().length];
-            for (int i = 0; i < header.segments().length; i++) {
-                Path segmentRecordPath = recordPath.resolveSibling(header.segments()[i].name());
-                singleSegmentRecords[i] = SingleSegmentRecord.parse(segmentRecordPath);
+            List<SingleSegmentRecord> singleSegmentRecords = new ArrayList<>(header.segments().size());
+            for (HeaderSegment segment : header.segments()) {
+                Path segmentRecordPath = recordPath.resolveSibling(segment.name());
+                singleSegmentRecords.add(SingleSegmentRecord.parse(segmentRecordPath));
             }
             return new MultiSegmentRecord(header, singleSegmentRecords);
         }
@@ -53,17 +54,17 @@ public record MultiSegmentRecord(MultiSegmentHeader header, SingleSegmentRecord[
     @Override
     public boolean equals(Object object) {
         return object instanceof MultiSegmentRecord instance && header.equals(instance.header)
-                && Arrays.equals(records, instance.records);
+                && records.equals(instance.records);
     }
 
     @Override
     public int hashCode() {
-        return 31 * Objects.hash(header) + Arrays.hashCode(records);
+        return Objects.hash(header, records);
     }
 
     @Override
     public String toString() {
-        return "MultiSegmentRecord = [ header=" + header + ", records=" + Arrays.toString(records) + ']';
+        return "MultiSegmentRecord = [ header=" + header + ", records=" + records + ']';
     }
 
 }

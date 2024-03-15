@@ -40,15 +40,15 @@ class SingleSegmentHeaderTest {
         assertNotNull(header.record());
         assertNotNull(header.signals());
         assertFalse(header.record().isMultiSegment());
-        assertEquals(header.record().numberOfSignals(), header.signals().length);
+        assertEquals(header.record().numberOfSignals(), header.signals().size());
         assertEquals("000006", header.record().name());
         assertEquals(100, header.record().samplingFrequency());
         assertEquals(1000, header.record().numberOfSamplesPerSignal());
-        assertEquals("000006.dat", header.signals()[0].filename());
-        assertEquals(SignalFormat.FORMAT_16, header.signals()[0].format());
-        assertEquals(SignalUnit.MILLIVOLT, header.signals()[0].unit());
-        assertEquals(755, header.signals()[0].checksum());
-        assertEquals("ii", header.signals()[0].description());
+        assertEquals("000006.dat", header.signals().get(0).filename());
+        assertEquals(SignalFormat.FORMAT_16, header.signals().get(0).format());
+        assertEquals(SignalUnit.MILLIVOLT, header.signals().get(0).unit());
+        assertEquals(755, header.signals().get(0).checksum());
+        assertEquals("ii", header.signals().get(0).description());
         headerInput.close();
     }
 
@@ -64,15 +64,15 @@ class SingleSegmentHeaderTest {
         assertNotNull(header.signals());
         assertNotNull(header.record());
         assertFalse(header.record().isMultiSegment());
-        assertEquals(header.signals().length, header.record().numberOfSignals());
+        assertEquals(header.signals().size(), header.record().numberOfSignals());
         assertEquals("16", header.record().name());
         assertEquals(500, header.record().samplingFrequency());
         assertEquals(5000, header.record().numberOfSamplesPerSignal());
-        assertEquals("16.dat", header.signals()[0].filename());
-        assertEquals(SignalFormat.FORMAT_16, header.signals()[0].format());
-        assertEquals(SignalUnit.MILLIVOLT, header.signals()[0].unit());
-        assertEquals(3038, header.signals()[0].checksum());
-        assertEquals("i", header.signals()[0].description());
+        assertEquals("16.dat", header.signals().get(0).filename());
+        assertEquals(SignalFormat.FORMAT_16, header.signals().get(0).format());
+        assertEquals(SignalUnit.MILLIVOLT, header.signals().get(0).unit());
+        assertEquals(3038, header.signals().get(0).checksum());
+        assertEquals("i", header.signals().get(0).description());
         headerInput.close();
     }
 
@@ -85,7 +85,7 @@ class SingleSegmentHeaderTest {
     }
 
     @ParameterizedTest(name = "in {0}")
-    @DisplayName("Should parse and generete the same text block of the header")
+    @DisplayName("Should parse and generate the same text block of the header")
     @ValueSource(strings = {
             """
                     sample_0 1 500.0 5000

@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import io.github.oclay1st.wfdb.exceptions.ParseException;
 
-class HeaderSegementTest {
+class HeaderSegmentTest {
 
     @Test
     @DisplayName("Should parse the header segment")

@@ -5,7 +5,7 @@ import java.nio.ShortBuffer;
 /**
  * Utility reference
  */
-public class CommonUtil {
+public final class CommonUtil {
 
     private CommonUtil() {
         throw new IllegalAccessError("Util class");

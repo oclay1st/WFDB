@@ -68,12 +68,11 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
         // Group the signals by filename
         Map<String, List<HeaderSignal>> recordFileMap = filteredHeader.groupHeaderSignalsByFilename();
         // Parse the signals samples in each file
-        for (Map.Entry<String, List<HeaderSignal>> entry : recordFileMap.entrySet()) {
-            Path samplesFilePath = recordPath.resolveSibling(entry.getKey());
-            HeaderSignal[] headerSignals = entry.getValue().toArray(HeaderSignal[]::new);
-            BytesRange bytesRange = filterProcessor.calculateBytesRange(headerSignals);
+        for (Map.Entry<String, List<HeaderSignal>> signalsEntry : recordFileMap.entrySet()) {
+            Path samplesFilePath = recordPath.resolveSibling(signalsEntry.getKey());
+            BytesRange bytesRange = filterProcessor.calculateBytesRange(signalsEntry.getValue());
             byte[] source = parseSamplesFile(samplesFilePath, bytesRange);
-            int[][] samples = convertToSamples(source, headerSignals);
+            int[][] samples = convertToSamples(source, signalsEntry.getValue());
             System.arraycopy(samples, 0, samplesPerSignal, samplesPerSignalIndex, samples.length);
             samplesPerSignalIndex += samples.length;
         }
@@ -120,16 +119,16 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
      * @param headerSignals the array of signals
      * @return an array of samples for each signal
      */
-    private static int[][] convertToSamples(byte[] source, HeaderSignal[] headerSignals) {
+    private static int[][] convertToSamples(byte[] source, List<HeaderSignal> headerSignals) {
         SignalFormatter formatter = resolveSignalFormatter(headerSignals);
         int[] samples = formatter.convertBytesToSamples(source);
-        int[][] samplesPerSignal = new int[headerSignals.length][samples.length / headerSignals.length];
+        int[][] samplesPerSignal = new int[headerSignals.size()][samples.length / headerSignals.size()];
         int localSignalIndex = 0;
         int localSampleIndex = 0;
         for (int sample : samples) {
             samplesPerSignal[localSignalIndex][localSampleIndex] = sample;
             localSignalIndex++;
-            if (localSignalIndex == headerSignals.length) {
+            if (localSignalIndex == headerSignals.size()) {
                 localSignalIndex = 0;
                 localSampleIndex++;
             }
@@ -145,12 +144,12 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
      * @param headerSignals the array of header signals
      * @return the {@link SignalFormatter} instance
      */
-    private static SignalFormatter resolveSignalFormatter(HeaderSignal[] headerSignals) {
+    private static SignalFormatter resolveSignalFormatter(List<HeaderSignal> headerSignals) {
         // takes the signal formatter from the first header signal
-        SignalFormatter formatter = headerSignals[0].format().formatter();
+        SignalFormatter formatter = headerSignals.get(0).format().formatter();
         // format 8 is a special case that needs the initial values of header signals
         if (formatter instanceof SignalFormatter8 instance) {
-            int[] initialValues = Arrays.stream(headerSignals).mapToInt(HeaderSignal::initialValue).toArray();
+            int[] initialValues = headerSignals.stream().mapToInt(HeaderSignal::initialValue).toArray();
             instance.setInitialSignalSamples(initialValues);
         }
         return formatter;
@@ -170,14 +169,13 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
         // Create the samples files for signals
         Map<String, List<HeaderSignal>> recordFileMap = header.groupHeaderSignalsByFilename();
         int samplesPerSignalIndex = 0;
-        for (Map.Entry<String, List<HeaderSignal>> entry : recordFileMap.entrySet()) {
-            Path samplesFilePath = recordPath.resolveSibling(entry.getKey());
-            HeaderSignal[] headerSignals = entry.getValue().toArray(HeaderSignal[]::new);
-            int lastSignalPerSignalIndex = samplesPerSignalIndex + headerSignals.length;
+        for (Map.Entry<String, List<HeaderSignal>> signalsEntry : recordFileMap.entrySet()) {
+            Path samplesFilePath = recordPath.resolveSibling(signalsEntry.getKey());
+            int lastSignalPerSignalIndex = samplesPerSignalIndex + signalsEntry.getValue().size();
             int[][] samples = Arrays.copyOfRange(samplesPerSignal, samplesPerSignalIndex, lastSignalPerSignalIndex);
-            byte[] source = convertToSource(samples, headerSignals);
+            byte[] source = convertToSource(samples, signalsEntry.getValue());
             Files.write(samplesFilePath, source);
-            samplesPerSignalIndex += headerSignals.length;
+            samplesPerSignalIndex += signalsEntry.getValue().size();
         }
     }
 
@@ -188,7 +186,7 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
      * @param headerSignals the array of {@link HeaderSignal}
      * @return the array of bytes
      */
-    private byte[] convertToSource(int[][] samples, HeaderSignal[] headerSignals) {
+    private byte[] convertToSource(int[][] samples, List<HeaderSignal> headerSignals) {
         int numberOfSamples = samples[0].length * samples.length;
         int[] formattedSamples = new int[numberOfSamples];
         int localSignalIndex = 0;
@@ -196,7 +194,7 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
         for (int i = 0; i < numberOfSamples; i++) {
             formattedSamples[i] = samples[localSignalIndex][localSampleIndex];
             localSignalIndex++;
-            if (localSignalIndex == headerSignals.length) {
+            if (localSignalIndex == headerSignals.size()) {
                 localSignalIndex = 0;
                 localSampleIndex++;
             }
@@ -218,7 +216,8 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
 
     @Override
     public String toString() {
-        return "SingleSegmentRecord [ header = " + header + ", samplesPerSignal = " + Arrays.toString(samplesPerSignal)
-                + ']';
+        String samplesPerSignalText = Arrays.toString(samplesPerSignal);
+        return "SingleSegmentRecord [ header = " + header + ", samplesPerSignal = " + samplesPerSignalText + ']';
     }
+
 }

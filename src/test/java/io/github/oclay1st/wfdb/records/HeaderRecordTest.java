@@ -32,7 +32,7 @@ class HeaderRecordTest {
     }
 
     @Test
-    @DisplayName("Shoul parse the header record with name, number of signals, frequency and number of samples")
+    @DisplayName("Should parse the header record with name, number of signals, frequency and number of samples")
     void parseSmallRecordInfo() throws ParseException {
         String headerRecordText = "00001_lr 12 100 1000";
         HeaderRecord headerRecord = HeaderRecord.parse(headerRecordText);
@@ -43,7 +43,7 @@ class HeaderRecordTest {
     }
 
     @ParameterizedTest(name = "in {0}")
-    @DisplayName("Should parse and genereate the same text of the single-header record")
+    @DisplayName("Should parse and generate the same text of the single-header record")
     @ValueSource(strings = {
             "sample_0 2 500.0 5000",
             "sample_1 12 100.0 1000 11:20:30 10/10/2001",
@@ -53,10 +53,9 @@ class HeaderRecordTest {
         HeaderRecord headerRecord = HeaderRecord.parse(textLine);
         assertEquals(textLine, headerRecord.toTextLine());
     }
-    
 
     @ParameterizedTest(name = ": {0}")
-    @ValueSource(strings = { "record/f", "record/2 vali" , "record 12 100 e1000"})
+    @ValueSource(strings = { "record/f", "record/2 random", "record 12 100 e1000" })
     @DisplayName("Should throw ParseException for input")
     void shouldThrowParseException(String headerRecordText) {
         assertThrows(ParseException.class, () -> HeaderRecord.parse(headerRecordText));
