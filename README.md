@@ -14,7 +14,7 @@ This library is a pure Java implementation of the Waveform Database(WFDB) [speci
 - [x] Support for different signal formats and files
 - [x] Filter by a range of time
 - [x] Filter by signals indices
-- [x] Export single-segment records
+- [x] Export single-segment and multi-segment records
 
 ## Usage
 

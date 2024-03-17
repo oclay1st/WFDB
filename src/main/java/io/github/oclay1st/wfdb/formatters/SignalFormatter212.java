@@ -77,16 +77,16 @@ public final class SignalFormatter212 implements SignalFormatter {
         int[] samplesData = Arrays.copyOf(samples, numberOfSamples);
         byte[] source = new byte[numberOfBytes + DISTRIBUTION];
         for (int i = 0; i < samplesData.length; i += SAMPLES_PER_DISTRIBUTION) {
-            int firstUnsignedSample = samplesData[i] & 0x7FF;
-            int secondUnsignedSample = samplesData[i + 1] & 0x7FF;
+            int firstUnsignedSample = samplesData[i] & 0xFFF;
+            int secondUnsignedSample = samplesData[i + 1] & 0xFFF;
             // first byte
-            source[sourceIndex] = (byte) firstUnsignedSample;
+            source[sourceIndex] = (byte) (firstUnsignedSample & 0xFF);
             // second byte
             int lastFourBitsOfSecondByte = firstUnsignedSample >> 8;
-            int firstFourBitsOfSecondByte = secondUnsignedSample >> 8;
-            source[sourceIndex + 1] = (byte) (firstFourBitsOfSecondByte + lastFourBitsOfSecondByte);
+            int firstFourBitsOfSecondByte = (secondUnsignedSample >> 8) << 4;
+            source[sourceIndex + 1] = (byte) ((firstFourBitsOfSecondByte + lastFourBitsOfSecondByte) & 0xFF);
             // third byte
-            source[sourceIndex + 2] = (byte) secondUnsignedSample;
+            source[sourceIndex + 2] = (byte) (secondUnsignedSample & 0xFF);
             // increment array index
             sourceIndex += DISTRIBUTION;
         }

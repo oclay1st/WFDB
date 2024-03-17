@@ -68,15 +68,14 @@ class SingleSegmentRecordTest {
     }
 
     @Test
-    @DisplayName("Should export the record")
-    void shouldExportTheRecord() throws IOException, ParseException {
+    @DisplayName("Should export the single-segment record")
+    void shouldExportTheSingleSegmentRecord() throws IOException, ParseException {
         Path recordPath = Path.of("src", "test", "resources", "single-segment", "00001", "00001_lr").toAbsolutePath();
         SingleSegmentRecord wfdbRecord = SingleSegmentRecord.parse(recordPath);
         assertNotNull(wfdbRecord);
-        Path exportedRecordPath = Files.createTempDirectory("export-record").resolve("00001_lr");
+        Path exportedRecordPath = Files.createTempDirectory("export-single-segment-record").resolve("00001_lr");
         wfdbRecord.export(exportedRecordPath);
         SingleSegmentRecord exportedRecord = SingleSegmentRecord.parse(exportedRecordPath);
-        assertNotNull(exportedRecordPath);
         assertEquals(wfdbRecord, exportedRecord);
     }
 

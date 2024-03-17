@@ -51,6 +51,24 @@ public record MultiSegmentRecord(MultiSegmentHeader header, List<SingleSegmentRe
         }
     }
 
+    /**
+     * Export the multi-segment record. Generate the header and signal(s) files.
+     * 
+     * @param recordPath the path of the record
+     * @throws IOException if the record can't be exported.
+     */
+    public void export(Path recordPath) throws IOException {
+        // Create the header file
+        Path headerFilePath = recordPath.resolveSibling(recordPath.getFileName() + ".hea");
+        Files.createDirectories(recordPath.getParent());
+        Files.writeString(headerFilePath, header.toTextBlock());
+        // Export the list of single-segment records
+        for (SingleSegmentRecord singleSegmentRecord : records) {
+            Path singleSegmentRecordPath = recordPath.resolveSibling(singleSegmentRecord.header().record().name());
+            singleSegmentRecord.export(singleSegmentRecordPath);
+        }
+    }
+
     @Override
     public boolean equals(Object object) {
         return object instanceof MultiSegmentRecord instance && header.equals(instance.header)
