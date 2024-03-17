@@ -33,6 +33,7 @@ class MultiSegmentRecordTest {
         multiSegmentRecord.export(exportedRecordPath);
         MultiSegmentRecord exportedRecord = MultiSegmentRecord.parse(exportedRecordPath);
         assertEquals(multiSegmentRecord, exportedRecord);
+        assertEquals(multiSegmentRecord.hashCode(), exportedRecord.hashCode());
     }
 
 }

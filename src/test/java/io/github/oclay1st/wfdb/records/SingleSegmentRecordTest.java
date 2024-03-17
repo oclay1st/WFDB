@@ -77,6 +77,7 @@ class SingleSegmentRecordTest {
         wfdbRecord.export(exportedRecordPath);
         SingleSegmentRecord exportedRecord = SingleSegmentRecord.parse(exportedRecordPath);
         assertEquals(wfdbRecord, exportedRecord);
+        assertEquals(wfdbRecord.hashCode(), exportedRecord.hashCode());
     }
 
 }
