@@ -1,5 +1,6 @@
 package io.github.oclay1st.wfdb.records;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -90,7 +91,7 @@ public record SingleSegmentRecord(SingleSegmentHeader header, int[][] samplesPer
      */
     private static SingleSegmentHeader parseHeaderFile(Path recordPath) throws IOException, ParseException {
         Path headerFilePath = recordPath.resolveSibling(recordPath.getFileName() + ".hea");
-        try (InputStream inputStream = Files.newInputStream(headerFilePath)) {
+        try (InputStream inputStream = new FileInputStream(headerFilePath.toFile())) {
             return SingleSegmentHeader.parse(inputStream);
         }
     }
