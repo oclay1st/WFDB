@@ -127,7 +127,6 @@ public record HeaderSignal(String filename, SignalFormat format, int samplesPerF
         int checksumValue = calculateChecksum(samples);
         return new HeaderSignal(filename, format, samplesPerFrame, skew, bytesOffset, adcGain, baseline, unit,
                 adcResolution, adcZero, samples[0], checksumValue, blockSize, description);
-
     }
 
     /**
