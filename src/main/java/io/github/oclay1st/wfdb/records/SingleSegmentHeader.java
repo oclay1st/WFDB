@@ -114,19 +114,9 @@ public record SingleSegmentHeader(HeaderRecord record, List<HeaderSignal> signal
      */
     public SingleSegmentHeader generateChecksumCopy(int[][] samplesPerSignal) {
         List<HeaderSignal> newHeaderSignals = IntStream.range(0, signals.size())
-                .mapToObj(index -> calculateSignalChecksums(signals.get(index), samplesPerSignal[index]))
+                .mapToObj(index -> signals.get(index).generateChecksumCopy(samplesPerSignal[index]))
                 .toList();
         return new SingleSegmentHeader(record, newHeaderSignals, comments);
-    }
-
-    private HeaderSignal calculateSignalChecksums(HeaderSignal headerSignal, int[] samples) {
-        int initialValue = samples[0];
-        int checksum = HeaderSignal.calculateChecksum(samples);
-        return new HeaderSignal(headerSignal.filename(), headerSignal.format(),
-                headerSignal.samplesPerFrame(), headerSignal.skew(), headerSignal.bytesOffset(),
-                headerSignal.adcGain(), headerSignal.baseline(), headerSignal.unit(), headerSignal.adcResolution(),
-                headerSignal.adcZero(), initialValue, checksum, headerSignal.blockSize(),
-                headerSignal.description());
     }
 
     @Override

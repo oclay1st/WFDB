@@ -21,6 +21,7 @@ class MultiSegmentRecordTest {
         MultiSegmentRecord multiSegmentRecord = MultiSegmentRecord.parse(recordPath);
         assertNotNull(multiSegmentRecord);
         assertEquals(3, multiSegmentRecord.header().segments().size());
+        assertEquals(3, multiSegmentRecord.records().size());
     }
 
     @Test
@@ -33,6 +34,7 @@ class MultiSegmentRecordTest {
         multiSegmentRecord.export(exportedRecordPath);
         MultiSegmentRecord exportedRecord = MultiSegmentRecord.parse(exportedRecordPath);
         assertEquals(multiSegmentRecord, exportedRecord);
+        assertEquals(multiSegmentRecord.hashCode(), exportedRecord.hashCode());
     }
 
 }
