@@ -118,6 +118,19 @@ public record HeaderSignal(String filename, SignalFormat format, int samplesPerF
     }
 
     /**
+     * Generate the checksum and set the init value of the header signal
+     *
+     * @param samples the array of samples
+     * @return a new {@link HeaderSignal} instance
+     */
+    public HeaderSignal generateChecksumCopy(int[] samples) {
+        int checksumValue = calculateChecksum(samples);
+        return new HeaderSignal(filename, format, samplesPerFrame, skew, bytesOffset, adcGain, baseline, unit,
+                adcResolution, adcZero, samples[0], checksumValue, blockSize, description);
+
+    }
+
+    /**
      * Returns the header signal representation.
      *
      * @return the text line representation
