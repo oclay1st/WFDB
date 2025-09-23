@@ -55,5 +55,5 @@ record.export(exportPath);
 ```
 
 ## Contributing
-Checkout for the missing features and feel free to open a issue and create a PR if you find something wrong.
+Checkout for the missing features and feel free to open a issue and create a PR.
 
